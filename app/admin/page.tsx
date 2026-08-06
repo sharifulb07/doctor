@@ -1,4 +1,5 @@
 import AdminDashboardContent from "@/components/admin/AdminDashboardContent";
+import { unstable_cache } from "next/cache";
 import connectDB from "@/lib/mongodb";
 import Appointment from "@/models/Appointment";
 import Dentist from "@/models/Dentist";
@@ -28,12 +29,41 @@ async function getStats() {
     Appointment.countDocuments({
       appointmentDate: { $gte: todayStart, $lte: todayEnd },
     }),
-    Appointment.find()
-      .sort({ createdAt: -1 })
-      .limit(5)
-      .populate("dentistId", "name")
-      .populate("patientId", "name")
-      .lean(),
+    Appointment.aggregate([
+      { $sort: { createdAt: -1 } },
+      { $limit: 5 },
+      {
+        $lookup: {
+          from: "users",
+          localField: "patientId",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "patient",
+        },
+      },
+      {
+        $lookup: {
+          from: "dentists",
+          localField: "dentistId",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "dentist",
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          patientName: {
+            $ifNull: [{ $arrayElemAt: ["$patient.name", 0] }, "$patientName"],
+          },
+          dentistName: {
+            $ifNull: [{ $arrayElemAt: ["$dentist.name", 0] }, "—"],
+          },
+          appointmentDate: 1,
+          status: 1,
+        },
+      },
+    ]),
   ]);
 
   return {
@@ -46,15 +76,14 @@ async function getStats() {
       const doc = a as unknown as {
         _id: { toString(): string };
         patientName: string;
+        dentistName: string;
         appointmentDate: Date | string;
         status: string;
-        patientId?: { name?: string } | null;
-        dentistId?: { name?: string } | null;
       };
       return {
         _id: doc._id.toString(),
-        patientName: doc.patientId?.name || doc.patientName,
-        dentistName: doc.dentistId?.name || "—",
+        patientName: doc.patientName,
+        dentistName: doc.dentistName,
         appointmentDate:
           doc.appointmentDate instanceof Date
             ? doc.appointmentDate.toISOString()
@@ -65,7 +94,12 @@ async function getStats() {
   };
 }
 
+const getCachedStats = unstable_cache(getStats, ["admin-dashboard-stats"], {
+  revalidate: 30,
+  tags: ["admin-dashboard"],
+});
+
 export default async function AdminDashboardPage() {
-  const stats = await getStats();
+  const stats = await getCachedStats();
   return <AdminDashboardContent stats={stats} />;
 }

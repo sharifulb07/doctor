@@ -315,36 +315,203 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {h.services.map((s) => (
-              <Link
-                key={s.label}
-                href="/services"
-                className="bg-white rounded-xl py-4 h-55 text-center shadow-sm border border-slate-100 hover:shadow-md transition-shadow block"
-              >
-                <div className="text-3xl mb-2 mx-auto flex items-center justify-center">
-                  {typeof s.icon === "string" ? (
-                    isImageSrcString(s.icon) ? (
-                      <Image
-                        src={s.icon}
-                        alt={s.label}
-                        width={128}
-                        height={128}
-                        className="h-[90%] w-[90%] object-contain"
-                      />
-                    ) : (
-                      s.icon
-                    )
-                  ) : (
-                    <Image
-                      src={s.icon}
-                      alt={s.label}
-                      width={128}
-                      height={128}
-                      className="h-[90%] w-[90%] object-contain"
-                    />
-                  )}
-                </div>
-                <p className="text-xs font-medium text-slate-700">{s.label}</p>
-              </Link>
+             <Link
+  key={s.label}
+  href="/services"
+  className="
+    group relative block overflow-hidden
+    h-55 rounded-2xl
+    shadow-lg
+    border border-sky-200
+
+    [perspective:1200px]
+    transition-all duration-700
+    hover:-translate-y-3
+    hover:shadow-2xl
+  "
+>
+  <div
+    className="
+      relative
+      h-full
+      w-full
+      overflow-hidden
+      rounded-2xl
+
+      [transform-style:preserve-3d]
+
+      transition-transform
+      duration-700
+      ease-out
+
+      group-hover:[transform:rotateX(12deg)_rotateY(-12deg)_scale(1.05)]
+    "
+  >
+
+    {/* Full card image */}
+    <Image
+      src={s.icon}
+      alt={s.label}
+      fill
+      className="
+        object-cover
+
+        transition-transform
+        duration-[10s]
+
+        group-hover:scale-125
+        [transform:translateZ(20px)]
+      "
+    />
+
+
+    {/* Dental overlay */}
+    <div
+      className="
+        absolute inset-0
+        bg-linear-to-t
+        from-sky-950/90
+        via-sky-600/30
+        to-transparent
+
+        [transform:translateZ(30px)]
+      "
+    />
+
+
+    {/* X-ray scanning light */}
+    <div
+      className="
+        absolute inset-0
+        overflow-hidden
+      "
+    >
+      <span
+        className="
+          absolute
+          -left-full
+          top-0
+          h-full
+          w-1/3
+
+          bg-linear-to-r
+          from-transparent
+          via-white/50
+          to-transparent
+
+          rotate-12
+
+          group-hover:left-[150%]
+          transition-all
+          duration-[3000ms]
+        "
+      />
+    </div>
+
+
+    {/* Dental pulse animation */}
+    <div
+      className="
+        absolute
+        inset-0
+        flex
+        items-center
+        justify-center
+
+        [transform:translateZ(50px)]
+      "
+    >
+      <span
+        className="
+          absolute
+          w-32
+          h-32
+          rounded-full
+          border-2
+          border-sky-300/50
+          animate-ping
+        "
+      />
+
+      <span
+        className="
+          absolute
+          w-44
+          h-44
+          rounded-full
+          border
+          border-white/30
+          animate-pulse
+        "
+      />
+    </div>
+
+
+    {/* Content pops forward */}
+    <div
+      className="
+        relative
+        z-10
+        h-full
+
+        flex
+        flex-col
+        items-center
+        justify-end
+
+        p-5
+        text-center
+
+        [transform:translateZ(70px)]
+      "
+    >
+      <h3
+        className="
+          text-white
+          font-bold
+          text-lg
+          drop-shadow-lg
+
+          group-hover:text-sky-200
+          transition-colors
+        "
+      >
+        {s.label}
+      </h3>
+
+      <p
+        className="
+          mt-1
+          text-xs
+          text-white/80
+        "
+      >
+        Advanced Dental Treatment
+      </p>
+    </div>
+
+
+    {/* Animated border */}
+    <div
+      className="
+        absolute
+        inset-0
+        rounded-2xl
+
+        border-2
+        border-sky-300
+
+        opacity-0
+        group-hover:opacity-100
+
+        animate-pulse
+
+        pointer-events-none
+      "
+    />
+
+  </div>
+</Link>
             ))}
           </div>
         </div>

@@ -57,6 +57,9 @@ export async function GET(req: NextRequest) {
     const skip = (page - 1) * limit;
     const [dentists, total] = await Promise.all([
       Dentist.find(query)
+        .select(
+          "name email photo specialization experience consultationFee rating isActive bio clinicPhone clinicLocation qualifications availableDays availableTimeSlots availableDayTimes maxAppointmentsPerDay createdAt",
+        )
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)

@@ -573,6 +573,7 @@ export default function AdminDentistsPage() {
   const [dentists, setDentists] = useState<Dentist[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [togglingId, setTogglingId] = useState<string | null>(null);
@@ -591,10 +592,15 @@ export default function AdminDentistsPage() {
   const [editError, setEditError] = useState("");
   const [editSuccess, setEditSuccess] = useState("");
 
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search.trim()), 300);
+    return () => clearTimeout(timer);
+  }, [search]);
+
   const fetchDentists = useCallback(async () => {
     try {
       const params = new URLSearchParams({ page: String(page), limit: "12" });
-      if (search) params.set("search", search);
+      if (debouncedSearch) params.set("search", debouncedSearch);
       const res = await fetch(`/api/admin/dentists?${params}`);
       const data = await res.json();
       if (data.success) {
@@ -604,7 +610,7 @@ export default function AdminDentistsPage() {
     } finally {
       setLoading(false);
     }
-  }, [page, search]);
+  }, [page, debouncedSearch]);
 
   useEffect(() => {
     fetchDentists();

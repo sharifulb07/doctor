@@ -20,8 +20,11 @@ export async function GET(req: NextRequest) {
     return forbiddenResponse("Admin access required");
 
   const { searchParams } = req.nextUrl;
-  const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
-  const limit = Math.min(100, parseInt(searchParams.get("limit") || "20"));
+  const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
+  const limit = Math.min(
+    100,
+    Math.max(1, parseInt(searchParams.get("limit") || "20", 10)),
+  );
   const role = searchParams.get("role") || UserRole.PATIENT;
   const search = (searchParams.get("search") || "").trim();
 
@@ -41,7 +44,7 @@ export async function GET(req: NextRequest) {
     const skip = (page - 1) * limit;
     const [users, total] = await Promise.all([
       User.find(query)
-        .select("-password -failedLoginAttempts -lockUntil")
+        .select("name email phone role isActive createdAt")
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)

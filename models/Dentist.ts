@@ -149,7 +149,6 @@ const DentistSchema = new Schema<IDentistDocument>(
   },
 );
 
-DentistSchema.index({ userId: 1 });
 DentistSchema.index({ specialization: 1 });
 DentistSchema.index({ isActive: 1 });
 DentistSchema.index({ rating: -1 });

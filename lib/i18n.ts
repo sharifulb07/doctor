@@ -1,9 +1,9 @@
-import one from "@/public/icons/rootcanal.png";
-import two from "@/public/icons/1.png";
+import one from "@/public/icons/1.png";
+import two from "@/public/icons/2.png";
 import three from "@/public/icons/3.png";
 import four from "@/public/icons/4.png";
 import five from "@/public/icons/5.png";
-import six from "@/public/icons/6.png";
+// import six from "@/public/icons/6.png";
 import seven from "@/public/icons/7.png";
 import eight from "@/public/icons/8.png";
 import nine from "@/public/icons/9.png";
@@ -26,6 +26,16 @@ import tfive from "@/public/icons/25.png";
 import tsix from "@/public/icons/26.png";
 import tseven from "@/public/icons/27.png";
 import teight from "@/public/icons/28.png";
+import tnine from "@/public/icons/29.png";
+import thirty from "@/public/icons/30.png";
+import thone from "@/public/icons/31.png";
+import thtwo from "@/public/icons/32.png";
+import ththree from "@/public/icons/33.png";
+import  thfour from "@/public/icons/34.png";
+import  thfive from "@/public/icons/35.png";
+import  thsix from "@/public/icons/36.png";
+import  thseven from "@/public/icons/37.png";
+import  theight from "@/public/icons/38.png";
 
 export type Locale = "en" | "bn";
 
@@ -96,46 +106,61 @@ export const translations = {
         "Experience personalized treatments designed to keep your smile healthy, beautiful, and confident.",
       ourServices: "Our SERVICES",
       ourServicesSubtitle: "Comprehensive dental care for the whole family",
-     services: [
-  { icon: "https://images.unsplash.com/photo-1593022356769-11f762e25ed9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Um9vdCUyMENhbmFsJTIwVHJlYXRtZW50JTIwZm9yJTIwdGVldGh8ZW58MHx8MHx8fDA%3D", label: "Root Canal Treatment" },
-  { icon: "https://images.unsplash.com/photo-1660737217837-95f00b9eae53?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", label: "Tooth Restoration Filling" },
-  { icon: three, label: "Tooth Extraction" },
-  { icon: four, label: "Surgical Tooth Extraction" },
-  { icon: five, label: "Tooth Fracture Management" },
-  { icon: six, label: "Scaling And Root Planing" },
-  { icon: seven, label: "Dental Implants" },
-  { icon: eight, label: "Teeth whitening (bleaching)" },
-  { icon: nine, label: "Dental Veneers" },
-  { icon: ten, label: "Dental Crowns" },
-  { icon: eleven, label: "Metal Crown" },
-  { icon: twelve, label: "Metal Ceramic Crown" },
-  { icon: thirteen, label: "Zirconia Crown" },
-  { icon: fourteen, label: "E Max Crown" },
-  { icon: fifteen, label: "Partial And Complete Dentures" },
-  { icon: sixteen, label: "Acrylic Dentures" },
-  { icon: seventeen, label: "Flexible Dentures" },
-  { icon: eighteen, label: "Orthodontic Treatment ( Braces) " },
-  { icon: nineteen, label: "Cyst And Tumor Surgery" },
-  { icon: twenty, label: " Apisectomy" },
-  { icon: tone, label: "Midline Diastema Closure" },
-  { icon: ttwo, label: "Mandible Fracture Management" },
-  { icon: tthree, label: "Facial Bone Fracture Management" },
-  { icon: tfour, label: "Child Dental Disease Management" },
-  { icon: tfive, label: "Dental Filling" },
-  { icon: tsix, label: "Pulpotomy" },
-  { icon: tseven, label: "Pulpectomy" },
-  { icon: teight, label: "Dental Abscess Management" },
-  { icon: teight, label: "Dental Aesthetics And Smile Designt" },
-  { icon: teight, label: "Dental Bridges" },
-  { icon: teight, label: "Apexogenesis And Apexification" },
-  { icon: teight, label: "Dental Emergency Management" },
-  { icon: teight, label: "Pyogenic Granuloma Surgery" },
-  { icon: teight, label: "Oral Cancer Management" },
-  { icon: teight, label: "Oral Ulcer Treatment" },
-  { icon: teight, label: "Premalignant Lesion Management" },
-  { icon: teight, label: "Oral Thrush Treatment" },
-  { icon: teight, label: " Dental X-ray ( OPG & RVG) "},
-],
+      services: [
+        { icon: one, label: "Root Canal Treatment" },
+        { icon: two, label: "Tooth Restoration Filling" },
+        { icon: three, label: "Tooth Extraction" },
+        { icon: four, label: "Surgical Tooth Extraction" },
+        { icon: five, label: "Tooth Fracture Management" },
+        {
+          icon: "https://images.pexels.com/photos/5622010/pexels-photo-5622010.jpeg",
+          label: "Scaling And Root Planing",
+        },
+        {
+          icon: "https://images.pexels.com/photos/4687905/pexels-photo-4687905.jpeg",
+          label: "Dental Implants",
+        },
+        {
+          icon: "https://images.unsplash.com/photo-1663182234283-28941e7612da?q=80&w=793&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          label: "Teeth whitening (bleaching)",
+        },
+        {
+          icon: "https://plus.unsplash.com/premium_photo-1674998790004-1c08a997011c?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          label: "Dental Veneers",
+        },
+        {
+          icon: "https://images.pexels.com/photos/6627601/pexels-photo-6627601.jpeg",
+          label: "Dental Crowns",
+        },
+        { icon: eleven, label: "Metal Crown" },
+        { icon: twelve, label: "Metal Ceramic Crown" },
+        { icon: thirteen, label: "Zirconia Crown" },
+        { icon: fourteen, label: "E Max Crown" },
+        { icon: fifteen, label: "Partial And Complete Dentures" },
+        { icon: sixteen, label: "Acrylic Dentures" },
+        { icon: seventeen, label: "Flexible Dentures" },
+        { icon: eighteen, label: "Orthodontic Treatment ( Braces) " },
+        { icon: nineteen, label: "Cyst And Tumor Surgery" },
+        { icon: twenty, label: " Apisectomy" },
+        { icon: tone, label: "Midline Diastema Closure" },
+        { icon: ttwo, label: "Mandible Fracture Management" },
+        { icon: tthree, label: "Facial Bone Fracture Management" },
+        { icon: tfour, label: "Child Dental Disease Management" },
+        { icon: tfive, label: "Dental Filling" },
+        { icon: tsix, label: "Pulpotomy" },
+        { icon: tseven, label: "Pulpectomy" },
+        { icon: teight, label: "Dental Abscess Management" },
+        { icon: tnine, label: "Dental Aesthetics And Smile Designt" },
+        { icon: thirty, label: "Dental Bridges" },
+        { icon: thone, label: "Apexogenesis And Apexification" },
+        { icon: thtwo, label: "Dental Emergency Management" },
+        { icon: ththree, label: "Pyogenic Granuloma Surgery" },
+        { icon:  thfour, label: "Oral Cancer Management" },
+        { icon: thfive, label: "Oral Ulcer Treatment" },
+        { icon: thsix, label: "Premalignant Lesion Management" },
+        { icon: thseven, label: "Oral Thrush Treatment" },
+        { icon: theight, label: " Dental X-ray ( OPG & RVG) " },
+      ],
       ctaTitle: "Ready to Book Your Visit?",
       ctaSubtitle:
         "Join thousands of patients who trust DentalCare for their dental health needs.",
@@ -410,45 +435,61 @@ export const translations = {
         "আপনার হাসি সুন্দর, সুস্থ ও আত্মবিশ্বাসী রাখতে আমাদের বিশেষায়িত চিকিৎসা সেবা গ্রহণ করুন।",
       ourServices: "আমাদের সেবাসমূহ",
       ourServicesSubtitle: "পুরো পরিবারের জন্য ব্যাপক দন্তচিকিৎসা সেবা",
-    services: [
-  { icon: one, label: "Root Canal Treatment" },
-  { icon: two, label: "Tooth Restoration Filling" },
-  { icon: three, label: "Tooth Extraction" },
-  { icon: four, label: "Surgical Tooth Extraction" },
-  { icon: five, label: "Tooth Fracture Management" },
-  { icon: six, label: "Scaling And Root Planing" },
-  { icon: seven, label: "Dental Implants" },
-  { icon: eight, label: "Teeth Whitening" },
-  { icon: nine, label: "Dental Veneers" },
-  { icon: ten, label: "Dental Crowns" },
-  { icon: eleven, label: "Metal Crown" },
-  { icon: twelve, label: "Metal Ceramic Crown" },
-  { icon: thirteen, label: "Zirconia Crown" },
-  { icon: fourteen, label: "E Max Crown" },
-  { icon: fifteen, label: "Partial And Complete Dentures" },
-  { icon: sixteen, label: "Acrylic Dentures" },
-  { icon: seventeen, label: "Flexible Dentures" },
-  { icon: eighteen, label: "Orthodontic Treatment" },
-  { icon: nineteen, label: "Cyst And Tumor Surgery" },
-  { icon: twenty, label: "Apicoectomy" },
-  { icon: tone, label: "Midline Diastema Closure" },
-  { icon: ttwo, label: "Mandible Fracture Management" },
-  { icon: tthree, label: "Facial Bone Fracture Management" },
-  { icon: tfour, label: "Child Dental Disease Management" },
-  { icon: tfive, label: "Dental Filling" },
-  { icon: tsix, label: "Pulpotomy" },
-  { icon: tseven, label: "Pulpectomy" },
-  { icon: teight, label: "Dental Abscess Management" },
-  { icon: teight, label: "Dental Aesthetics And Smile Designt" },
-  { icon: teight, label: "Dental Bridges" },
-  { icon: teight, label: "Apexogenesis And Apexification" },
-  { icon: teight, label: "Dental Emergency Management" },
-  { icon: teight, label: "Pyogenic Granuloma Surgery" },
-  { icon: teight, label: "Oral Cancer Management" },
-  { icon: teight, label: "Oral Ulcer Treatment" },
-  { icon: teight, label: "Premalignant Lesion Management" },
-  { icon: teight, label: "Oral Thrush Treatment" },
-],
+      services: [
+        { icon: one, label: "Root Canal Treatment" },
+        { icon: two, label: "Tooth Restoration Filling" },
+        { icon: three, label: "Tooth Extraction" },
+        { icon: four, label: "Surgical Tooth Extraction" },
+        { icon: five, label: "Tooth Fracture Management" },
+        {
+          icon: "https://images.pexels.com/photos/5622010/pexels-photo-5622010.jpeg",
+          label: "Scaling And Root Planing",
+        },
+        {
+          icon: "https://images.pexels.com/photos/4687905/pexels-photo-4687905.jpeg",
+          label: "Dental Implants",
+        },
+        {
+          icon: "https://images.unsplash.com/photo-1663182234283-28941e7612da?q=80&w=793&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          label: "Teeth Whitening",
+        },
+        {
+          icon: "https://plus.unsplash.com/premium_photo-1674998790004-1c08a997011c?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          label: "Dental Veneers",
+        },
+        {
+          icon: "https://images.pexels.com/photos/6627601/pexels-photo-6627601.jpeg",
+          label: "Dental Crowns",
+        },
+        { icon: eleven, label: "Metal Crown" },
+        { icon: twelve, label: "Metal Ceramic Crown" },
+        { icon: thirteen, label: "Zirconia Crown" },
+        { icon: fourteen, label: "E Max Crown" },
+        { icon: fifteen, label: "Partial And Complete Dentures" },
+        { icon: sixteen, label: "Acrylic Dentures" },
+        { icon: seventeen, label: "Flexible Dentures" },
+        { icon: eighteen, label: "Orthodontic Treatment" },
+        { icon: nineteen, label: "Cyst And Tumor Surgery" },
+        { icon: twenty, label: "Apisectomy" },
+        { icon: tone, label: "Midline Diastema Closure" },
+        { icon: ttwo, label: "Mandible Fracture Management" },
+        { icon: tthree, label: "Facial Bone Fracture Management" },
+        { icon: tfour, label: "Child Dental Disease Management" },
+        { icon: tfive, label: "Dental Filling" },
+        { icon: tsix, label: "Pulpotomy" },
+        { icon: tseven, label: "Pulpectomy" },
+        { icon: teight, label: "Dental Abscess Management" },
+        { icon: tnine, label: "Dental Aesthetics And Smile Designt" },
+        { icon: thirty, label: "Dental Bridges" },
+        { icon: thone, label: "Apexogenesis And Apexification" },
+        { icon: thtwo, label: "Dental Emergency Management" },
+        { icon: ththree, label: "Pyogenic Granuloma Surgery" },
+        { icon: thfour, label: "Oral Cancer Management" },
+        { icon: thfive, label: "Oral Ulcer Treatment" },
+        { icon: thsix, label: "Premalignant Lesion Management" },
+        { icon: thseven, label: "Oral Thrush Treatment" },
+        { icon: theight, label: " Dental X-ray ( OPG & RVG) " },
+      ],
       ctaTitle: "আপনার পরিদর্শন বুক করতে প্রস্তুত?",
       ctaSubtitle:
         "হাজার হাজার রোগীর সাথে যোগ দিন যারা তাদের দাঁতের স্বাস্থ্যের প্রয়োজনে ডেন্টালকেয়ারকে বিশ্বাস করেন।",
@@ -526,7 +567,8 @@ export const translations = {
       noAvailabilitySet:
         "এই দন্তচিকিৎসকের জন্য এখনো কোনো রোগী দেখার সময় সেট করা হয়নি।",
       selectedDateLabel: "নির্বাচিত তারিখ",
-      dateMatches: "এই তারিখটি দন্তচিকিৎসকের রোগী দেখার সময়সূচির সাথে মিলে গেছে।",
+      dateMatches:
+        "এই তারিখটি দন্তচিকিৎসকের রোগী দেখার সময়সূচির সাথে মিলে গেছে।",
       dateNotAvailable:
         "এই তারিখটি দন্তচিকিৎসকের রোগী দেখার দিনের সাথে মেলে না। অনুগ্রহ করে রোগী দেখার দিনগুলোর একটি বেছে নিন।",
       dateTime: "তারিখ ও সময়",

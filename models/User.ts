@@ -79,9 +79,9 @@ const UserSchema = new Schema<IUserDocument>(
 );
 
 // Index for faster lookups
-UserSchema.index({ email: 1 });
 UserSchema.index({ role: 1 });
 UserSchema.index({ createdAt: -1 });
+UserSchema.index({ role: 1, createdAt: -1 });
 
 // Hash password before saving
 UserSchema.pre("save", async function () {

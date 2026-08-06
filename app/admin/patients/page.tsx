@@ -18,10 +18,16 @@ export default function AdminPatientsPage() {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [togglingId, setTogglingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search.trim()), 300);
+    return () => clearTimeout(timer);
+  }, [search]);
 
   const fetchPatients = useCallback(async () => {
     setLoading(true);
@@ -31,7 +37,7 @@ export default function AdminPatientsPage() {
         limit: "15",
         role: "patient",
       });
-      if (search) params.set("search", search);
+      if (debouncedSearch) params.set("search", debouncedSearch);
       const res = await fetch(`/api/admin/users?${params}`);
       const data = await res.json();
       if (data.success) {
@@ -41,7 +47,7 @@ export default function AdminPatientsPage() {
     } finally {
       setLoading(false);
     }
-  }, [page, search]);
+  }, [page, debouncedSearch]);
 
   useEffect(() => {
     fetchPatients();

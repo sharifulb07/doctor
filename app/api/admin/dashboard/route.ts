@@ -52,8 +52,9 @@ export async function GET(req: NextRequest) {
         appointmentDate: { $gte: todayStart, $lte: todayEnd },
       }),
       Log.find({ level: { $in: ["warn", "error"] } })
+        .select("level message path statusCode responseTime createdAt")
         .sort({ createdAt: -1 })
-        .limit(20)
+        .limit(12)
         .lean(),
       Appointment.aggregate([
         { $group: { _id: "$status", count: { $sum: 1 } } },
