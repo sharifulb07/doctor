@@ -65,10 +65,14 @@ export default function ServicesPageContent({
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {services.map((service) => {
+          {services.map((service, index) => {
             const localized = getLocalizedServiceContent(service, locale);
             return (
-              <Card key={service.slug} hover className="h-full flex flex-col">
+              <Card
+                key={`${service.slug}-${index}`}
+                hover
+                className="h-full flex flex-col"
+              >
                 <CardBody className="flex h-full flex-col">
                   <div className="h-20 w-20 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center mb-4">
                     <Image

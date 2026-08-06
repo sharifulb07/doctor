@@ -6,9 +6,9 @@ import DentistCard from "@/components/dentists/DentistCard";
 import Button from "@/components/ui/Button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { IDentist } from "@/types";
-import { getAllServices } from "@/lib/services";
-import pro from "@/public/pro.png"
-import teeth from "@/public/teethmain.png"
+import { developedServices } from "@/lib/services";
+import pro from "@/public/pro.png";
+import teeth from "@/public/teethmain.png";
 
 interface HomePageUIProps {
   dentists: Array<IDentist & { _id: string }>;
@@ -17,7 +17,6 @@ interface HomePageUIProps {
 export default function HomePageUI({ dentists }: HomePageUIProps) {
   const { t, locale } = useLanguage();
   const h = t.home;
-  const allServices = getAllServices();
 
   const isImageSrcString = (value: string) =>
     value.startsWith("/") ||
@@ -39,14 +38,14 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
     { icon: "✅", step: "3", ...h.steps[2] },
   ];
 
-  const carouselServices = h.services.slice(0, 12).map((service, index) => ({
-    title: service.label,
+  const carouselServices = developedServices.map((service) => ({
+    title: locale === "bn" ? service.title.bn : service.title.en,
     description:
       locale === "bn"
         ? "বিস্তারিত জানতে সেবাটিতে ক্লিক করুন এবং চিকিৎসা, সময়কাল ও যত্ন সম্পর্কে পড়ুন।"
         : "Click to explore treatment steps, duration, after-care, and booking details.",
-    image: `/carousels/${(index % 12) + 1}.jpeg`,
-    href: allServices[index] ? `/services/${allServices[index].slug}` : "/services",
+    image: service.image,
+    href: `/developed-services/${service.slug}`,
   }));
 
   const duplicatedServices = [...carouselServices, ...carouselServices];
@@ -54,8 +53,9 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
   return (
     <div>
       {/* Hero */}
-     <section className="bg-linear-to-br from-sky-600 via-sky-500 to-cyan-400 text-white">
-  <div className="
+      <section className="bg-linear-to-br from-sky-600 via-sky-500 to-cyan-400 text-white">
+        <div
+          className="
     max-w-7xl 
     mx-auto 
     px-4 
@@ -70,113 +70,109 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
     items-center 
     justify-between
     gap-12
-  ">
-
-    {/* Hero Content */}
-    <div className="max-w-3xl text-center lg:text-left">
-
-      <h1 className="
+  "
+        >
+          {/* Hero Content */}
+          <div className="max-w-3xl text-center lg:text-left">
+            <h1
+              className="
         text-4xl 
         sm:text-5xl 
         lg:text-6xl 
         font-extrabold 
         leading-tight 
         mb-6
-      ">
-        {h.heroTitle1}
-        <br />
-        <span className="text-cyan-200">
-          {h.heroTitle2}
-        </span>
-      </h1>
+      "
+            >
+              {h.heroTitle1}
+              <br />
+              <span className="text-cyan-200">{h.heroTitle2}</span>
+            </h1>
 
-
-      <p className="
+            <p
+              className="
         text-lg 
         sm:text-xl 
         text-sky-100 
         mb-10 
         leading-relaxed
-      ">
-        {h.heroSubtitle}
-      </p>
+      "
+            >
+              {h.heroSubtitle}
+            </p>
 
-
-      <div className="
+            <div
+              className="
         flex 
         flex-col 
         sm:flex-row 
         gap-4
         justify-center
         lg:justify-start
-      ">
-
-        <Link href="/book-appointment">
-          <Button
-            size="lg"
-            className="
+      "
+            >
+              <Link href="/book-appointment">
+                <Button
+                  size="lg"
+                  className="
               bg-white 
               text-sky-600 
               hover:bg-sky-50 
               w-full 
               sm:w-auto
             "
-          >
-            {h.bookAppointment}
-          </Button>
-        </Link>
+                >
+                  {h.bookAppointment}
+                </Button>
+              </Link>
 
-
-        <Link href="/dentists">
-          <Button
-            size="lg"
-            variant="outline"
-            className="
+              <Link href="/dentists">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="
               border-white 
               text-white 
               hover:bg-white/10 
               w-full 
               sm:w-auto
             "
-          >
-            {h.meetDentists}
-          </Button>
-        </Link>
+                >
+                  {h.meetDentists}
+                </Button>
+              </Link>
+            </div>
+          </div>
 
-      </div>
-
-    </div>
-
-
-    {/* Hero Image */}
-    <div className="
+          {/* Hero Image */}
+          <div
+            className="
       relative
       w-[280px]
       sm:w-[320px]
       lg:w-[380px]
       flex
       justify-center
-    ">
-
-      <Image
-        src={pro}
-        width={380}
-        height={400}
-        alt="Doctor"
-        className="
+    "
+          >
+            <Image
+              src={pro}
+              width={380}
+              height={400}
+              alt="Doctor"
+              className="
           rounded-full
           object-cover
         "
-        priority
-      />
+              priority
+            />
 
-
-      <Image
-        src={teeth}
-        width={250}
-        height={300}
-        alt="Teeth"
-        className="
+            <Image
+              src={teeth}
+              width={250}
+              height={300}
+              alt="Teeth"
+              className="
           absolute
           -bottom-10
           sm:-bottom-14
@@ -185,13 +181,10 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
           -translate-x-1/2
           z-10
         "
-      />
-
-    </div>
-
-
-  </div>
-</section>
+            />
+          </div>
+        </div>
+      </section>
 
       {/* Stats */}
       <section className="bg-white border-b border-slate-200">
@@ -227,21 +220,30 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
               <Link
                 key={`${service.title}-${index}`}
                 href={service.href}
-                className="mx-3 w-75 rounded-2xl border bg-white p-6 shadow-md hover:shadow-lg transition-shadow"
+                className="group relative flex flex-col text-center mx-3 w-100 h-80 rounded-2xl
+             border-2 border-sky-200 bg-white p-6 shadow-md
+             transition-all duration-300 ease-in-out
+             hover:border-sky-500
+             hover:shadow-[0_0_25px_rgba(14,165,233,0.35)]
+             hover:-translate-y-2"
               >
-                <div className="relative w-full h-36 rounded-xl overflow-hidden border border-slate-100 mb-4 bg-slate-50">
+                <div
+                  className="relative w-full h-[90%] rounded-xl overflow-hidden
+               border border-slate-100 mb-4 bg-slate-50
+               transition-all duration-300
+               group-hover:border-sky-400"
+                >
                   <Image
                     src={service.image}
                     alt={service.title}
                     fill
-                    className="object-cover"
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                 </div>
 
-                <h3 className="text-xl font-bold text-gray-900">{service.title}</h3>
-                <p className="mt-3 text-gray-600 text-sm leading-relaxed">
-                  {service.description}
-                </p>
+                <h3 className="text-xl font-bold text-gray-900 transition-colors duration-300 group-hover:text-sky-600">
+                  {service.title}
+                </h3>
               </Link>
             ))}
           </div>
@@ -312,15 +314,11 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
             {h.ourServicesSubtitle}
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {h.services.map((s, index) => (
+            {h.services.map((s) => (
               <Link
                 key={s.label}
-                href={
-                  allServices[index]
-                    ? `/services/${allServices[index].slug}`
-                    : "/services"
-                }
-                className="bg-white rounded-xl p-4 h-50 text-center shadow-sm border border-slate-100 hover:shadow-md transition-shadow block"
+                href="/services"
+                className="bg-white rounded-xl py-4 h-55 text-center shadow-sm border border-slate-100 hover:shadow-md transition-shadow block"
               >
                 <div className="text-3xl mb-2 mx-auto flex items-center justify-center">
                   {typeof s.icon === "string" ? (
@@ -330,7 +328,7 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
                         alt={s.label}
                         width={128}
                         height={128}
-                        className="h-16 w-16 object-contain"
+                        className="h-[90%] w-[90%] object-contain"
                       />
                     ) : (
                       s.icon
@@ -341,7 +339,7 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
                       alt={s.label}
                       width={128}
                       height={128}
-                      className="h-32 w-32 object-contain"
+                      className="h-[90%] w-[90%] object-contain"
                     />
                   )}
                 </div>

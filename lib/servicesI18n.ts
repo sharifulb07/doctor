@@ -30,7 +30,7 @@ const serviceNameBnBySlug: Record<string, string> = {
   "tooth-fracture-management": "দাঁত ভাঙা ব্যবস্থাপনা",
   "scaling-root-planing": "স্কেলিং ও রুট প্ল্যানিং",
   "dental-implants": "ডেন্টাল ইমপ্ল্যান্ট",
-  "bleaching-teeth-whitening": "ব্লিচিং (টিথ হোয়াইটেনিং)",
+  "Teeth whitening (bleaching) ": " টিথ হোয়াইটেনিং (ব্লিচিং))",
   veneer: "ভিনিয়ার",
   "crown-cap": "ক্রাউন (ক্যাপ)",
   "metal-cap": "মেটাল ক্যাপ",
@@ -40,9 +40,9 @@ const serviceNameBnBySlug: Record<string, string> = {
   "partial-complete-denture": "পার্শিয়াল ডেনচার ও কমপ্লিট ডেনচার",
   "acrylic-teeth-denture": "অ্যাক্রিলিক দাঁত/ডেঞ্চার",
   "flexible-denture": "ফ্লেক্সিবল ডেঞ্চার",
-  "orthodontic-treatment": "অর্থোডন্টিক ট্রিটমেন্ট",
+  "Orthodontic Treatment ( Braces) ": "অর্থোডন্টিক ট্রিটমেন্ট (ব্রেসেস) ",
   "cyst-tumour-surgery": "সিস্ট ও টিউমার সার্জারি",
-  apicoectomy: "এপিসেকটমি",
+  Apisectomy: "এপিসেকটমি",
   "midline-diastema-closure": "মিডলাইন ডায়াস্টেমা ক্লোজার",
   "mandible-fracture-management": "ম্যান্ডিবল ফ্র্যাকচার ম্যানেজমেন্ট",
   "facial-bone-fracture-management": "ফেসিয়াল বোন ফ্র্যাকচার ম্যানেজমেন্ট",
@@ -51,6 +51,7 @@ const serviceNameBnBySlug: Record<string, string> = {
   pulpotomy: "পালপোটমি",
   pulpectomy: "পালপেকটমি",
   "abscess-management": "অ্যাবসেস ম্যানেজমেন্ট",
+  "Dental X-ray ( OPG & RVG)": "ডেন্টাল এক্স-রে ( ওপিজি এন্ড আরভিজি",
 };
 
 const categoryShortBn: Record<ServiceDetails["category"], string> = {

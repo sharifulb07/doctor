@@ -6,6 +6,35 @@ export interface ServiceQuickInfo {
   appointmentRequired: string;
 }
 
+export interface DevelopedServiceData {
+  slug: string;
+  title: {
+    bn: string;
+    en: string;
+  };
+  image: string;
+  shortDescription: {
+    bn: string;
+    en: string;
+  };
+  description: {
+    bn: string;
+    en: string;
+  };
+  benefits: {
+    bn: string[];
+    en: string[];
+  };
+  treatmentProcess: {
+    bn: string[];
+    en: string[];
+  };
+  duration: {
+    bn: string;
+    en: string;
+  };
+}
+
 export interface ServiceFAQ {
   question: string;
   answer: string;
@@ -450,6 +479,447 @@ const createReviews = (serviceName: string): ServiceReview[] => [
   },
 ];
 
+export const developedServices: DevelopedServiceData[] = [
+  {
+    slug: "modern-dental-clinic",
+
+    title: {
+      bn: "আধুনিক ডেন্টাল ক্লিনিক",
+      en: "Modern Dental Clinic",
+    },
+
+    image:
+      "https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&fit=crop&w=1200&q=80",
+
+    shortDescription: {
+      bn: "আধুনিক প্রযুক্তি ও অভিজ্ঞ ডেন্টিস্টের মাধ্যমে উন্নতমানের দাঁতের চিকিৎসা।",
+      en: "Advanced dental care with modern technology and experienced dentists.",
+    },
+
+    description: {
+      bn: "আমাদের আধুনিক ডেন্টাল ক্লিনিকে ডিজিটাল প্রযুক্তি, অত্যাধুনিক যন্ত্রপাতি এবং বিশেষজ্ঞ চিকিৎসকদের মাধ্যমে নিরাপদ ও মানসম্মত চিকিৎসা প্রদান করা হয়।",
+      en: "Our modern dental clinic provides safe and high-quality dental treatments using advanced technology, equipment, and specialist dentists.",
+    },
+
+    benefits: {
+      bn: [
+        "আধুনিক ডিজিটাল প্রযুক্তি",
+        "বিশেষজ্ঞ ডেন্টিস্ট",
+        "নিরাপদ ও পরিচ্ছন্ন পরিবেশ",
+        "ব্যক্তিগত চিকিৎসা পরিকল্পনা",
+      ],
+      en: [
+        "Advanced digital technology",
+        "Expert dental specialists",
+        "Safe and hygienic environment",
+        "Personalized treatment plans",
+      ],
+    },
+
+    treatmentProcess: {
+      bn: [
+        "প্রাথমিক পরীক্ষা",
+        "ডিজিটাল ডায়াগনসিস",
+        "চিকিৎসা পরিকল্পনা",
+        "চিকিৎসা সম্পন্ন",
+      ],
+      en: [
+        "Initial examination",
+        "Digital diagnosis",
+        "Treatment planning",
+        "Treatment completion",
+      ],
+    },
+
+    duration: {
+      bn: "৩০-৬০ মিনিট",
+      en: "30-60 minutes",
+    },
+  },
+
+  {
+    slug: "root-canal-treatment",
+
+    title: {
+      bn: "রুট ক্যানাল চিকিৎসা",
+      en: "Root Canal Treatment",
+    },
+
+    image:
+      "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=1200&q=80",
+
+    shortDescription: {
+      bn: "ক্ষতিগ্রস্ত দাঁত সংরক্ষণের জন্য আধুনিক রুট ক্যানাল চিকিৎসা।",
+      en: "Modern root canal treatment to save infected and damaged teeth.",
+    },
+
+    description: {
+      bn: "দাঁতের ভিতরের সংক্রমণ দূর করে প্রাকৃতিক দাঁত দীর্ঘদিন ভালো রাখতে রুট ক্যানাল চিকিৎসা করা হয়।",
+      en: "Root canal treatment removes infection and helps preserve your natural tooth for years.",
+    },
+
+    benefits: {
+      bn: ["দাঁত সংরক্ষণ করা যায়", "ব্যথা কমে", "দাঁতের কার্যক্ষমতা ফিরে আসে"],
+      en: [
+        "Preserves natural teeth",
+        "Reduces pain",
+        "Restores tooth function",
+      ],
+    },
+
+    treatmentProcess: {
+      bn: ["দাঁত পরীক্ষা", "সংক্রমণ পরিষ্কার", "রুট ফিলিং", "ক্রাউন স্থাপন"],
+      en: [
+        "Tooth examination",
+        "Cleaning infection",
+        "Root filling",
+        "Crown placement",
+      ],
+    },
+
+    duration: {
+      bn: "১-৩ ভিজিট",
+      en: "1-3 visits",
+    },
+  },
+
+  {
+    slug: "dental-implant",
+
+    title: {
+      bn: "ডেন্টাল ইমপ্লান্ট",
+      en: "Dental Implant",
+    },
+
+    image:
+      "https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&fit=crop&w=1200&q=80",
+
+    shortDescription: {
+      bn: "হারানো দাঁতের জন্য স্থায়ী ও প্রাকৃতিক সমাধান।",
+      en: "Permanent and natural-looking solution for missing teeth.",
+    },
+
+    description: {
+      bn: "ডেন্টাল ইমপ্লান্টের মাধ্যমে হারানো দাঁতের জায়গায় শক্তিশালী ও দীর্ঘস্থায়ী দাঁত প্রতিস্থাপন করা হয়।",
+      en: "Dental implants replace missing teeth with strong, durable, and natural-looking teeth.",
+    },
+
+    benefits: {
+      bn: [
+        "দীর্ঘস্থায়ী সমাধান",
+        "প্রাকৃতিক দেখতে দাঁত",
+        "খাওয়ার সুবিধা বৃদ্ধি",
+      ],
+      en: [
+        "Long-lasting solution",
+        "Natural appearance",
+        "Improved chewing ability",
+      ],
+    },
+
+    treatmentProcess: {
+      bn: [
+        "ডেন্টাল পরীক্ষা",
+        "ইমপ্লান্ট স্থাপন",
+        "হিলিং পিরিয়ড",
+        "ক্রাউন সংযুক্তি",
+      ],
+      en: [
+        "Dental evaluation",
+        "Implant placement",
+        "Healing period",
+        "Crown attachment",
+      ],
+    },
+
+    duration: {
+      bn: "৩-৬ মাস",
+      en: "3-6 months",
+    },
+  },
+
+  {
+    slug: "teeth-whitening",
+
+    title: {
+      bn: "দাঁত সাদা করার চিকিৎসা",
+      en: "Teeth Whitening",
+    },
+
+    image:
+      "https://images.unsplash.com/photo-1677026010083-78ec7f1b84ed?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+
+    shortDescription: {
+      bn: "উজ্জ্বল ও সুন্দর হাসির জন্য পেশাদার দাঁত সাদা করার সেবা।",
+      en: "Professional teeth whitening for a brighter smile.",
+    },
+
+    description: {
+      bn: "নিরাপদ পদ্ধতিতে দাঁতের দাগ দূর করে উজ্জ্বল হাসি ফিরিয়ে আনা হয়।",
+      en: "Safe whitening procedures remove stains and restore a bright smile.",
+    },
+
+    benefits: {
+      bn: ["উজ্জ্বল হাসি", "দাগ দূর হয়", "আত্মবিশ্বাস বৃদ্ধি"],
+      en: ["Brighter smile", "Removes stains", "Boosts confidence"],
+    },
+
+    treatmentProcess: {
+      bn: ["দাঁতের পরীক্ষা", "ক্লিনিং", "হোয়াইটেনিং প্রয়োগ"],
+      en: ["Dental checkup", "Cleaning", "Whitening application"],
+    },
+
+    duration: {
+      bn: "৬০-৯০ মিনিট",
+      en: "60-90 minutes",
+    },
+  },
+
+  {
+    slug: "pediatric-dental-care",
+
+    title: {
+      bn: "শিশুদের ডেন্টাল চিকিৎসা",
+      en: "Pediatric Dental Care",
+    },
+
+    image:
+      "https://images.unsplash.com/photo-1758205307836-0829c799890b?q=80&w=872&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+
+    shortDescription: {
+      bn: "শিশুদের জন্য নিরাপদ ও বন্ধুত্বপূর্ণ ডেন্টাল সেবা।",
+      en: "Safe and friendly dental care specially designed for children.",
+    },
+
+    description: {
+      bn: "শিশুদের দাঁতের বৃদ্ধি, সমস্যা এবং প্রতিরোধমূলক চিকিৎসার জন্য বিশেষ সেবা প্রদান করা হয়।",
+      en: "Specialized dental care for children's dental growth, problems, and prevention.",
+    },
+
+    benefits: {
+      bn: [
+        "শিশু বিশেষজ্ঞ ডাক্তার",
+        "বন্ধুত্বপূর্ণ পরিবেশ",
+        "প্রতিরোধমূলক চিকিৎসা",
+      ],
+      en: [
+        "Child dental specialists",
+        "Friendly environment",
+        "Preventive care",
+      ],
+    },
+
+    treatmentProcess: {
+      bn: ["দাঁতের পরীক্ষা", "পরামর্শ", "প্রয়োজনীয় চিকিৎসা"],
+      en: ["Dental examination", "Consultation", "Required treatment"],
+    },
+
+    duration: {
+      bn: "৩০-৬০ মিনিট",
+      en: "30-60 minutes",
+    },
+  },
+
+  {
+    slug: "orthodontic-treatment",
+    title: {
+      bn: "অর্থোডন্টিক চিকিৎসা",
+      en: "Orthodontic Treatment",
+    },
+    image:
+      "https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&w=1200&q=80",
+
+    shortDescription: {
+      bn: "বাঁকা দাঁত সোজা করার আধুনিক ব্রেস চিকিৎসা।",
+      en: "Modern braces treatment to straighten crooked teeth.",
+    },
+
+    description: {
+      bn: "ব্রেস ও আধুনিক অর্থোডন্টিক প্রযুক্তির মাধ্যমে দাঁতের অবস্থান ঠিক করা হয়।",
+      en: "Orthodontic technology corrects teeth alignment using braces and modern methods.",
+    },
+
+    benefits: {
+      bn: ["সুন্দর হাসি", "সঠিক দাঁতের অবস্থান", "উন্নত কামড়"],
+      en: ["Beautiful smile", "Proper alignment", "Better bite"],
+    },
+
+    treatmentProcess: {
+      bn: ["পরীক্ষা", "ব্রেস নির্বাচন", "নিয়মিত ফলোআপ"],
+      en: ["Assessment", "Brace selection", "Regular follow-up"],
+    },
+
+    duration: {
+      bn: "১২-২৪ মাস",
+      en: "12-24 months",
+    },
+  },
+
+  {
+    slug: "digital-dental-xray",
+    title: {
+      bn: "ডিজিটাল ডেন্টাল এক্স-রে",
+      en: "Digital Dental X-Ray",
+    },
+
+    image:
+      "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+
+    shortDescription: {
+      bn: "দাঁতের সমস্যার সঠিক নির্ণয়ের জন্য ডিজিটাল এক্স-রে।",
+      en: "Digital imaging for accurate dental diagnosis.",
+    },
+
+    description: {
+      bn: "ডিজিটাল এক্স-রের মাধ্যমে দাঁতের ভিতরের সমস্যা দ্রুত শনাক্ত করা যায়।",
+      en: "Digital X-rays help identify hidden dental problems quickly and accurately.",
+    },
+
+    benefits: {
+      bn: ["দ্রুত রিপোর্ট", "নির্ভুল রোগ নির্ণয়", "কম রেডিয়েশন"],
+      en: ["Fast reports", "Accurate diagnosis", "Low radiation"],
+    },
+
+    treatmentProcess: {
+      bn: ["এক্স-রে গ্রহণ", "রিপোর্ট বিশ্লেষণ", "চিকিৎসা পরিকল্পনা"],
+      en: ["X-ray capture", "Report analysis", "Treatment planning"],
+    },
+
+    duration: {
+      bn: "১০-২০ মিনিট",
+      en: "10-20 minutes",
+    },
+  },
+
+  {
+    slug: "cosmetic-dentistry",
+
+    title: {
+      bn: "কসমেটিক ডেন্টিস্ট্রি",
+      en: "Cosmetic Dentistry",
+    },
+
+    image:
+      "https://images.unsplash.com/photo-1550831107-1553da8c8464?auto=format&fit=crop&w=1200&q=80",
+
+    shortDescription: {
+      bn: "হাসির সৌন্দর্য বৃদ্ধির জন্য আধুনিক কসমেটিক চিকিৎসা।",
+      en: "Modern cosmetic treatments to improve your smile.",
+    },
+
+    description: {
+      bn: "ভেনিয়ার, বন্ডিং এবং অন্যান্য আধুনিক পদ্ধতির মাধ্যমে হাসির সৌন্দর্য বৃদ্ধি করা হয়।",
+      en: "Smile enhancement through veneers, bonding, and advanced cosmetic procedures.",
+    },
+
+    benefits: {
+      bn: ["সুন্দর হাসি", "দাঁতের আকৃতি উন্নত", "আত্মবিশ্বাস বৃদ্ধি"],
+      en: ["Beautiful smile", "Improved tooth shape", "More confidence"],
+    },
+
+    treatmentProcess: {
+      bn: ["পরামর্শ", "ডিজাইন", "চিকিৎসা সম্পন্ন"],
+      en: ["Consultation", "Smile design", "Treatment completion"],
+    },
+
+    duration: {
+      bn: "১-৩ ভিজিট",
+      en: "1-3 visits",
+    },
+  },
+
+  {
+    slug: "emergency-dental-service",
+
+    title: {
+      bn: "জরুরি ডেন্টাল সেবা",
+      en: "Emergency Dental Service",
+    },
+
+    image:
+      "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1200&q=80",
+
+    shortDescription: {
+      bn: "হঠাৎ দাঁতের ব্যথা ও জরুরি সমস্যার দ্রুত সমাধান।",
+      en: "Quick solutions for sudden dental pain and emergencies.",
+    },
+
+    description: {
+      bn: "জরুরি সময়ে দ্রুত চিকিৎসা ও ব্যথা নিয়ন্ত্রণের জন্য আমাদের বিশেষ সেবা রয়েছে।",
+      en: "We provide immediate dental care and pain management during emergencies.",
+    },
+
+    benefits: {
+      bn: ["দ্রুত চিকিৎসা", "ব্যথা নিয়ন্ত্রণ", "জরুরি পরামর্শ"],
+      en: ["Fast treatment", "Pain management", "Emergency consultation"],
+    },
+
+    treatmentProcess: {
+      bn: ["সমস্যা নির্ণয়", "তাৎক্ষণিক চিকিৎসা", "পরবর্তী পরিকল্পনা"],
+      en: ["Diagnosis", "Immediate treatment", "Follow-up plan"],
+    },
+
+    duration: {
+      bn: "জরুরি ভিত্তিতে",
+      en: "Emergency basis",
+    },
+  },
+
+  {
+    slug: "dental-consultation",
+
+    title: {
+      bn: "বিশেষজ্ঞ ডেন্টাল পরামর্শ",
+      en: "Expert Dental Consultation",
+    },
+
+    image:
+      "https://images.unsplash.com/photo-1584982751601-97dcc096659c?auto=format&fit=crop&w=1200&q=80",
+
+    shortDescription: {
+      bn: "অভিজ্ঞ ডেন্টিস্টের কাছ থেকে ব্যক্তিগত চিকিৎসা পরামর্শ।",
+      en: "Personal dental advice from experienced dentists.",
+    },
+
+    description: {
+      bn: "আপনার দাঁতের সমস্যা অনুযায়ী বিশেষজ্ঞ ডাক্তার চিকিৎসা পরিকল্পনা প্রদান করেন।",
+      en: "Our specialists provide personalized treatment plans based on your dental needs.",
+    },
+
+    benefits: {
+      bn: [
+        "বিশেষজ্ঞ পরামর্শ",
+        "সঠিক রোগ নির্ণয়",
+        "ব্যক্তিগত চিকিৎসা পরিকল্পনা",
+      ],
+      en: ["Expert advice", "Accurate diagnosis", "Personal treatment plan"],
+    },
+
+    treatmentProcess: {
+      bn: ["সমস্যা আলোচনা", "পরীক্ষা", "চিকিৎসা পরিকল্পনা"],
+      en: ["Problem discussion", "Examination", "Treatment planning"],
+    },
+
+    duration: {
+      bn: "২০-৩০ মিনিট",
+      en: "20-30 minutes",
+    },
+  },
+];
+
+const bestServiceSlugs = new Set([
+  "root-canal-treatment",
+  "dental-implant",
+  "teeth-whitening",
+  "orthodontic-treatment",
+  "cosmetic-dentistry",
+  "pediatric-dental-care",
+]);
+
+export const bestServices: DevelopedServiceData[] = developedServices.filter(
+  (service) => bestServiceSlugs.has(service.slug),
+);
+
 const baseServices: BaseService[] = [
   {
     slug: "root-canal-treatment",
@@ -467,7 +937,7 @@ const baseServices: BaseService[] = [
       duration: "60-90 minutes",
       recoveryTime: "1-3 days",
       anesthesia: "Local anesthesia",
-      cost: "$80 - $180",
+      cost: "৳80 - ৳180",
       appointmentRequired: "Yes",
     },
   },
@@ -483,7 +953,7 @@ const baseServices: BaseService[] = [
       duration: "30-45 minutes",
       recoveryTime: "Same day",
       anesthesia: "Usually local anesthesia",
-      cost: "$20 - $60",
+      cost: "৳20 - ৳60",
       appointmentRequired: "Yes",
     },
   },
@@ -500,7 +970,7 @@ const baseServices: BaseService[] = [
       duration: "45-75 minutes",
       recoveryTime: "3-5 days",
       anesthesia: "Local anesthesia",
-      cost: "$35 - $110",
+      cost: "৳35 - ৳110",
       appointmentRequired: "Yes",
     },
   },
@@ -516,7 +986,7 @@ const baseServices: BaseService[] = [
       duration: "45-90 minutes",
       recoveryTime: "5-7 days",
       anesthesia: "Local anesthesia / sedation",
-      cost: "$60 - $200",
+      cost: "৳60 - ৳200",
       appointmentRequired: "Yes",
     },
   },
@@ -536,7 +1006,7 @@ const baseServices: BaseService[] = [
       duration: "40-80 minutes",
       recoveryTime: "1-7 days",
       anesthesia: "Case-dependent",
-      cost: "$30 - $220",
+      cost: "৳30 - ৳220",
       appointmentRequired: "Yes",
     },
   },
@@ -553,7 +1023,7 @@ const baseServices: BaseService[] = [
       duration: "45-70 minutes",
       recoveryTime: "1-2 days",
       anesthesia: "Topical / local anesthesia",
-      cost: "$40 - $120",
+      cost: "৳40 - ৳120",
       appointmentRequired: "Yes",
     },
   },
@@ -570,7 +1040,7 @@ const baseServices: BaseService[] = [
       duration: "60-120 minutes",
       recoveryTime: "3-7 days (initial)",
       anesthesia: "Local anesthesia / sedation",
-      cost: "$450 - $1200",
+      cost: "৳450 - ৳1200",
       appointmentRequired: "Yes",
     },
   },
@@ -587,7 +1057,7 @@ const baseServices: BaseService[] = [
       duration: "30-60 minutes",
       recoveryTime: "Same day",
       anesthesia: "Not usually required",
-      cost: "$60 - $180",
+      cost: "৳60 - ৳180",
       appointmentRequired: "Yes",
     },
   },
@@ -604,7 +1074,7 @@ const baseServices: BaseService[] = [
       duration: "2-3 visits",
       recoveryTime: "1-2 days",
       anesthesia: "Minimal / local",
-      cost: "$120 - $400 per tooth",
+      cost: "৳120 - ৳400 per tooth",
       appointmentRequired: "Yes",
     },
   },
@@ -621,7 +1091,7 @@ const baseServices: BaseService[] = [
       duration: "2 visits",
       recoveryTime: "1-3 days",
       anesthesia: "Local anesthesia",
-      cost: "$90 - $260",
+      cost: "৳90 - ৳260",
       appointmentRequired: "Yes",
     },
   },
@@ -638,7 +1108,7 @@ const baseServices: BaseService[] = [
       duration: "2 visits",
       recoveryTime: "1-2 days",
       anesthesia: "Local anesthesia",
-      cost: "$80 - $180",
+      cost: "৳80 - ৳180",
       appointmentRequired: "Yes",
     },
   },
@@ -654,7 +1124,7 @@ const baseServices: BaseService[] = [
       duration: "2 visits",
       recoveryTime: "1-2 days",
       anesthesia: "Local anesthesia",
-      cost: "$120 - $240",
+      cost: "৳120 - ৳240",
       appointmentRequired: "Yes",
     },
   },
@@ -670,7 +1140,7 @@ const baseServices: BaseService[] = [
       duration: "2 visits",
       recoveryTime: "1-2 days",
       anesthesia: "Local anesthesia",
-      cost: "$180 - $380",
+      cost: "৳180 - ৳380",
       appointmentRequired: "Yes",
     },
   },
@@ -686,7 +1156,7 @@ const baseServices: BaseService[] = [
       duration: "2 visits",
       recoveryTime: "1-2 days",
       anesthesia: "Local anesthesia",
-      cost: "$220 - $420",
+      cost: "৳220 - ৳420",
       appointmentRequired: "Yes",
     },
   },
@@ -703,7 +1173,7 @@ const baseServices: BaseService[] = [
       duration: "3-5 visits",
       recoveryTime: "3-10 days adaptation",
       anesthesia: "Not usually required",
-      cost: "$120 - $500",
+      cost: "৳120 - ৳500",
       appointmentRequired: "Yes",
     },
   },
@@ -720,7 +1190,7 @@ const baseServices: BaseService[] = [
       duration: "3-4 visits",
       recoveryTime: "3-7 days adaptation",
       anesthesia: "Not usually required",
-      cost: "$90 - $300",
+      cost: "৳90 - ৳300",
       appointmentRequired: "Yes",
     },
   },
@@ -737,7 +1207,7 @@ const baseServices: BaseService[] = [
       duration: "3-4 visits",
       recoveryTime: "2-5 days adaptation",
       anesthesia: "Not usually required",
-      cost: "$150 - $420",
+      cost: "৳150 - ৳420",
       appointmentRequired: "Yes",
     },
   },
@@ -753,7 +1223,7 @@ const baseServices: BaseService[] = [
       duration: "6-24 months",
       recoveryTime: "Mild discomfort 2-5 days after adjustments",
       anesthesia: "Not required",
-      cost: "$350 - $1600",
+      cost: "৳350 - ৳1600",
       appointmentRequired: "Yes",
     },
   },
@@ -769,7 +1239,7 @@ const baseServices: BaseService[] = [
       duration: "60-150 minutes",
       recoveryTime: "7-14 days",
       anesthesia: "Local / sedation / GA (case-based)",
-      cost: "$150 - $900",
+      cost: "৳150 - ৳900",
       appointmentRequired: "Yes",
     },
   },
@@ -786,7 +1256,7 @@ const baseServices: BaseService[] = [
       duration: "45-90 minutes",
       recoveryTime: "3-7 days",
       anesthesia: "Local anesthesia",
-      cost: "$120 - $320",
+      cost: "৳120 - ৳320",
       appointmentRequired: "Yes",
     },
   },
@@ -803,7 +1273,7 @@ const baseServices: BaseService[] = [
       duration: "1-3 visits",
       recoveryTime: "Same day",
       anesthesia: "Minimal / local",
-      cost: "$40 - $260",
+      cost: "৳40 - ৳260",
       appointmentRequired: "Yes",
     },
   },
@@ -820,7 +1290,7 @@ const baseServices: BaseService[] = [
       duration: "Emergency + staged care",
       recoveryTime: "2-6 weeks",
       anesthesia: "Case-dependent",
-      cost: "$300 - $2400",
+      cost: "৳300 - ৳2400",
       appointmentRequired: "Urgent/Emergency",
     },
   },
@@ -836,7 +1306,7 @@ const baseServices: BaseService[] = [
       duration: "Emergency + staged care",
       recoveryTime: "2-8 weeks",
       anesthesia: "Case-dependent",
-      cost: "$450 - $3000",
+      cost: "৳450 - ৳3000",
       appointmentRequired: "Urgent/Emergency",
     },
   },
@@ -853,7 +1323,7 @@ const baseServices: BaseService[] = [
       duration: "30-60 minutes",
       recoveryTime: "Same day to 2 days",
       anesthesia: "Topical / local (if needed)",
-      cost: "$25 - $140",
+      cost: "৳25 - ৳140",
       appointmentRequired: "Yes",
     },
   },
@@ -869,7 +1339,7 @@ const baseServices: BaseService[] = [
       duration: "20-40 minutes",
       recoveryTime: "Same day",
       anesthesia: "Usually local anesthesia",
-      cost: "$15 - $55",
+      cost: "৳15 - ৳55",
       appointmentRequired: "Yes",
     },
   },
@@ -885,7 +1355,7 @@ const baseServices: BaseService[] = [
       duration: "30-50 minutes",
       recoveryTime: "1-2 days",
       anesthesia: "Local anesthesia",
-      cost: "$35 - $95",
+      cost: "৳35 - ৳95",
       appointmentRequired: "Yes",
     },
   },
@@ -902,7 +1372,7 @@ const baseServices: BaseService[] = [
       duration: "45-70 minutes",
       recoveryTime: "1-3 days",
       anesthesia: "Local anesthesia",
-      cost: "$45 - $130",
+      cost: "৳45 - ৳130",
       appointmentRequired: "Yes",
     },
   },
@@ -919,7 +1389,7 @@ const baseServices: BaseService[] = [
       duration: "30-75 minutes",
       recoveryTime: "2-5 days",
       anesthesia: "Local anesthesia",
-      cost: "$35 - $160",
+      cost: "৳35 - ৳160",
       appointmentRequired: "Yes / Emergency",
     },
   },
@@ -943,8 +1413,68 @@ const serviceCatalogDraft: ServiceDetails[] = baseServices.map((service) => {
   };
 });
 
-const serviceCatalog: ServiceDetails[] = serviceCatalogDraft.map((service) => {
-  const related = serviceCatalogDraft
+const developedServiceCatalog: ServiceDetails[] = developedServices.map(
+  (service: DevelopedServiceData) => ({
+    slug: service.slug,
+    name: service.title.en,
+    shortDescription: service.shortDescription.en,
+    iconSrc: service.image,
+    imageSrc: service.image,
+    category: "preventive",
+    specializations: ["General Dentistry", "Preventive Dentistry"],
+    quickInfo: {
+      duration: service.duration.en,
+      recoveryTime: "1-2 days",
+      anesthesia: "Local anesthesia",
+      cost: "Custom quote",
+      appointmentRequired: "Yes",
+    },
+    overview: service.description.en,
+    symptoms: [
+      "Needs a professional assessment to determine the best treatment plan",
+      "May involve ongoing monitoring and follow-up care",
+    ],
+    whenNeeded: [
+      "When you want a modern, comprehensive dental care experience",
+      "When you need safe and advanced treatment planning",
+    ],
+    treatmentProcedure: [
+      ...service.treatmentProcess.en,
+      "Follow-up care and ongoing monitoring",
+    ].slice(0, 5) as [string, string, string, string, string],
+    benefits: service.benefits.en,
+    afterCare: [
+      "Follow the clinic's after-care instructions closely",
+      "Maintain regular oral hygiene habits",
+      "Attend recommended follow-up visits",
+    ],
+    avoidIf: [
+      "If you are currently unstable medically and need urgent care first",
+    ],
+    faqs: [
+      {
+        question: "Is this service suitable for routine dental care?",
+        answer:
+          "Yes, it is designed to provide a modern, comprehensive clinical experience for ongoing dental care.",
+      },
+      {
+        question: "How long does the appointment take?",
+        answer:
+          "The duration depends on the planned treatment and will be shared during consultation.",
+      },
+    ],
+    relatedServiceSlugs: [],
+    reviews: createReviews(service.title.en),
+  }),
+);
+
+const allCatalogDraft: ServiceDetails[] = [
+  ...serviceCatalogDraft,
+  ...developedServiceCatalog,
+];
+
+const serviceCatalog: ServiceDetails[] = allCatalogDraft.map((service) => {
+  const related = allCatalogDraft
     .filter((s) => s.category === service.category && s.slug !== service.slug)
     .slice(0, 3)
     .map((s) => s.slug);
@@ -957,6 +1487,14 @@ const serviceCatalog: ServiceDetails[] = serviceCatalogDraft.map((service) => {
 
 const serviceMap = new Map(
   serviceCatalog.map((service) => [service.slug, service]),
+);
+
+const developedServiceMap = new Map(
+  developedServices.map((service) => [service.slug, service]),
+);
+
+const bestServiceMap = new Map(
+  bestServices.map((service) => [service.slug, service]),
 );
 
 export function getAllServices(): ServiceDetails[] {
@@ -975,4 +1513,48 @@ export function getServicesBySlugs(slugs: string[]): ServiceDetails[] {
 
 export function getAllServiceSlugs(): string[] {
   return serviceCatalog.map((service) => service.slug);
+}
+
+export function getAllDevelopedServices(): DevelopedServiceData[] {
+  return developedServices;
+}
+
+export function getDevelopedServiceBySlug(
+  slug: string,
+): DevelopedServiceData | undefined {
+  return developedServiceMap.get(slug);
+}
+
+export function getAllDevelopedServiceSlugs(): string[] {
+  return developedServices.map((service) => service.slug);
+}
+
+export function getDevelopedServicesBySlugs(
+  slugs: string[],
+): DevelopedServiceData[] {
+  return slugs
+    .map((slug) => developedServiceMap.get(slug))
+    .filter((service): service is DevelopedServiceData => Boolean(service));
+}
+
+export function getAllBestServices(): DevelopedServiceData[] {
+  return bestServices;
+}
+
+export function getBestServiceBySlug(
+  slug: string,
+): DevelopedServiceData | undefined {
+  return bestServiceMap.get(slug);
+}
+
+export function getAllBestServiceSlugs(): string[] {
+  return bestServices.map((service) => service.slug);
+}
+
+export function getBestServicesBySlugs(
+  slugs: string[],
+): DevelopedServiceData[] {
+  return slugs
+    .map((slug) => bestServiceMap.get(slug))
+    .filter((service): service is DevelopedServiceData => Boolean(service));
 }
