@@ -68,6 +68,17 @@ export async function PUT(req: NextRequest, ctx: Context) {
     availableTimeSlots: result.data.availableTimeSlots.map((item) =>
       sanitizeText(item),
     ),
+    availableDayTimes: Object.fromEntries(
+      Object.entries(result.data.availableDayTimes || {}).map(
+        ([day, ranges]) => [
+          sanitizeText(day),
+          ranges.map((range) => ({
+            startTime: sanitizeText(range.startTime),
+            endTime: sanitizeText(range.endTime),
+          })),
+        ],
+      ),
+    ),
     consultationFee: result.data.consultationFee,
   };
 

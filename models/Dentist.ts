@@ -13,6 +13,11 @@ export interface IDentistDocument extends Document {
   photo?: string;
   availableDays: string[];
   availableTimeSlots: string[];
+  availableDayTimes: Record<
+    string,
+    Array<{ startTime: string; endTime: string }>
+  >;
+  maxAppointmentsPerDay: number;
   consultationFee: number;
   isActive: boolean;
   rating: number;
@@ -108,6 +113,15 @@ const DentistSchema = new Schema<IDentistDocument>(
           v.every((t) => /^([01]\d|2[0-3]):([0-5]\d)$/.test(t)),
         message: "Time slots must be in HH:MM format",
       },
+    },
+    availableDayTimes: {
+      type: Schema.Types.Mixed,
+      default: {},
+    },
+    maxAppointmentsPerDay: {
+      type: Number,
+      default: 10,
+      min: [1, "Maximum appointments per day must be at least 1"],
     },
     consultationFee: {
       type: Number,

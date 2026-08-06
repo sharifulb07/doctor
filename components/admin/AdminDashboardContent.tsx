@@ -6,10 +6,9 @@ import { useLanguage } from "@/contexts/LanguageContext";
 interface RecentAppointment {
   _id: { toString: () => string } | string;
   patientName: string;
+  dentistName: string;
   appointmentDate: string;
   status: string;
-  patientId?: { name?: string } | null;
-  dentistId?: { name?: string } | null;
 }
 
 interface AdminStats {
@@ -113,18 +112,16 @@ export default function AdminDashboardContent({ stats }: Props) {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {stats.recent.map((appt) => {
-                const patient = appt.patientId as { name?: string } | null;
-                const dentist = appt.dentistId as { name?: string } | null;
                 const rowKey =
                   typeof appt._id === "string" ? appt._id : appt._id.toString();
 
                 return (
                   <tr key={rowKey} className="hover:bg-slate-50">
                     <td className="px-6 py-3 font-medium text-slate-900">
-                      {patient?.name || appt.patientName}
+                      {appt.patientName}
                     </td>
                     <td className="px-6 py-3 text-slate-600">
-                      {dentist?.name || "—"}
+                      {appt.dentistName || "—"}
                     </td>
                     <td className="px-6 py-3 text-slate-600">
                       {new Date(appt.appointmentDate).toLocaleDateString(

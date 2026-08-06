@@ -26,6 +26,37 @@ import { requireSameOrigin, sanitizeMultilineText } from "@/utils/sanitize";
 
 type Context = { params: Promise<{ id: string }> };
 
+function buildSlotsFromDayRanges(
+  ranges: Array<{ startTime: string; endTime: string }> = [],
+): string[] {
+  const slots: string[] = [];
+
+  for (const range of ranges) {
+    const start = parseHHMM(range.startTime);
+    const end = parseHHMM(range.endTime);
+    if (start === null || end === null || end <= start) continue;
+
+    for (let minute = start; minute <= end; minute += 30) {
+      slots.push(formatHHMM(minute));
+    }
+  }
+
+  return Array.from(new Set(slots)).sort();
+}
+
+function parseHHMM(value: string): number | null {
+  const match = value.match(/^([01]\d|2[0-3]):([0-5]\d)$/);
+  if (!match) return null;
+  return Number(match[1]) * 60 + Number(match[2]);
+}
+
+function formatHHMM(totalMinutes: number): string {
+  const normalized = ((totalMinutes % 1440) + 1440) % 1440;
+  const hours = Math.floor(normalized / 60);
+  const minutes = normalized % 60;
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+}
+
 // ─── GET single appointment ───────────────────────────────────────────────────
 
 export async function GET(req: NextRequest, ctx: Context) {
@@ -114,14 +145,50 @@ export async function PATCH(req: NextRequest, ctx: Context) {
       endOfDay.setUTCHours(23, 59, 59, 999);
 
       // Check new slot availability
-      const available = await Availability.findOne({
+      const availability = await Availability.findOne({
         dentistId: appt.dentistId,
         date: { $gte: startOfDay, $lte: endOfDay },
         isAvailable: true,
         "timeSlots.time": result.data.timeSlot,
         "timeSlots.isBooked": false,
       });
-      if (!available)
+
+      let isSlotAvailable = Boolean(availability);
+
+      if (!isSlotAvailable) {
+        const dentist = await Dentist.findById(appt.dentistId)
+          .select("isActive availableDays availableTimeSlots availableDayTimes")
+          .lean();
+
+        if (!dentist || !dentist.isActive) {
+          return conflictResponse("The requested time slot is not available");
+        }
+
+        const weekday = newDate.toLocaleDateString("en-US", {
+          weekday: "long",
+          timeZone: "UTC",
+        });
+
+        const isFixedDay = dentist.availableDays?.includes(weekday);
+        const dayRanges =
+          (
+            dentist.availableDayTimes as Record<
+              string,
+              Array<{ startTime: string; endTime: string }>
+            > | null
+          )?.[weekday] || [];
+
+        const fixedSlotsForDay =
+          dayRanges.length > 0
+            ? buildSlotsFromDayRanges(dayRanges)
+            : dentist.availableTimeSlots || [];
+
+        isSlotAvailable =
+          Boolean(isFixedDay) &&
+          fixedSlotsForDay.includes(result.data.timeSlot);
+      }
+
+      if (!isSlotAvailable)
         return conflictResponse("The requested time slot is not available");
 
       // Prevent double-booking on new slot
@@ -156,19 +223,21 @@ export async function PATCH(req: NextRequest, ctx: Context) {
       );
 
       // Book new slot
-      await Availability.updateOne(
-        {
-          dentistId: appt.dentistId,
-          date: { $gte: startOfDay, $lte: endOfDay },
-          "timeSlots.time": result.data.timeSlot,
-        },
-        {
-          $set: {
-            "timeSlots.$.isBooked": true,
-            "timeSlots.$.appointmentId": appt._id,
+      if (availability) {
+        await Availability.updateOne(
+          {
+            dentistId: appt.dentistId,
+            date: { $gte: startOfDay, $lte: endOfDay },
+            "timeSlots.time": result.data.timeSlot,
           },
-        },
-      );
+          {
+            $set: {
+              "timeSlots.$.isBooked": true,
+              "timeSlots.$.appointmentId": appt._id,
+            },
+          },
+        );
+      }
 
       appt.appointmentDate = newDate;
       appt.timeSlot = result.data.timeSlot;

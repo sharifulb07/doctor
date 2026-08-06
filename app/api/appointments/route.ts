@@ -24,6 +24,38 @@ import {
   sanitizeMultilineText,
   sanitizeText,
 } from "@/utils/sanitize";
+import { isDailyAppointmentLimitReached } from "@/utils/appointmentCapacity";
+
+function buildSlotsFromDayRanges(
+  ranges: Array<{ startTime: string; endTime: string }> = [],
+): string[] {
+  const slots: string[] = [];
+
+  for (const range of ranges) {
+    const start = parseHHMM(range.startTime);
+    const end = parseHHMM(range.endTime);
+    if (start === null || end === null || end <= start) continue;
+
+    for (let minute = start; minute <= end; minute += 30) {
+      slots.push(formatHHMM(minute));
+    }
+  }
+
+  return Array.from(new Set(slots)).sort();
+}
+
+function parseHHMM(value: string): number | null {
+  const match = value.match(/^([01]\d|2[0-3]):([0-5]\d)$/);
+  if (!match) return null;
+  return Number(match[1]) * 60 + Number(match[2]);
+}
+
+function formatHHMM(totalMinutes: number): string {
+  const normalized = ((totalMinutes % 1440) + 1440) % 1440;
+  const hours = Math.floor(normalized / 60);
+  const minutes = normalized % 60;
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+}
 
 async function getAppointmentsHandler(req: NextRequest) {
   const auth = await getAuthFromRequest(req);
@@ -122,7 +154,7 @@ async function createAppointmentHandler(req: NextRequest) {
     const endOfDay = new Date(apptDate);
     endOfDay.setUTCHours(23, 59, 59, 999);
 
-    // Check slot is available
+    // Try explicit per-date availability first
     const availability = await Availability.findOne({
       dentistId: safeDentistId,
       date: { $gte: startOfDay, $lte: endOfDay },
@@ -130,8 +162,32 @@ async function createAppointmentHandler(req: NextRequest) {
       "timeSlots.time": timeSlot,
       "timeSlots.isBooked": false,
     });
+
+    // Fallback to dentist fixed weekly schedule when daily availability is not set
     if (!availability) {
-      return conflictResponse("This time slot is not available");
+      const weekday = apptDate.toLocaleDateString("en-US", {
+        weekday: "long",
+        timeZone: "UTC",
+      });
+      const isFixedDay = dentist.availableDays.includes(weekday);
+
+      const dayRanges =
+        (
+          dentist.availableDayTimes as Record<
+            string,
+            Array<{ startTime: string; endTime: string }>
+          > | null
+        )?.[weekday] || [];
+
+      const fixedSlotsForDay =
+        dayRanges.length > 0
+          ? buildSlotsFromDayRanges(dayRanges)
+          : dentist.availableTimeSlots;
+
+      const inFixedRange = fixedSlotsForDay.includes(timeSlot);
+      if (!isFixedDay || !inFixedRange) {
+        return conflictResponse("This time slot is not available");
+      }
     }
 
     // Prevent double-booking
@@ -143,6 +199,23 @@ async function createAppointmentHandler(req: NextRequest) {
     });
     if (existing) {
       return conflictResponse("This time slot has already been booked");
+    }
+
+    const bookedCount = await Appointment.countDocuments({
+      dentistId: safeDentistId,
+      appointmentDate: { $gte: startOfDay, $lte: endOfDay },
+      status: { $in: [AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED] },
+    });
+
+    if (
+      isDailyAppointmentLimitReached(
+        bookedCount,
+        dentist.maxAppointmentsPerDay ?? 10,
+      )
+    ) {
+      return conflictResponse(
+        "This dentist has reached the daily appointment limit",
+      );
     }
 
     // Create appointment
@@ -158,7 +231,7 @@ async function createAppointmentHandler(req: NextRequest) {
       status: AppointmentStatus.PENDING,
     });
 
-    // Mark slot as booked in availability
+    // Mark slot as booked in daily availability record when it exists
     await Availability.updateOne(
       {
         dentistId: safeDentistId,

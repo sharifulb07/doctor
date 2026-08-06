@@ -472,7 +472,7 @@ export default function ServiceDetailContent({
                           {doctor.rating > 0
                             ? doctor.rating.toFixed(1)
                             : ui.new}{" "}
-                          • 💰 ${doctor.consultationFee}
+                          • 💰 ৳{doctor.consultationFee}
                         </p>
                       </div>
 

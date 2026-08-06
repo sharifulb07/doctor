@@ -57,9 +57,9 @@ export default function Footer() {
               {t.footer.contact}
             </h3>
             <ul className="space-y-2 text-sm">
-              <li>📞 +1 (555) 123-4567</li>
-              <li>📧 info@dentalcare.com</li>
-              <li>📍 123 Dental Street, Health City</li>
+              <li>📞 +8801742675039</li>
+              <li>📧 mostafizurrahman3535@gmail.com</li>
+              <li>📍 Islami Bank Hospital, Khulna </li>
             </ul>
           </div>
         </div>

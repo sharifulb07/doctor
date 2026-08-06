@@ -57,7 +57,7 @@ export default function DentistCard({ dentist }: DentistCardProps) {
               </span>
             )}
           </span>
-          <span>💰 ${dentist.consultationFee}</span>
+          <span>💰 ৳{dentist.consultationFee}</span>
         </div>
 
         {/* Location */}

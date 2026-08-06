@@ -3,6 +3,11 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
+import {
+  formatTimeSlot,
+  formatTimeSlotRange,
+  formatTimeSlotRanges,
+} from "@/utils/timeSlots";
 
 interface TimeSlot {
   time: string;
@@ -32,9 +37,8 @@ export default function ReschedulePage({
     null,
   );
   const [selectedDate, setSelectedDate] = useState("");
-  const [slots, setSlots] = useState<TimeSlot[]>([]);
+  const [slots, setSlots] = useState<TimeSlot[] | null>(null);
   const [selectedSlot, setSelectedSlot] = useState("");
-  const [loadingSlots, setLoadingSlots] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -42,6 +46,13 @@ export default function ReschedulePage({
   const minDate = new Date();
   minDate.setDate(minDate.getDate() + 1);
   const minDateStr = minDate.toISOString().split("T")[0];
+  const currentAppointmentRange = formatTimeSlotRange(
+    appointment?.timeSlot ?? "",
+  );
+  const loadingSlots = Boolean(selectedDate && slots === null);
+  const availableSlotRanges = formatTimeSlotRanges(
+    (slots ?? []).map((slot) => slot.time),
+  );
 
   useEffect(() => {
     fetch(`/api/appointments/${id}`)
@@ -53,19 +64,27 @@ export default function ReschedulePage({
 
   useEffect(() => {
     if (!selectedDate || !appointment) return;
+
+    let cancelled = false;
     const dentistId =
       typeof appointment.dentistId === "object"
         ? appointment.dentistId._id
         : appointment.dentistId;
-    setLoadingSlots(true);
-    setSlots([]);
-    setSelectedSlot("");
+
     fetch(`/api/availability?dentistId=${dentistId}&date=${selectedDate}`)
       .then((r) => r.json())
       .then((d) => {
-        if (d.success) setSlots(d.data.slots ?? []);
+        if (!cancelled && d.success) {
+          setSlots(d.data?.timeSlots ?? d.data?.slots ?? []);
+        }
       })
-      .finally(() => setLoadingSlots(false));
+      .catch(() => {
+        if (!cancelled) setSlots([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [selectedDate, appointment]);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -81,7 +100,7 @@ export default function ReschedulePage({
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          appointmentDate: selectedDate,
+          appointmentDate: new Date(`${selectedDate}T12:00:00`).toISOString(),
           timeSlot: selectedSlot,
         }),
       });
@@ -112,7 +131,7 @@ export default function ReschedulePage({
             {new Date(appointment.appointmentDate).toLocaleDateString(
               locale === "bn" ? "bn-BD" : "en-US",
             )}{" "}
-            {rs.at} {appointment.timeSlot}
+            {rs.at} {currentAppointmentRange}
           </span>
         </p>
 
@@ -126,7 +145,11 @@ export default function ReschedulePage({
               type="date"
               min={minDateStr}
               value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
+              onChange={(e) => {
+                setSelectedDate(e.target.value);
+                setSelectedSlot("");
+                setSlots(null);
+              }}
               required
               className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
             />
@@ -140,27 +163,41 @@ export default function ReschedulePage({
               </label>
               {loadingSlots ? (
                 <p className="text-sm text-slate-400">{rs.loadingSlots}</p>
-              ) : slots.length === 0 ? (
+              ) : (slots ?? []).length === 0 ? (
                 <p className="text-sm text-slate-400">{rs.noSlots}</p>
               ) : (
-                <div className="grid grid-cols-3 gap-2">
-                  {slots.map((s) => (
-                    <button
-                      key={s.time}
-                      type="button"
-                      disabled={s.isBooked}
-                      onClick={() => setSelectedSlot(s.time)}
-                      className={`py-2 rounded-lg text-sm font-medium border transition-colors ${
-                        s.isBooked
-                          ? "bg-slate-100 text-slate-400 cursor-not-allowed border-transparent"
-                          : selectedSlot === s.time
-                            ? "bg-sky-600 text-white border-sky-600"
-                            : "bg-white text-slate-700 border-slate-300 hover:border-sky-400"
-                      }`}
-                    >
-                      {s.time}
-                    </button>
-                  ))}
+                <div className="space-y-3">
+                  {availableSlotRanges.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {availableSlotRanges.map((range) => (
+                        <span
+                          key={range}
+                          className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700"
+                        >
+                          {range}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <div className="grid grid-cols-3 gap-2">
+                    {(slots ?? []).map((s) => (
+                      <button
+                        key={s.time}
+                        type="button"
+                        disabled={s.isBooked}
+                        onClick={() => setSelectedSlot(s.time)}
+                        className={`py-2 rounded-lg text-sm font-medium border transition-colors ${
+                          s.isBooked
+                            ? "bg-slate-100 text-slate-400 cursor-not-allowed border-transparent"
+                            : selectedSlot === s.time
+                              ? "bg-sky-600 text-white border-sky-600"
+                              : "bg-white text-slate-700 border-slate-300 hover:border-sky-400"
+                        }`}
+                      >
+                        {formatTimeSlot(s.time)}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

@@ -48,6 +48,10 @@ export interface IDentist {
   photo?: string;
   availableDays: string[]; // ['Monday', 'Tuesday', ...]
   availableTimeSlots: string[]; // ['09:00', '09:30', ...]
+  availableDayTimes?: Record<
+    string,
+    Array<{ startTime: string; endTime: string }>
+  >;
   consultationFee: number;
   isActive: boolean;
   rating: number;
@@ -163,6 +167,10 @@ export interface RegisterFormData {
   clinicPhone?: string;
   availableDays?: string[];
   availableTimeSlots?: string[];
+  availableDayTimes?: Record<
+    string,
+    Array<{ startTime: string; endTime: string }>
+  >;
   consultationFee?: number;
 }
 

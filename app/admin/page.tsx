@@ -53,14 +53,13 @@ async function getStats() {
       };
       return {
         _id: doc._id.toString(),
-        patientName: doc.patientName,
+        patientName: doc.patientId?.name || doc.patientName,
+        dentistName: doc.dentistId?.name || "—",
         appointmentDate:
           doc.appointmentDate instanceof Date
             ? doc.appointmentDate.toISOString()
             : String(doc.appointmentDate),
         status: doc.status,
-        patientId: doc.patientId ?? null,
-        dentistId: doc.dentistId ?? null,
       };
     }),
   };

@@ -20,6 +20,10 @@ type DentistProfileClient = {
   photo?: string;
   availableDays: string[];
   availableTimeSlots: string[];
+  availableDayTimes?: Record<
+    string,
+    Array<{ startTime: string; endTime: string }>
+  >;
   qualifications: string[];
 };
 
@@ -37,6 +41,10 @@ function toClientDentist(raw: {
   photo?: string;
   availableDays?: string[];
   availableTimeSlots?: string[];
+  availableDayTimes?: Record<
+    string,
+    Array<{ startTime: string; endTime: string }>
+  >;
   qualifications?: string[];
 }): DentistProfileClient {
   return {
@@ -53,6 +61,7 @@ function toClientDentist(raw: {
     photo: raw.photo,
     availableDays: raw.availableDays ?? [],
     availableTimeSlots: raw.availableTimeSlots ?? [],
+    availableDayTimes: raw.availableDayTimes ?? {},
     qualifications: raw.qualifications ?? [],
   };
 }
@@ -82,7 +91,7 @@ export default async function DentistProfilePage({ params }: Props) {
     await connectDB();
     dentist = await Dentist.findById(id)
       .select(
-        "name specialization experience rating totalReviews consultationFee clinicLocation clinicPhone bio photo availableDays availableTimeSlots qualifications",
+        "name specialization experience rating totalReviews consultationFee clinicLocation clinicPhone bio photo availableDays availableTimeSlots availableDayTimes qualifications",
       )
       .lean();
   } catch {
@@ -106,6 +115,10 @@ export default async function DentistProfilePage({ params }: Props) {
       photo?: string;
       availableDays?: string[];
       availableTimeSlots?: string[];
+      availableDayTimes?: Record<
+        string,
+        Array<{ startTime: string; endTime: string }>
+      >;
       qualifications?: string[];
     },
   );

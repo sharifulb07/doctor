@@ -1,11 +1,12 @@
 ﻿"use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { formatTimeSlot, formatTimeSlotRanges } from "@/utils/timeSlots";
 
 interface Dentist {
   _id: string;
@@ -14,6 +15,11 @@ interface Dentist {
   clinicLocation: string;
   consultationFee: number;
   availableDays: string[];
+  availableTimeSlots: string[];
+  availableDayTimes?: Record<
+    string,
+    Array<{ startTime: string; endTime: string }>
+  >;
 }
 
 interface TimeSlot {
@@ -45,9 +51,64 @@ export default function BookingForm() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
-  const [loadingSlots, setLoadingSlots] = useState(false);
   const [serverError, setServerError] = useState("");
   const [success, setSuccess] = useState(false);
+
+  const selectedDentist = dentists.find((d) => d._id === form.dentistId);
+  const selectedDateWeekday = form.appointmentDate
+    ? new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(
+        new Date(`${form.appointmentDate}T12:00:00`),
+      )
+    : "";
+  const selectedDateExplicitRanges = useMemo(() => {
+    if (!selectedDentist || !selectedDateWeekday) return [] as string[];
+    const dayRanges = selectedDentist.availableDayTimes?.[selectedDateWeekday];
+    if (!dayRanges || dayRanges.length === 0) return [] as string[];
+
+    return dayRanges.map(
+      (range) =>
+        `${formatTimeSlot(range.startTime)}–${formatTimeSlot(range.endTime)}`,
+    );
+  }, [selectedDentist, selectedDateWeekday]);
+  const selectedDentistRanges = useMemo(() => {
+    if (!selectedDentist) return [];
+
+    if (
+      selectedDateWeekday &&
+      selectedDentist.availableDayTimes?.[selectedDateWeekday]
+    ) {
+      return selectedDentist.availableDayTimes[selectedDateWeekday].map(
+        (range) =>
+          `${formatTimeSlot(range.startTime)}–${formatTimeSlot(range.endTime)}`,
+      );
+    }
+
+    if (
+      selectedDentist.availableDayTimes &&
+      Object.keys(selectedDentist.availableDayTimes).length > 0
+    ) {
+      const orderedDays =
+        selectedDentist.availableDays.length > 0
+          ? selectedDentist.availableDays
+          : Object.keys(selectedDentist.availableDayTimes);
+
+      const dayLabels = orderedDays.flatMap((day) => {
+        const dayRanges = selectedDentist.availableDayTimes?.[day] || [];
+        return dayRanges.map(
+          (range) =>
+            `${day}: ${formatTimeSlot(range.startTime)}–${formatTimeSlot(range.endTime)}`,
+        );
+      });
+
+      if (dayLabels.length > 0) return dayLabels;
+    }
+
+    return formatTimeSlotRanges(selectedDentist.availableTimeSlots || []);
+  }, [selectedDentist, selectedDateWeekday]);
+  const isDateMatched =
+    !selectedDentist ||
+    !form.appointmentDate ||
+    selectedDentist.availableDays.includes(selectedDateWeekday);
 
   // Load dentists
   useEffect(() => {
@@ -59,16 +120,18 @@ export default function BookingForm() {
   // Load time slots when dentist + date changes
   useEffect(() => {
     if (!form.dentistId || !form.appointmentDate) {
-      setTimeSlots([]);
       return;
     }
-    setLoadingSlots(true);
-    const iso = new Date(form.appointmentDate).toISOString();
+
+    if (selectedDentist && !isDateMatched) {
+      return;
+    }
+
+    const iso = new Date(`${form.appointmentDate}T12:00:00`).toISOString();
     fetch(`/api/availability?dentistId=${form.dentistId}&date=${iso}`)
       .then((r) => r.json())
-      .then((d) => setTimeSlots(d.data?.timeSlots || []))
-      .finally(() => setLoadingSlots(false));
-  }, [form.dentistId, form.appointmentDate]);
+      .then((d) => setTimeSlots(d.data?.timeSlots || []));
+  }, [form.dentistId, form.appointmentDate, selectedDentist, isDateMatched]);
 
   function handleChange(
     e: React.ChangeEvent<
@@ -90,10 +153,21 @@ export default function BookingForm() {
     setLoading(true);
     setServerError("");
 
+    if (selectedDentist && form.appointmentDate && !isDateMatched) {
+      setErrors((prev) => ({
+        ...prev,
+        appointmentDate: bk.dateNotAvailable,
+      }));
+      setLoading(false);
+      return;
+    }
+
     try {
       const payload = {
         ...form,
-        appointmentDate: new Date(form.appointmentDate).toISOString(),
+        appointmentDate: new Date(
+          `${form.appointmentDate}T12:00:00`,
+        ).toISOString(),
       };
 
       const res = await fetch("/api/appointments", {
@@ -164,7 +238,7 @@ export default function BookingForm() {
           <CardHeader>
             <h2 className="font-semibold text-slate-900">{bk.selectDentist}</h2>
           </CardHeader>
-          <CardBody>
+          <CardBody className="space-y-5">
             <div className="flex flex-col gap-1.5">
               <label
                 htmlFor="dentistId"
@@ -183,12 +257,84 @@ export default function BookingForm() {
                 <option value="">{bk.selectDentistOption}</option>
                 {dentists.map((d) => (
                   <option key={d._id} value={d._id}>
-                    {d.name} — {d.specialization} (${d.consultationFee})
+                    {d.name} — {d.specialization} (৳{d.consultationFee})
                   </option>
                 ))}
               </select>
               {errors.dentistId && (
                 <p className="text-xs text-red-500">{errors.dentistId}</p>
+              )}
+            </div>
+
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <h3 className="text-sm font-semibold text-slate-900">
+                  {bk.availabilitySummary}
+                </h3>
+                {selectedDentist && (
+                  <span className="text-xs text-slate-500">
+                    {selectedDentist.name}
+                  </span>
+                )}
+              </div>
+
+              {!selectedDentist ? (
+                <p className="text-sm text-slate-500">
+                  {bk.selectDentistToViewAvailability}
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-wide text-slate-500 mb-2">
+                      {bk.availableDays}
+                    </p>
+                    {selectedDentist.availableDays.length > 0 ? (
+                      <div className="flex flex-wrap gap-2">
+                        {selectedDentist.availableDays.map((day) => (
+                          <span
+                            key={day}
+                            className="inline-flex items-center rounded-full bg-sky-100 px-2.5 py-1 text-xs font-medium text-sky-700"
+                          >
+                            {day}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-slate-500">
+                        {bk.noAvailabilitySet}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-wide text-slate-500 mb-2">
+                      {bk.availableTimes}
+                    </p>
+                    {selectedDentistRanges.length > 0 ? (
+                      <div className="space-y-2">
+                        {selectedDentistRanges.length > 1 && (
+                          <p className="text-xs font-medium text-slate-500">
+                            multiple
+                          </p>
+                        )}
+                        <div className="flex flex-wrap gap-2">
+                          {selectedDentistRanges.map((range) => (
+                            <span
+                              key={range}
+                              className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700"
+                            >
+                              {range}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-slate-500">
+                        {bk.noAvailabilitySet}
+                      </p>
+                    )}
+                  </div>
+                </div>
               )}
             </div>
           </CardBody>
@@ -206,44 +352,111 @@ export default function BookingForm() {
               type="date"
               value={form.appointmentDate}
               onChange={handleChange}
-              error={errors.appointmentDate}
+              error={
+                errors.appointmentDate ||
+                (selectedDentist && form.appointmentDate && !isDateMatched
+                  ? bk.dateNotAvailable
+                  : "")
+              }
               min={today}
               required
             />
+
+            {selectedDentist && form.appointmentDate && (
+              <div
+                className={`rounded-lg border p-4 ${
+                  isDateMatched
+                    ? "border-emerald-200 bg-emerald-50"
+                    : "border-amber-200 bg-amber-50"
+                }`}
+              >
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500 mb-2">
+                  {bk.selectedDateLabel}
+                </p>
+                <p className="text-sm font-semibold text-slate-900">
+                  {form.appointmentDate}{" "}
+                  {selectedDateWeekday && `(${selectedDateWeekday})`}
+                </p>
+                <p
+                  className={`text-sm mt-1 ${
+                    isDateMatched ? "text-emerald-700" : "text-amber-700"
+                  }`}
+                >
+                  {isDateMatched ? bk.dateMatches : bk.dateNotAvailable}
+                </p>
+                {selectedDentist.availableDays.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {selectedDentist.availableDays.map((day) => (
+                      <span
+                        key={day}
+                        className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${
+                          day === selectedDateWeekday
+                            ? "bg-emerald-100 text-emerald-700"
+                            : "bg-slate-100 text-slate-600"
+                        }`}
+                      >
+                        {day}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {form.dentistId && form.appointmentDate && (
               <div className="flex flex-col gap-1.5">
                 <label className="text-sm font-medium text-slate-700">
                   {bk.timeSlot} <span className="text-red-500">*</span>
                 </label>
-                {loadingSlots ? (
-                  <p className="text-sm text-slate-500 animate-pulse">
-                    {bk.loadingSlots}
-                  </p>
-                ) : timeSlots.length === 0 ? (
+                {!isDateMatched ? (
                   <p className="text-sm text-slate-500">{bk.noSlots}</p>
-                ) : (
-                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                    {timeSlots.map((slot) => (
-                      <button
-                        key={slot.time}
-                        type="button"
-                        disabled={slot.isBooked}
-                        onClick={() =>
-                          !slot.isBooked &&
-                          setForm((p) => ({ ...p, timeSlot: slot.time }))
-                        }
-                        className={`py-2 rounded-lg text-sm font-medium border transition-all ${
-                          slot.isBooked
-                            ? "border-slate-200 bg-slate-50 text-slate-300 cursor-not-allowed line-through"
-                            : form.timeSlot === slot.time
-                              ? "border-sky-500 bg-sky-500 text-white"
-                              : "border-slate-300 bg-white text-slate-700 hover:border-sky-400 hover:text-sky-600"
-                        }`}
-                      >
-                        {slot.time}
-                      </button>
-                    ))}
+                ) : timeSlots.length === 0 ? null : (
+                  <div className="space-y-3">
+                    {(selectedDateExplicitRanges.length > 0
+                      ? selectedDateExplicitRanges
+                      : formatTimeSlotRanges(timeSlots.map((slot) => slot.time))
+                    ).length > 1 && (
+                      <p className="text-xs font-medium text-slate-500">
+                        multiple
+                      </p>
+                    )}
+                    <div className="flex flex-wrap gap-2">
+                      {(selectedDateExplicitRanges.length > 0
+                        ? selectedDateExplicitRanges
+                        : formatTimeSlotRanges(
+                            timeSlots.map((slot) => slot.time),
+                          )
+                      ).map((range) => (
+                        <span
+                          key={range}
+                          className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700"
+                        >
+                          {range}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                      {timeSlots.map((slot) => (
+                        <button
+                          key={slot.time}
+                          type="button"
+                          disabled={slot.isBooked}
+                          onClick={() =>
+                            !slot.isBooked &&
+                            setForm((p) => ({ ...p, timeSlot: slot.time }))
+                          }
+                          className={`py-2 rounded-lg text-sm font-medium border transition-all ${
+                            slot.isBooked
+                              ? "border-slate-200 bg-slate-50 text-slate-300 cursor-not-allowed line-through"
+                              : form.timeSlot === slot.time
+                                ? "border-sky-500 bg-sky-500 text-white"
+                                : "border-slate-300 bg-white text-slate-700 hover:border-sky-400 hover:text-sky-600"
+                          }`}
+                        >
+                          {formatTimeSlot(slot.time)}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
                 {errors.timeSlot && (

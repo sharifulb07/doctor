@@ -24,6 +24,25 @@ const timeSlotSchema = z
   .string()
   .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Time must be in HH:MM format");
 
+const dayTimeRangeSchema = z
+  .object({
+    startTime: timeSlotSchema,
+    endTime: timeSlotSchema,
+  })
+  .refine(
+    ({ startTime, endTime }) => {
+      const [startHour, startMinute] = startTime.split(":").map(Number);
+      const [endHour, endMinute] = endTime.split(":").map(Number);
+      const startTotal = startHour * 60 + startMinute;
+      const endTotal = endHour * 60 + endMinute;
+      return endTotal > startTotal;
+    },
+    {
+      message: "End time must be after start time",
+      path: ["endTime"],
+    },
+  );
+
 const DAYS_OF_WEEK = [
   "Monday",
   "Tuesday",
@@ -87,6 +106,17 @@ export const dentistProfileSchema = z.object({
   photo: z.string().url().optional().or(z.literal("")),
   availableDays: z.array(z.enum(DAYS_OF_WEEK)).min(1),
   availableTimeSlots: z.array(timeSlotSchema).min(1),
+  availableDayTimes: z
+    .partialRecord(z.enum(DAYS_OF_WEEK), z.array(dayTimeRangeSchema).min(1))
+    .optional()
+    .default({}),
+  maxAppointmentsPerDay: z
+    .number()
+    .int()
+    .min(1)
+    .max(100)
+    .optional()
+    .default(10),
   consultationFee: z.number().min(0),
 });
 

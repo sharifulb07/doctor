@@ -5,6 +5,7 @@ import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import { Card, CardBody } from "@/components/ui/Card";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { formatTimeSlot, formatTimeSlotRanges } from "@/utils/timeSlots";
 
 interface DentistProfile {
   _id: string;
@@ -20,6 +21,10 @@ interface DentistProfile {
   photo?: string;
   availableDays: string[];
   availableTimeSlots: string[];
+  availableDayTimes?: Record<
+    string,
+    Array<{ startTime: string; endTime: string }>
+  >;
   qualifications: string[];
 }
 
@@ -77,7 +82,7 @@ export default function DentistProfileContent({ dentist, id }: Props) {
                   </span>
                 )}
                 <span className="font-semibold text-slate-700">
-                  💰 {dp.consultation}: ${dentist.consultationFee}
+                  💰 {dp.consultation}: ৳{dentist.consultationFee}
                 </span>
               </div>
             </div>
@@ -151,21 +156,64 @@ export default function DentistProfileContent({ dentist, id }: Props) {
             )}
 
             {/* Time Slots */}
-            {dentist.availableTimeSlots.length > 0 && (
+            {(dentist.availableTimeSlots.length > 0 ||
+              (dentist.availableDayTimes &&
+                Object.keys(dentist.availableDayTimes).length > 0)) && (
               <div>
                 <h2 className="font-semibold text-slate-900 mb-3">
                   {dp.availableTimes}
                 </h2>
-                <div className="flex flex-wrap gap-1.5">
-                  {dentist.availableTimeSlots.map((slot) => (
-                    <span
-                      key={slot}
-                      className="px-2.5 py-1 rounded border border-slate-200 text-xs text-slate-600 bg-slate-50"
-                    >
-                      {slot}
-                    </span>
-                  ))}
-                </div>
+                {dentist.availableDayTimes &&
+                Object.keys(dentist.availableDayTimes).length > 0 ? (
+                  <div className="space-y-3">
+                    {dentist.availableDays.map((day) => {
+                      const ranges = dentist.availableDayTimes?.[day] || [];
+                      if (ranges.length === 0) return null;
+
+                      return (
+                        <div key={day}>
+                          <p className="text-xs font-medium uppercase tracking-wide text-slate-500 mb-1.5">
+                            {day}
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {ranges.map((range, index) => {
+                              const label = `${range.startTime}-${range.endTime}-${index}`;
+                              return (
+                                <span
+                                  key={label}
+                                  className="px-3 py-1.5 rounded-full border border-slate-200 text-xs text-slate-600 bg-slate-50"
+                                >
+                                  {`${formatTimeSlot(range.startTime)}–${formatTimeSlot(range.endTime)}`}
+                                </span>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {formatTimeSlotRanges(dentist.availableTimeSlots).length >
+                      1 && (
+                      <p className="text-xs font-medium text-slate-500">
+                        multiple
+                      </p>
+                    )}
+                    <div className="flex flex-wrap gap-2">
+                      {formatTimeSlotRanges(dentist.availableTimeSlots).map(
+                        (range) => (
+                          <span
+                            key={range}
+                            className="px-3 py-1.5 rounded-full border border-slate-200 text-xs text-slate-600 bg-slate-50"
+                          >
+                            {range}
+                          </span>
+                        ),
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

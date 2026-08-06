@@ -6,6 +6,7 @@ import { Card, CardBody, CardFooter } from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { formatTimeSlotRange } from "@/utils/timeSlots";
 
 interface AppointmentCardProps {
   appointment: IAppointment & {
@@ -61,7 +62,6 @@ export default function AppointmentCard({
             <p className="text-sm text-sky-600">{dentist?.specialization}</p>
           </div>
         </div>
-
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-600">
           <div className="flex items-center gap-2">
             <span>📅</span>
@@ -69,7 +69,7 @@ export default function AppointmentCard({
           </div>
           <div className="flex items-center gap-2">
             <span>⏰</span>
-            <span>{appointment.timeSlot}</span>
+            <span>{formatTimeSlotRange(appointment.timeSlot)}</span>
           </div>
           {dentist?.clinicLocation && (
             <div className="flex items-center gap-2">

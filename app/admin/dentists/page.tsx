@@ -2,14 +2,13 @@
 
 import {
   ChangeEvent,
-  Dispatch,
   FormEvent,
-  SetStateAction,
   useCallback,
   useEffect,
   useState,
 } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { buildRangesFromSlots } from "@/utils/availabilityRanges";
 
 interface Dentist {
   _id: string;
@@ -27,6 +26,11 @@ interface Dentist {
   qualifications?: string[];
   availableDays?: string[];
   availableTimeSlots?: string[];
+  availableDayTimes?: Record<
+    string,
+    Array<{ startTime: string; endTime: string }>
+  >;
+  maxAppointmentsPerDay?: number;
 }
 
 interface DentistFormState {
@@ -41,8 +45,12 @@ interface DentistFormState {
   clinicLocation: string;
   clinicPhone: string;
   availableDays: string[];
-  availableTimeSlotsText: string;
+  availableDayTimes: Record<
+    string,
+    Array<{ startTime: string; endTime: string }>
+  >;
   consultationFee: string;
+  maxAppointmentsPerDay: string;
   isActive: boolean;
 }
 
@@ -56,6 +64,15 @@ const DAY_OPTIONS = [
   "Sunday",
 ];
 
+const DEFAULT_TIME_RANGE = {
+  startTime: "09:00:00 AM",
+  endTime: "04:00:00 PM",
+};
+
+function createDefaultRange() {
+  return { ...DEFAULT_TIME_RANGE };
+}
+
 const DEFAULT_CREATE_FORM: DentistFormState = {
   name: "",
   email: "",
@@ -68,12 +85,119 @@ const DEFAULT_CREATE_FORM: DentistFormState = {
   clinicLocation: "",
   clinicPhone: "",
   availableDays: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
-  availableTimeSlotsText: "09:00,10:00,11:00,12:00,15:00,16:00",
+  availableDayTimes: {
+    Sunday: [createDefaultRange()],
+    Monday: [createDefaultRange()],
+    Tuesday: [createDefaultRange()],
+    Wednesday: [createDefaultRange()],
+    Thursday: [createDefaultRange()],
+  },
   consultationFee: "800",
+  maxAppointmentsPerDay: "10",
   isActive: true,
 };
 
+function parseTwelveHourToMinutes(value: string): number | null {
+  const match = value
+    .trim()
+    .match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)$/i);
+  if (!match) return null;
+
+  const hourRaw = Number(match[1]);
+  const minute = Number(match[2]);
+  const meridiem = match[4].toUpperCase();
+
+  if (hourRaw < 1 || hourRaw > 12 || minute < 0 || minute > 59) return null;
+
+  let hour24 = hourRaw % 12;
+  if (meridiem === "PM") hour24 += 12;
+  return hour24 * 60 + minute;
+}
+
+function minutesToHHMM(totalMinutes: number): string {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+}
+
+function toTwelveHour(hhmm: string): string {
+  const [h, m] = hhmm.split(":").map(Number);
+  if (Number.isNaN(h) || Number.isNaN(m)) return DEFAULT_TIME_RANGE.startTime;
+  const ampm = h >= 12 ? "PM" : "AM";
+  const hour12 = h % 12 === 0 ? 12 : h % 12;
+  return `${String(hour12).padStart(2, "0")}:${String(m).padStart(2, "0")}:00 ${ampm}`;
+}
+
+function buildSlotsFromRange(
+  start: string,
+  end: string,
+  stepMinutes = 30,
+): string[] {
+  const startMinutes = parseTwelveHourToMinutes(start);
+  const endMinutes = parseTwelveHourToMinutes(end);
+
+  if (
+    startMinutes === null ||
+    endMinutes === null ||
+    endMinutes <= startMinutes
+  ) {
+    return [];
+  }
+
+  const slots: string[] = [];
+  for (let t = startMinutes; t <= endMinutes; t += stepMinutes) {
+    slots.push(minutesToHHMM(t));
+  }
+  return slots;
+}
+
+function buildDayTimes(days: string[], slots?: string[]) {
+  const ranges = buildRangesFromSlots(slots || []);
+
+  return days.reduce<
+    Record<string, Array<{ startTime: string; endTime: string }>>
+  >((acc, day) => {
+    acc[day] =
+      ranges.length > 0
+        ? ranges.map((range) => ({
+            ...range,
+            startTime: toTwelveHour(range.startTime),
+            endTime: toTwelveHour(range.endTime),
+          }))
+        : [{ ...DEFAULT_TIME_RANGE }];
+    return acc;
+  }, {});
+}
+
+function buildDayTimesFromDentist(dentist: Dentist, days: string[]) {
+  const hasExplicitDayTimes =
+    dentist.availableDayTimes &&
+    Object.keys(dentist.availableDayTimes).length > 0;
+
+  if (!hasExplicitDayTimes) {
+    return buildDayTimes(days, dentist.availableTimeSlots);
+  }
+
+  return days.reduce<
+    Record<string, Array<{ startTime: string; endTime: string }>>
+  >((acc, day) => {
+    const ranges = dentist.availableDayTimes?.[day] || [];
+    acc[day] =
+      ranges.length > 0
+        ? ranges.map((range) => ({
+            startTime: toTwelveHour(range.startTime),
+            endTime: toTwelveHour(range.endTime),
+          }))
+        : [{ ...DEFAULT_TIME_RANGE }];
+    return acc;
+  }, {});
+}
+
 function dentistToForm(dentist: Dentist): DentistFormState {
+  const days = dentist.availableDays?.length
+    ? dentist.availableDays
+    : ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"];
+
   return {
     name: dentist.name,
     email: dentist.email,
@@ -85,11 +209,10 @@ function dentistToForm(dentist: Dentist): DentistFormState {
     bio: dentist.bio || "",
     clinicLocation: dentist.clinicLocation || "",
     clinicPhone: dentist.clinicPhone || "",
-    availableDays: dentist.availableDays?.length
-      ? dentist.availableDays
-      : ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
-    availableTimeSlotsText: (dentist.availableTimeSlots || []).join(","),
+    availableDays: days,
+    availableDayTimes: buildDayTimesFromDentist(dentist, days),
     consultationFee: String(dentist.consultationFee ?? 0),
+    maxAppointmentsPerDay: String(dentist.maxAppointmentsPerDay ?? 10),
     isActive: dentist.isActive,
   };
 }
@@ -104,7 +227,7 @@ function DentistFormFields({
   isEdit,
 }: {
   form: DentistFormState;
-  setForm: Dispatch<SetStateAction<DentistFormState>>;
+  setForm: (updater: (prev: DentistFormState) => DentistFormState) => void;
   uploadingPhoto: boolean;
   onPhotoUpload: (e: ChangeEvent<HTMLInputElement>) => void;
   isEdit: boolean;
@@ -197,6 +320,18 @@ function DentistFormFields({
           required
         />
         <input
+          value={form.maxAppointmentsPerDay}
+          onChange={(e) =>
+            setForm((p) => ({ ...p, maxAppointmentsPerDay: e.target.value }))
+          }
+          className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          placeholder="Max appointments per day"
+          type="number"
+          min={1}
+          max={100}
+          required
+        />
+        <input
           value={form.clinicPhone}
           onChange={(e) =>
             setForm((p) => ({ ...p, clinicPhone: e.target.value }))
@@ -253,6 +388,14 @@ function DentistFormFields({
                       availableDays: hasDay
                         ? prev.availableDays.filter((d) => d !== day)
                         : [...prev.availableDays, day],
+                      availableDayTimes: hasDay
+                        ? prev.availableDayTimes
+                        : {
+                            ...prev.availableDayTimes,
+                            [day]: prev.availableDayTimes[day] || [
+                              createDefaultRange(),
+                            ],
+                          },
                     };
                   })
                 }
@@ -269,15 +412,146 @@ function DentistFormFields({
         </div>
       </div>
 
-      <input
-        value={form.availableTimeSlotsText}
-        onChange={(e) =>
-          setForm((p) => ({ ...p, availableTimeSlotsText: e.target.value }))
-        }
-        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-        placeholder="Available time slots HH:MM comma-separated"
-        required
-      />
+      <div className="space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <div>
+          <p className="text-sm font-medium text-slate-700">
+            Available time range per day
+          </p>
+          <p className="text-xs text-slate-500">
+            Use format like 10:30:00 AM and 02:50:00 PM (same as your sample).
+          </p>
+        </div>
+
+        {form.availableDays.length === 0 ? (
+          <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+            Select at least one available day to set times.
+          </p>
+        ) : (
+          <div className="space-y-4">
+            {form.availableDays.map((day) => (
+              <div
+                key={day}
+                className="rounded-lg border border-slate-200 bg-white p-3"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2">
+                  {day}
+                </p>
+                <div className="space-y-3">
+                  {(form.availableDayTimes[day] || [createDefaultRange()]).map(
+                    (range, rangeIndex) => (
+                      <div
+                        key={`${day}-${rangeIndex}`}
+                        className="rounded-lg border border-slate-100 bg-slate-50 p-3"
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <p className="text-xs font-medium text-slate-600">
+                            Range {rangeIndex + 1}
+                          </p>
+                          {(form.availableDayTimes[day] || []).length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setForm((p) => ({
+                                  ...p,
+                                  availableDayTimes: {
+                                    ...p.availableDayTimes,
+                                    [day]: (
+                                      p.availableDayTimes[day] || []
+                                    ).filter((_, idx) => idx !== rangeIndex),
+                                  },
+                                }))
+                              }
+                              className="text-xs text-red-600 hover:underline"
+                            >
+                              Remove
+                            </button>
+                          )}
+                        </div>
+                        <div className="grid sm:grid-cols-2 gap-3">
+                          <div className="space-y-1">
+                            <label className="text-sm font-medium text-slate-700">
+                              Start time
+                            </label>
+                            <input
+                              value={range.startTime || ""}
+                              onChange={(e) =>
+                                setForm((p) => ({
+                                  ...p,
+                                  availableDayTimes: {
+                                    ...p.availableDayTimes,
+                                    [day]: (p.availableDayTimes[day] || []).map(
+                                      (item, idx) =>
+                                        idx === rangeIndex
+                                          ? {
+                                              ...item,
+                                              startTime: e.target.value,
+                                            }
+                                          : item,
+                                    ),
+                                  },
+                                }))
+                              }
+                              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
+                              placeholder="10:30:00 AM"
+                              required
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-sm font-medium text-slate-700">
+                              End time
+                            </label>
+                            <input
+                              value={range.endTime || ""}
+                              onChange={(e) =>
+                                setForm((p) => ({
+                                  ...p,
+                                  availableDayTimes: {
+                                    ...p.availableDayTimes,
+                                    [day]: (p.availableDayTimes[day] || []).map(
+                                      (item, idx) =>
+                                        idx === rangeIndex
+                                          ? {
+                                              ...item,
+                                              endTime: e.target.value,
+                                            }
+                                          : item,
+                                    ),
+                                  },
+                                }))
+                              }
+                              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
+                              placeholder="02:50:00 PM"
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ),
+                  )}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setForm((p) => ({
+                        ...p,
+                        availableDayTimes: {
+                          ...p.availableDayTimes,
+                          [day]: [
+                            ...(p.availableDayTimes[day] || []),
+                            createDefaultRange(),
+                          ],
+                        },
+                      }))
+                    }
+                    className="text-xs font-medium text-sky-700 hover:text-sky-800"
+                  >
+                    + Add time range
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       <label className="flex items-center gap-2 text-sm text-slate-700">
         <input
@@ -318,7 +592,6 @@ export default function AdminDentistsPage() {
   const [editSuccess, setEditSuccess] = useState("");
 
   const fetchDentists = useCallback(async () => {
-    setLoading(true);
     try {
       const params = new URLSearchParams({ page: String(page), limit: "12" });
       if (search) params.set("search", search);
@@ -338,6 +611,7 @@ export default function AdminDentistsPage() {
   }, [fetchDentists]);
 
   async function toggleActive(dentist: Dentist) {
+    setLoading(true);
     setTogglingId(dentist._id);
     try {
       const res = await fetch("/api/admin/dentists", {
@@ -360,6 +634,7 @@ export default function AdminDentistsPage() {
     );
     if (!ok) return;
 
+    setLoading(true);
     setDeleteId(dentist._id);
     try {
       const res = await fetch("/api/admin/dentists", {
@@ -397,7 +672,6 @@ export default function AdminDentistsPage() {
       target === "create" ? setUploadingCreatePhoto : setUploadingEditPhoto;
     const setError = target === "create" ? setCreateError : setEditError;
     const setSuccess = target === "create" ? setCreateSuccess : setEditSuccess;
-    const setForm = target === "create" ? setCreateForm : setEditingForm;
 
     setUploading(true);
     setError("");
@@ -423,7 +697,13 @@ export default function AdminDentistsPage() {
           return;
         }
 
-        setForm((prev) => (prev ? { ...prev, photo: uploadedUrl } : prev));
+        if (target === "create") {
+          setCreateForm((prev) => ({ ...prev, photo: uploadedUrl }));
+        } else {
+          setEditingForm((prev) =>
+            prev ? { ...prev, photo: uploadedUrl } : prev,
+          );
+        }
         setSuccess("Photo uploaded successfully.");
       })
       .catch(() => setError("Network error while uploading photo"))
@@ -453,10 +733,57 @@ export default function AdminDentistsPage() {
         .map((q) => q.trim())
         .filter(Boolean);
 
-      const availableTimeSlots = form.availableTimeSlotsText
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean);
+      const collectedSlots: string[] = [];
+      const availableDayTimesPayload: Record<
+        string,
+        Array<{ startTime: string; endTime: string }>
+      > = {};
+      for (const day of form.availableDays) {
+        const ranges = form.availableDayTimes[day] || [];
+        if (ranges.length === 0) {
+          setError(`Please add at least one time range for ${day}.`);
+          return;
+        }
+
+        const normalizedRanges: Array<{ startTime: string; endTime: string }> =
+          [];
+
+        for (const range of ranges) {
+          const start = range?.startTime?.trim() || "";
+          const end = range?.endTime?.trim() || "";
+
+          if (!start || !end) {
+            setError(`Please enter start and end time for ${day}.`);
+            return;
+          }
+
+          const daySlots = buildSlotsFromRange(start, end);
+          if (daySlots.length === 0) {
+            setError(
+              `Invalid time range for ${day}. Use hh:mm:ss AM/PM and keep end time after start time.`,
+            );
+            return;
+          }
+
+          const startMinutes = parseTwelveHourToMinutes(start);
+          const endMinutes = parseTwelveHourToMinutes(end);
+          if (startMinutes === null || endMinutes === null) {
+            setError(`Invalid time format for ${day}.`);
+            return;
+          }
+
+          normalizedRanges.push({
+            startTime: minutesToHHMM(startMinutes),
+            endTime: minutesToHHMM(endMinutes),
+          });
+
+          collectedSlots.push(...daySlots);
+        }
+
+        availableDayTimesPayload[day] = normalizedRanges;
+      }
+
+      const availableTimeSlots = Array.from(new Set(collectedSlots));
 
       const payload: Record<string, unknown> = {
         ...(target === "edit" && editingDentist
@@ -474,6 +801,8 @@ export default function AdminDentistsPage() {
         clinicPhone: form.clinicPhone,
         availableDays: form.availableDays,
         availableTimeSlots,
+        availableDayTimes: availableDayTimesPayload,
+        maxAppointmentsPerDay: Number(form.maxAppointmentsPerDay),
         consultationFee: Number(form.consultationFee),
         isActive: form.isActive,
       };
@@ -487,8 +816,12 @@ export default function AdminDentistsPage() {
       const data = await res.json();
 
       if (!res.ok) {
+        const firstFieldError = data?.errors
+          ? Object.values(data.errors).flat()[0]
+          : null;
         setError(
-          data.message ||
+          (typeof firstFieldError === "string" ? firstFieldError : undefined) ||
+            data.message ||
             `Failed to ${target === "create" ? "create" : "update"} dentist`,
         );
         return;
@@ -508,12 +841,16 @@ export default function AdminDentistsPage() {
       }
 
       await fetchDentists();
+      setLoading(false);
     } catch {
       setError(
         `Network error while ${target === "create" ? "creating" : "updating"} dentist`,
       );
     } finally {
       setSubmitting(false);
+      if (target === "create" || target === "edit") {
+        setLoading(false);
+      }
     }
   }
 
@@ -542,7 +879,7 @@ export default function AdminDentistsPage() {
 
         <DentistFormFields
           form={createForm}
-          setForm={setCreateForm}
+          setForm={(updater) => setCreateForm(updater)}
           uploadingPhoto={uploadingCreatePhoto}
           onPhotoUpload={(e) => handlePhotoUpload(e, "create")}
           isEdit={false}
@@ -562,6 +899,7 @@ export default function AdminDentistsPage() {
           type="text"
           value={search}
           onChange={(e) => {
+            setLoading(true);
             setSearch(e.target.value);
             setPage(1);
           }}
@@ -609,7 +947,7 @@ export default function AdminDentistsPage() {
                   {d.experience} yr{d.experience !== 1 ? "s" : ""}
                 </p>
                 <p>
-                  <span className="text-slate-400">{ad.feeLabel}</span> $
+                  <span className="text-slate-400">{ad.feeLabel}</span> ৳
                   {d.consultationFee}
                 </p>
                 <p>
@@ -662,7 +1000,10 @@ export default function AdminDentistsPage() {
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-3 mt-6">
           <button
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            onClick={() => {
+              setLoading(true);
+              setPage((p) => Math.max(1, p - 1));
+            }}
             disabled={page === 1}
             className="px-4 py-1.5 rounded-lg border border-slate-300 text-sm hover:bg-slate-50 disabled:opacity-40"
           >
@@ -672,7 +1013,10 @@ export default function AdminDentistsPage() {
             {ad.page} {page} {ad.pageSep} {totalPages}
           </span>
           <button
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            onClick={() => {
+              setLoading(true);
+              setPage((p) => Math.min(totalPages, p + 1));
+            }}
             disabled={page === totalPages}
             className="px-4 py-1.5 rounded-lg border border-slate-300 text-sm hover:bg-slate-50 disabled:opacity-40"
           >
@@ -722,7 +1066,9 @@ export default function AdminDentistsPage() {
 
               <DentistFormFields
                 form={editingForm}
-                setForm={setEditingForm}
+                setForm={(updater) =>
+                  setEditingForm((prev) => (prev ? updater(prev) : prev))
+                }
                 uploadingPhoto={uploadingEditPhoto}
                 onPhotoUpload={(e) => handlePhotoUpload(e, "edit")}
                 isEdit

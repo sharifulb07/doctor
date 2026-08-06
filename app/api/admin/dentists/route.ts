@@ -117,6 +117,18 @@ export async function POST(req: NextRequest) {
     availableTimeSlots: result.data.availableTimeSlots.map((item) =>
       sanitizeText(item),
     ),
+    availableDayTimes: Object.fromEntries(
+      Object.entries(result.data.availableDayTimes || {}).map(
+        ([day, ranges]) => [
+          sanitizeText(day),
+          ranges.map((range) => ({
+            startTime: sanitizeText(range.startTime),
+            endTime: sanitizeText(range.endTime),
+          })),
+        ],
+      ),
+    ),
+    maxAppointmentsPerDay: result.data.maxAppointmentsPerDay,
   };
 
   const email = safeData.email;
@@ -229,6 +241,18 @@ export async function PATCH(req: NextRequest) {
       availableTimeSlots: result.data.availableTimeSlots.map((item) =>
         sanitizeText(item),
       ),
+      availableDayTimes: Object.fromEntries(
+        Object.entries(result.data.availableDayTimes || {}).map(
+          ([day, ranges]) => [
+            sanitizeText(day),
+            ranges.map((range) => ({
+              startTime: sanitizeText(range.startTime),
+              endTime: sanitizeText(range.endTime),
+            })),
+          ],
+        ),
+      ),
+      maxAppointmentsPerDay: result.data.maxAppointmentsPerDay,
     };
 
     const email = safeData.email;
@@ -260,6 +284,8 @@ export async function PATCH(req: NextRequest) {
     dentist.photo = safeData.photo || undefined;
     dentist.availableDays = safeData.availableDays;
     dentist.availableTimeSlots = safeData.availableTimeSlots;
+    dentist.availableDayTimes = safeData.availableDayTimes;
+    dentist.maxAppointmentsPerDay = safeData.maxAppointmentsPerDay;
     dentist.consultationFee = safeData.consultationFee;
     if (typeof payload.isActive === "boolean")
       dentist.isActive = payload.isActive;
