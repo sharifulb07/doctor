@@ -33,6 +33,7 @@ export const translations = {
   en: {
     nav: {
       brand: "DentalCare",
+      services: "Services",
       dentists: "Dentists",
       bookAppointment: "Book Appointment",
       myAppointments: "My Appointments",
@@ -52,6 +53,9 @@ export const translations = {
       bookAppointment: "Book Appointment",
       myAppointments: "My Appointments",
       contact: "Contact",
+      followUs: "Follow Us",
+      socialText:
+        "Stay connected with us for dental tips, clinic updates and special offers.",
       copyright: "DentalCare. All rights reserved.",
     },
     home: {
@@ -343,6 +347,7 @@ export const translations = {
   bn: {
     nav: {
       brand: "ডেন্টালকেয়ার",
+      services: "সেবাসমূহ",
       dentists: "দন্তচিকিৎসক",
       bookAppointment: "অ্যাপয়েন্টমেন্ট বুক করুন",
       myAppointments: "আমার অ্যাপয়েন্টমেন্ট",
@@ -362,6 +367,9 @@ export const translations = {
       bookAppointment: "অ্যাপয়েন্টমেন্ট বুক করুন",
       myAppointments: "আমার অ্যাপয়েন্টমেন্ট",
       contact: "যোগাযোগ",
+      followUs: "আমাদের অনুসরণ করুন",
+      socialText:
+        "ডেন্টাল টিপস, ক্লিনিক আপডেট ও বিশেষ অফারের জন্য আমাদের সঙ্গে যুক্ত থাকুন।",
       copyright: "ডেন্টালকেয়ার। সর্বস্বত্ব সংরক্ষিত।",
     },
     home: {
