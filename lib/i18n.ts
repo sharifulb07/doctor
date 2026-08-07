@@ -4,9 +4,7 @@ import three from "@/public/icons/3.png";
 import four from "@/public/icons/4.png";
 import five from "@/public/icons/5.png";
 import six from "@/public/icons/6.png";
-import seven from "@/public/icons/7.png";
 import eight from "@/public/icons/8.png";
-import nine from "@/public/icons/9.png";
 import ten from "@/public/icons/10.png";
 import eleven from "@/public/icons/11.png";
 import twelve from "@/public/icons/12.png";
@@ -31,11 +29,11 @@ import thirty from "@/public/icons/30.png";
 import thone from "@/public/icons/31.png";
 import thtwo from "@/public/icons/32.png";
 import ththree from "@/public/icons/33.png";
-import  thfour from "@/public/icons/34.png";
-import  thfive from "@/public/icons/35.png";
-import  thsix from "@/public/icons/36.png";
-import  thseven from "@/public/icons/37.png";
-import  theight from "@/public/icons/38.png";
+import thfour from "@/public/icons/34.png";
+import thfive from "@/public/icons/35.png";
+import thsix from "@/public/icons/36.png";
+import thseven from "@/public/icons/37.png";
+import theight from "@/public/icons/38.png";
 
 export type Locale = "en" | "bn";
 
@@ -66,7 +64,7 @@ export const translations = {
       followUs: "Follow Us",
       socialText:
         "Stay connected with us for dental tips, clinic updates and special offers.",
-      copyright: "DentalCare. All rights reserved.",
+      copyright: "EasyDentalSolution. All rights reserved.",
     },
     home: {
       heroTitle1: "Your Smile is Our",
@@ -129,7 +127,7 @@ export const translations = {
           label: "Dental Veneers",
         },
         {
-          icon:ten,
+          icon: ten,
           label: "Dental Crowns",
         },
         { icon: eleven, label: "Metal Crown" },
@@ -155,7 +153,7 @@ export const translations = {
         { icon: thone, label: "Apexogenesis And Apexification" },
         { icon: thtwo, label: "Dental Emergency Management" },
         { icon: ththree, label: "Pyogenic Granuloma Surgery" },
-        { icon:  thfour, label: "Oral Cancer Management" },
+        { icon: thfour, label: "Oral Cancer Management" },
         { icon: thfive, label: "Oral Ulcer Treatment" },
         { icon: thsix, label: "Premalignant Lesion Management" },
         { icon: thseven, label: "Oral Thrush Treatment" },
@@ -163,7 +161,7 @@ export const translations = {
       ],
       ctaTitle: "Ready to Book Your Visit?",
       ctaSubtitle:
-        "Join thousands of patients who trust DentalCare for their dental health needs.",
+        "Join thousands of patients who trust DentalCare for their EasyDentalSolution needs.",
       createAccount: "Create Free Account",
       bookNow: "Book Now",
     },
@@ -395,7 +393,7 @@ export const translations = {
       followUs: "আমাদের অনুসরণ করুন",
       socialText:
         "ডেন্টাল টিপস, ক্লিনিক আপডেট ও বিশেষ অফারের জন্য আমাদের সঙ্গে যুক্ত থাকুন।",
-      copyright: "ডেন্টালকেয়ার। সর্বস্বত্ব সংরক্ষিত।",
+      copyright: " ইজিডেন্টালসল্যুশন। সর্বস্বত্ব সংরক্ষিত।",
     },
     home: {
       heroTitle1: "আপনার হাসি আমাদের",
@@ -441,10 +439,7 @@ export const translations = {
         { icon: three, label: "Tooth Extraction" },
         { icon: four, label: "Surgical Tooth Extraction" },
         { icon: five, label: "Tooth Fracture Management" },
-        {
-          icon: six,
-          label: "Scaling And Root Planing",
-        },
+        { icon: six, label: "Scaling And Root Planing" },
         {
           icon: "https://images.pexels.com/photos/4687905/pexels-photo-4687905.jpeg",
           label: "Dental Implants",
@@ -492,7 +487,7 @@ export const translations = {
       ],
       ctaTitle: "আপনার পরিদর্শন বুক করতে প্রস্তুত?",
       ctaSubtitle:
-        "হাজার হাজার রোগীর সাথে যোগ দিন যারা তাদের দাঁতের স্বাস্থ্যের প্রয়োজনে ডেন্টালকেয়ারকে বিশ্বাস করেন।",
+        "হাজার হাজার রোগীর সাথে যোগ দিন যারা তাদের দাঁতের স্বাস্থ্যের প্রয়োজনে ইজিডেন্টালসল্যুশনকে বিশ্বাস করেন।",
       createAccount: "বিনামূল্যে অ্যাকাউন্ট তৈরি করুন",
       bookNow: "এখনই বুক করুন",
     },

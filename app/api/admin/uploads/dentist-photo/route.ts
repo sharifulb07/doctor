@@ -9,10 +9,14 @@ import {
 } from "@/utils/apiResponse";
 import { UserRole } from "@/types";
 import { logError } from "@/lib/logger";
+import { requireSameOrigin } from "@/utils/sanitize";
 
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
 
 export async function POST(req: NextRequest) {
+  const originError = requireSameOrigin(req);
+  if (originError) return originError;
+
   const auth = await getAuthFromRequest(req);
   if (!auth || auth.role !== UserRole.ADMIN) {
     return forbiddenResponse("Admin access required");

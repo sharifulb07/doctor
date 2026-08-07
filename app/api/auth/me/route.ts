@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
       address: user.address,
       createdAt: user.createdAt,
     });
-  } catch (error) {
+  } catch {
     return serverErrorResponse();
   }
 }

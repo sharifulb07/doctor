@@ -1,10 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 import { useLanguage } from "@/contexts/LanguageContext";
+import logo from "@/public/logo.png";
+
 
 interface NavUser {
   name: string;
@@ -79,8 +82,9 @@ export default function Navbar({ user }: NavbarProps) {
             href="/"
             className="flex items-center gap-2 font-bold text-sky-600 text-xl"
           >
-            <span className="text-2xl">🦷</span>
-            <span>{t.nav.brand}</span>
+            <Image src={logo}  width={300} height={200} alt="logo" className="h-[75] w-[85]" />
+            {/* <span className="text-2xl">🦷</span>
+            <span>{t.nav.brand}</span> */}
           </Link>
 
           {/* Desktop nav */}

@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Dentist from "@/models/Dentist";
 import { successResponse, serverErrorResponse } from "@/utils/apiResponse";
+import { escapeRegExp, sanitizeText } from "@/utils/sanitize";
 
 export async function GET(req: NextRequest) {
   try {
@@ -13,17 +14,20 @@ export async function GET(req: NextRequest) {
       50,
       Math.max(1, parseInt(searchParams.get("limit") || "10")),
     );
-    const specialization = searchParams.get("specialization");
-    const search = searchParams.get("search");
+    const specialization = sanitizeText(searchParams.get("specialization")).slice(0, 100);
+    const search = sanitizeText(searchParams.get("search")).slice(0, 100);
 
     const query: Record<string, unknown> = { isActive: true };
 
-    if (specialization) query.specialization = new RegExp(specialization, "i");
+    if (specialization) {
+      query.specialization = new RegExp(escapeRegExp(specialization), "i");
+    }
     if (search) {
+      const safeSearch = new RegExp(escapeRegExp(search), "i");
       query.$or = [
-        { name: new RegExp(search, "i") },
-        { specialization: new RegExp(search, "i") },
-        { clinicLocation: new RegExp(search, "i") },
+        { name: safeSearch },
+        { specialization: safeSearch },
+        { clinicLocation: safeSearch },
       ];
     }
 
@@ -44,7 +48,7 @@ export async function GET(req: NextRequest) {
       total,
       pages: Math.ceil(total / limit),
     });
-  } catch (error) {
+  } catch {
     return serverErrorResponse();
   }
 }

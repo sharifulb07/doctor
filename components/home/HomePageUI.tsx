@@ -6,7 +6,8 @@ import DentistCard from "@/components/dentists/DentistCard";
 import Button from "@/components/ui/Button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { IDentist } from "@/types";
-import { developedServices } from "@/lib/services";
+import { developedServices, getAllServices } from "@/lib/services";
+import { getLocalizedServiceContent } from "@/lib/servicesI18n";
 import pro from "@/public/pro.png";
 import teeth from "@/public/teethmain.png";
 
@@ -17,13 +18,6 @@ interface HomePageUIProps {
 export default function HomePageUI({ dentists }: HomePageUIProps) {
   const { t, locale } = useLanguage();
   const h = t.home;
-
-  const isImageSrcString = (value: string) =>
-    value.startsWith("/") ||
-    value.startsWith("http://") ||
-    value.startsWith("https://") ||
-    value.startsWith("data:") ||
-    value.startsWith("blob:");
 
   const stats = [
     { label: h.stats.expertDentists, value: "15+" },
@@ -49,6 +43,10 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
   }));
 
   const duplicatedServices = [...carouselServices, ...carouselServices];
+  const serviceCards = getAllServices().map((service) => ({
+    ...service,
+    localized: getLocalizedServiceContent(service, locale),
+  }));
 
   return (
     <div>
@@ -237,6 +235,7 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
                     src={service.image}
                     alt={service.title}
                     fill
+                    sizes="400px"
                     className="object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                 </div>
@@ -314,11 +313,11 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
             {h.ourServicesSubtitle}
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {h.services.map((s) => (
-             <Link
-  key={s.label}
-  href="/services"
-  className="
+            {serviceCards.map((service) => (
+              <Link
+                key={service.slug}
+                href={`/services/${service.slug}`}
+                className="
     group relative block overflow-hidden
     h-55 rounded-2xl
     shadow-lg
@@ -329,9 +328,9 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
     hover:-translate-y-3
     hover:shadow-2xl
   "
->
-  <div
-    className="
+              >
+                <div
+                  className="
       relative
       h-full
       w-full
@@ -346,14 +345,14 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
 
       group-hover:[transform:rotateX(12deg)_rotateY(-12deg)_scale(1.05)]
     "
-  >
-
-    {/* Full card image */}
-    <Image
-      src={s.icon}
-      alt={s.label}
-      fill
-      className="
+                >
+                  {/* Full card image */}
+                  <Image
+                    src={service.imageSrc}
+                    alt={service.localized.name}
+                    fill
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                    className="
         object-cover
 
         transition-transform
@@ -362,12 +361,11 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
         group-hover:scale-125
         [transform:translateZ(20px)]
       "
-    />
+                  />
 
-
-    {/* Dental overlay */}
-    <div
-      className="
+                  {/* Dental overlay */}
+                  <div
+                    className="
         absolute inset-0
         bg-linear-to-t
         from-sky-950/90
@@ -376,18 +374,17 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
 
         [transform:translateZ(30px)]
       "
-    />
+                  />
 
-
-    {/* X-ray scanning light */}
-    <div
-      className="
+                  {/* X-ray scanning light */}
+                  <div
+                    className="
         absolute inset-0
         overflow-hidden
       "
-    >
-      <span
-        className="
+                  >
+                    <span
+                      className="
           absolute
           -left-full
           top-0
@@ -405,13 +402,12 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
           transition-all
           duration-[3000ms]
         "
-      />
-    </div>
+                    />
+                  </div>
 
-
-    {/* Dental pulse animation */}
-    <div
-      className="
+                  {/* Dental pulse animation */}
+                  <div
+                    className="
         absolute
         inset-0
         flex
@@ -420,9 +416,9 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
 
         [transform:translateZ(50px)]
       "
-    >
-      <span
-        className="
+                  >
+                    <span
+                      className="
           absolute
           w-32
           h-32
@@ -431,10 +427,10 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
           border-sky-300/50
           animate-ping
         "
-      />
+                    />
 
-      <span
-        className="
+                    <span
+                      className="
           absolute
           w-44
           h-44
@@ -443,13 +439,12 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
           border-white/30
           animate-pulse
         "
-      />
-    </div>
+                    />
+                  </div>
 
-
-    {/* Content pops forward */}
-    <div
-      className="
+                  {/* Content pops forward */}
+                  <div
+                    className="
         relative
         z-10
         h-full
@@ -464,9 +459,9 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
 
         [transform:translateZ(70px)]
       "
-    >
-      <h3
-        className="
+                  >
+                    <h3
+                      className="
           text-white
           font-bold
           text-lg
@@ -475,25 +470,14 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
           group-hover:text-sky-200
           transition-colors
         "
-      >
-        {s.label}
-      </h3>
+                    >
+                      {service.localized.name}
+                    </h3>
+                  </div>
 
-      <p
-        className="
-          mt-1
-          text-xs
-          text-white/80
-        "
-      >
-        Advanced Dental Treatment
-      </p>
-    </div>
-
-
-    {/* Animated border */}
-    <div
-      className="
+                  {/* Animated border */}
+                  <div
+                    className="
         absolute
         inset-0
         rounded-2xl
@@ -508,10 +492,9 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
 
         pointer-events-none
       "
-    />
-
-  </div>
-</Link>
+                  />
+                </div>
+              </Link>
             ))}
           </div>
         </div>

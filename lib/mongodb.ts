@@ -10,7 +10,6 @@ if (!MONGODB_URI) {
 
 // Extend the NodeJS global type to cache the connection
 declare global {
-  // eslint-disable-next-line no-var
   var mongoose: {
     conn: typeof import("mongoose") | null;
     promise: Promise<typeof import("mongoose")> | null;

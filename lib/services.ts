@@ -1,3 +1,10 @@
+import one from "@/public/carousels/own/1.png";
+import two from "@/public/carousels/own/2.png";
+import three from "@/public/carousels/own/3.png";
+import four from "@/public/carousels/own/4.png";
+import five from "@/public/icons/5.png";
+import type { StaticImageData } from "next/image";
+
 export interface ServiceQuickInfo {
   duration: string;
   recoveryTime: string;
@@ -12,7 +19,7 @@ export interface DevelopedServiceData {
     bn: string;
     en: string;
   };
-  image: string;
+  image: string | StaticImageData;
   shortDescription: {
     bn: string;
     en: string;
@@ -488,8 +495,7 @@ export const developedServices: DevelopedServiceData[] = [
       en: "Modern Dental Clinic",
     },
 
-    image:
-      "https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&fit=crop&w=1200&q=80",
+    image: one,
 
     shortDescription: {
       bn: "আধুনিক প্রযুক্তি ও অভিজ্ঞ ডেন্টিস্টের মাধ্যমে উন্নতমানের দাঁতের চিকিৎসা।",
@@ -545,8 +551,7 @@ export const developedServices: DevelopedServiceData[] = [
       en: "Root Canal Treatment",
     },
 
-    image:
-      "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=1200&q=80",
+    image: two,
 
     shortDescription: {
       bn: "ক্ষতিগ্রস্ত দাঁত সংরক্ষণের জন্য আধুনিক রুট ক্যানাল চিকিৎসা।",
@@ -591,8 +596,7 @@ export const developedServices: DevelopedServiceData[] = [
       en: "Dental Implant",
     },
 
-    image:
-      "https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&fit=crop&w=1200&q=80",
+    image: three,
 
     shortDescription: {
       bn: "হারানো দাঁতের জন্য স্থায়ী ও প্রাকৃতিক সমাধান।",
@@ -646,8 +650,7 @@ export const developedServices: DevelopedServiceData[] = [
       en: "Teeth Whitening",
     },
 
-    image:
-      "https://images.unsplash.com/photo-1677026010083-78ec7f1b84ed?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: four,
 
     shortDescription: {
       bn: "উজ্জ্বল ও সুন্দর হাসির জন্য পেশাদার দাঁত সাদা করার সেবা।",
@@ -683,8 +686,7 @@ export const developedServices: DevelopedServiceData[] = [
       en: "Pediatric Dental Care",
     },
 
-    image:
-      "https://images.unsplash.com/photo-1758205307836-0829c799890b?q=80&w=872&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: five,
 
     shortDescription: {
       bn: "শিশুদের জন্য নিরাপদ ও বন্ধুত্বপূর্ণ ডেন্টাল সেবা।",
@@ -1418,8 +1420,10 @@ const developedServiceCatalog: ServiceDetails[] = developedServices.map(
     slug: service.slug,
     name: service.title.en,
     shortDescription: service.shortDescription.en,
-    iconSrc: service.image,
-    imageSrc: service.image,
+    iconSrc:
+      typeof service.image === "string" ? service.image : service.image.src,
+    imageSrc:
+      typeof service.image === "string" ? service.image : service.image.src,
     category: "preventive",
     specializations: ["General Dentistry", "Preventive Dentistry"],
     quickInfo: {
@@ -1468,10 +1472,19 @@ const developedServiceCatalog: ServiceDetails[] = developedServices.map(
   }),
 );
 
-const allCatalogDraft: ServiceDetails[] = [
-  ...serviceCatalogDraft,
-  ...developedServiceCatalog,
-];
+// Some developed services also have a richer entry in the main service
+// catalog. Keep the main entry in that case so every public slug appears
+// exactly once across listings, related services, and static route params.
+const allCatalogDraft: ServiceDetails[] = Array.from(
+  [...serviceCatalogDraft, ...developedServiceCatalog]
+    .reduce((servicesBySlug, service) => {
+      if (!servicesBySlug.has(service.slug)) {
+        servicesBySlug.set(service.slug, service);
+      }
+      return servicesBySlug;
+    }, new Map<string, ServiceDetails>())
+    .values(),
+);
 
 const serviceCatalog: ServiceDetails[] = allCatalogDraft.map((service) => {
   const related = allCatalogDraft

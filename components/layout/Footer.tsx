@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import logo from "@/public/logo.png";
 import {
   FaFacebookF,
   FaInstagram,
@@ -20,8 +22,13 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2 text-white font-bold text-2xl mb-4">
-              <span className="text-3xl">🦷</span>
-              <span>{t.nav.brand}</span>
+              <Image
+                src={logo}
+                width={300}
+                height={200}
+                alt="logo"
+                className="h-[75] w-[85]"
+              />
             </div>
 
             <p className="text-sm leading-7 text-slate-400 max-w-md">
@@ -37,10 +44,7 @@ export default function Footer() {
 
             <ul className="space-y-3 text-sm">
               <li>
-                <Link
-                  href="/"
-                  className="hover:text-sky-400 transition-colors"
-                >
+                <Link href="/" className="hover:text-sky-400 transition-colors">
                   {t.footer.home}
                 </Link>
               </li>
