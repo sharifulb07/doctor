@@ -3,7 +3,7 @@ import two from "@/public/icons/2.png";
 import three from "@/public/icons/3.png";
 import four from "@/public/icons/4.png";
 import five from "@/public/icons/5.png";
-// import six from "@/public/icons/6.png";
+import six from "@/public/icons/6.png";
 import seven from "@/public/icons/7.png";
 import eight from "@/public/icons/8.png";
 import nine from "@/public/icons/9.png";
@@ -113,7 +113,7 @@ export const translations = {
         { icon: four, label: "Surgical Tooth Extraction" },
         { icon: five, label: "Tooth Fracture Management" },
         {
-          icon: "https://images.pexels.com/photos/5622010/pexels-photo-5622010.jpeg",
+          icon: six,
           label: "Scaling And Root Planing",
         },
         {
@@ -121,7 +121,7 @@ export const translations = {
           label: "Dental Implants",
         },
         {
-          icon: "https://images.unsplash.com/photo-1663182234283-28941e7612da?q=80&w=793&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          icon: eight,
           label: "Teeth whitening (bleaching)",
         },
         {
@@ -129,7 +129,7 @@ export const translations = {
           label: "Dental Veneers",
         },
         {
-          icon: "https://images.pexels.com/photos/6627601/pexels-photo-6627601.jpeg",
+          icon:ten,
           label: "Dental Crowns",
         },
         { icon: eleven, label: "Metal Crown" },
@@ -139,7 +139,7 @@ export const translations = {
         { icon: fifteen, label: "Partial And Complete Dentures" },
         { icon: sixteen, label: "Acrylic Dentures" },
         { icon: seventeen, label: "Flexible Dentures" },
-        { icon: eighteen, label: "Orthodontic Treatment ( Braces) " },
+        { icon: eighteen, label: "Orthodontic Treatment (Braces with wire)" },
         { icon: nineteen, label: "Cyst And Tumor Surgery" },
         { icon: twenty, label: " Apisectomy" },
         { icon: tone, label: "Midline Diastema Closure" },
@@ -442,7 +442,7 @@ export const translations = {
         { icon: four, label: "Surgical Tooth Extraction" },
         { icon: five, label: "Tooth Fracture Management" },
         {
-          icon: "https://images.pexels.com/photos/5622010/pexels-photo-5622010.jpeg",
+          icon: six,
           label: "Scaling And Root Planing",
         },
         {
@@ -458,7 +458,7 @@ export const translations = {
           label: "Dental Veneers",
         },
         {
-          icon: "https://images.pexels.com/photos/6627601/pexels-photo-6627601.jpeg",
+          icon: ten,
           label: "Dental Crowns",
         },
         { icon: eleven, label: "Metal Crown" },
@@ -468,7 +468,7 @@ export const translations = {
         { icon: fifteen, label: "Partial And Complete Dentures" },
         { icon: sixteen, label: "Acrylic Dentures" },
         { icon: seventeen, label: "Flexible Dentures" },
-        { icon: eighteen, label: "Orthodontic Treatment" },
+        { icon: eighteen, label: "Orthodontic Treatment (Braces with wire)" },
         { icon: nineteen, label: "Cyst And Tumor Surgery" },
         { icon: twenty, label: "Apisectomy" },
         { icon: tone, label: "Midline Diastema Closure" },
