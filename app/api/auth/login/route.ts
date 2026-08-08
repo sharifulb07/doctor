@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import connectDB from "@/lib/mongodb";
+import connectDB, { isDatabaseConnectivityError } from "@/lib/mongodb";
 import User from "@/models/User";
 import { generateToken, setAuthCookie } from "@/lib/auth";
 import { loginSchema, formatZodErrors } from "@/utils/validators";
@@ -13,7 +13,7 @@ import {
 import { logAuth, logError } from "@/lib/logger";
 import { applyRateLimit, getClientIp } from "@/lib/rateLimiter";
 import { UserRole } from "@/types";
-import { requireSameOrigin, sanitizeEmail } from "@/utils/sanitize";
+import { requireSameOrigin, sanitizeEmail, sanitizeText } from "@/utils/sanitize";
 
 const MAX_FAILED_ATTEMPTS = 5;
 const LOCK_DURATION_MS = 15 * 60 * 1000; // 15 minutes
@@ -38,14 +38,16 @@ async function loginHandler(req: NextRequest) {
   }
 
   const { role, email, password } = result.data;
+  const isEmail = email.includes("@");
+  const safeIdentifier = isEmail ? sanitizeEmail(email) : sanitizeText(email);
 
   try {
     await connectDB();
 
     // Include password explicitly since it's select: false
-    const user = await User.findOne({ email: sanitizeEmail(email) }).select(
-      "+password",
-    );
+    const user = await User.findOne(
+      isEmail ? { email: safeIdentifier } : { phone: safeIdentifier },
+    ).select("+password");
 
     if (!user || !user.isActive || user.role !== role) {
       logAuth({
@@ -105,7 +107,7 @@ async function loginHandler(req: NextRequest) {
 
     const token = await generateToken({
       userId: user._id.toString(),
-      email: user.email,
+      email: user.email || user.phone || "",
       role: user.role as UserRole,
     });
 
@@ -118,7 +120,7 @@ async function loginHandler(req: NextRequest) {
         user: {
           id: user._id,
           name: user.name,
-          email: user.email,
+          email: user.email || user.phone,
           role: user.role,
         },
       },
@@ -126,6 +128,12 @@ async function loginHandler(req: NextRequest) {
     );
   } catch (error) {
     logError(error, { context: "login", email });
+    if (isDatabaseConnectivityError(error)) {
+      return errorResponse(
+        "Database is temporarily unavailable. Please try again shortly.",
+        503,
+      );
+    }
     return serverErrorResponse();
   }
 }

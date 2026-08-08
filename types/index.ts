@@ -80,7 +80,7 @@ export interface IAvailability {
 
 export interface IAppointment {
   _id: Types.ObjectId;
-  patientId: Types.ObjectId;
+  patientId?: Types.ObjectId;
   dentistId: Types.ObjectId;
   appointmentDate: Date;
   timeSlot: string;

@@ -13,7 +13,10 @@ const PROTECTED_ROUTES = [
 ];
 
 // Routes only for unauthenticated users
-const AUTH_ROUTES = ["/login", "/register"];
+const AUTH_ROUTES = [
+  "/login",
+  "/register",
+];
 
 // Admin-only routes
 const ADMIN_ROUTES = ["/admin"];
@@ -150,5 +153,7 @@ export const config = {
     "/profile/:path*",
     "/login",
     "/register",
+    "/forgot-password",
+    "/reset-password",
   ],
 };

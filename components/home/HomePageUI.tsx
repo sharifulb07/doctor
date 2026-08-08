@@ -7,7 +7,6 @@ import Button from "@/components/ui/Button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { IDentist } from "@/types";
 import { developedServices, getAllServices } from "@/lib/services";
-import { getLocalizedServiceContent } from "@/lib/servicesI18n";
 import pro from "@/public/pro.png";
 import teeth from "@/public/teethmain.png";
 
@@ -42,10 +41,7 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
     ...carouselServices,
   ];
 
-  const serviceCards = getAllServices().map((service) => ({
-    ...service,
-    localized: getLocalizedServiceContent(service, locale),
-  }));
+  const serviceCards = getAllServices();
 
   return (
     <div>
@@ -343,7 +339,7 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
                   {/* Full card image */}
                   <Image
                     src={service.imageSrc}
-                    alt={service.localized.name}
+                    alt={service.name}
                     fill
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     className="
@@ -465,7 +461,7 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
           transition-colors
         "
                     >
-                      {service.localized.name}
+                      {service.name}
                     </h3>
                   </div>
 

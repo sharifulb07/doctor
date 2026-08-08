@@ -10,6 +10,15 @@ interface Patient {
   phone?: string;
   isActive: boolean;
   createdAt: string;
+  bookingOnly?: boolean;
+}
+
+interface AppointmentPatient {
+  _id: string;
+  patientName: string;
+  phone?: string;
+  createdAt: string;
+  patientId?: { _id?: string; name?: string; email?: string; phone?: string } | null;
 }
 
 export default function AdminPatientsPage() {
@@ -38,10 +47,50 @@ export default function AdminPatientsPage() {
         role: "patient",
       });
       if (debouncedSearch) params.set("search", debouncedSearch);
-      const res = await fetch(`/api/admin/users?${params}`);
-      const data = await res.json();
+      const [res, appointmentsRes] = await Promise.all([
+        fetch(`/api/admin/users?${params}`),
+        fetch("/api/appointments?limit=50"),
+      ]);
+      const [data, appointmentsData] = await Promise.all([
+        res.json(),
+        appointmentsRes.json(),
+      ]);
       if (data.success) {
-        setPatients(data.data?.users || []);
+        const registered: Patient[] = data.data?.users || [];
+        const patientKey = (name?: string, phone?: string) => {
+          const normalizedName = name?.trim().replace(/\s+/g, " ").toLowerCase();
+          const normalizedPhone = phone?.replace(/\D/g, "");
+          return normalizedName && normalizedPhone
+            ? `${normalizedName}|${normalizedPhone}`
+            : null;
+        };
+        const knownPatients = new Set(
+          registered
+            .map((patient) => patientKey(patient.name, patient.phone))
+            .filter((key): key is string => Boolean(key)),
+        );
+        const bookedPatients = new Map<string, Patient>();
+
+        for (const appointment of (appointmentsData.data || []) as AppointmentPatient[]) {
+          const phone = appointment.phone || appointment.patientId?.phone;
+          const name = appointment.patientName || appointment.patientId?.name;
+          const identity = patientKey(name, phone);
+          if (!identity || knownPatients.has(identity)) continue;
+
+          if (!bookedPatients.has(identity)) {
+            bookedPatients.set(identity, {
+              _id: `booking-${identity}`,
+              name: name || "Patient",
+              email: appointment.patientId?.email || "—",
+              phone,
+              isActive: true,
+              createdAt: appointment.createdAt,
+              bookingOnly: true,
+            });
+          }
+        }
+
+        setPatients([...registered, ...bookedPatients.values()]);
         setTotalPages(data.data.pagination?.totalPages ?? 1);
       }
     } finally {
@@ -155,7 +204,7 @@ export default function AdminPatientsPage() {
                     </td>
                     <td className="px-6 py-3">
                       <div className="flex flex-wrap gap-2">
-                        <button
+                        {!p.bookingOnly && <button
                           onClick={() => toggleActive(p)}
                           disabled={togglingId === p._id}
                           className={`text-xs px-2.5 py-1 rounded-md ${
@@ -169,14 +218,14 @@ export default function AdminPatientsPage() {
                             : p.isActive
                               ? ad.deactivate
                               : ad.activate}
-                        </button>
-                        <button
+                        </button>}
+                        {!p.bookingOnly && <button
                           onClick={() => deletePatient(p)}
                           disabled={deletingId === p._id}
                           className="text-xs px-2.5 py-1 rounded-md bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
                         >
                           {deletingId === p._id ? "..." : ad.deletePatient}
-                        </button>
+                        </button>}
                       </div>
                     </td>
                   </tr>

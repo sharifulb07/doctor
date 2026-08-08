@@ -89,12 +89,27 @@ async function getAppointmentsHandler(req: NextRequest) {
         .skip(skip)
         .limit(limit)
         .populate("dentistId", "name specialization clinicLocation")
-        .populate("patientId", "name email phone")
+        .populate("patientId", "name email phone role")
         .lean(),
       Appointment.countDocuments(query),
     ]);
 
-    return successResponse(appointments, "Appointments retrieved", 200, {
+    const normalizedAppointments = appointments.map((appointment) => {
+      const linkedUser = appointment.patientId as
+        | { role?: UserRole }
+        | null
+        | undefined;
+
+      // Older staff-created bookings may contain the staff account ID in
+      // patientId. Never expose that account as the patient; patientName and
+      // phone are the authoritative identity for bookings made on their behalf.
+      if (linkedUser?.role && linkedUser.role !== UserRole.PATIENT) {
+        return { ...appointment, patientId: null };
+      }
+      return appointment;
+    });
+
+    return successResponse(normalizedAppointments, "Appointments retrieved", 200, {
       page,
       limit,
       total,
@@ -219,8 +234,11 @@ async function createAppointmentHandler(req: NextRequest) {
     }
 
     // Create appointment
+    const patientId =
+      auth.role === UserRole.PATIENT ? auth.userId : undefined;
+
     const appointment = await Appointment.create({
-      patientId: auth.userId,
+      patientId,
       dentistId: safeDentistId,
       appointmentDate: apptDate,
       timeSlot,
@@ -248,19 +266,22 @@ async function createAppointmentHandler(req: NextRequest) {
 
     logAppointment({
       appointmentId: appointment._id.toString(),
-      patientId: auth.userId,
+      patientId: patientId?.toString() || auth.userId,
       dentistId: safeDentistId,
       action: "created",
       date: appointmentDate,
       timeSlot,
     });
 
-    // Send confirmation email async
-    sendConfirmationEmail(auth.email, {
-      ...appointment.toObject(),
-      dentistName: dentist.name,
-      clinicLocation: dentist.clinicLocation,
-    }).catch((err) => logError(err, { context: "sendConfirmationEmail" }));
+    // Only self-booking patients have a verified recipient email. Staff-created
+    // bookings intentionally do not send the patient's confirmation to staff.
+    if (auth.role === UserRole.PATIENT) {
+      sendConfirmationEmail(auth.email, {
+        ...appointment.toObject(),
+        dentistName: dentist.name,
+        clinicLocation: dentist.clinicLocation,
+      }).catch((err) => logError(err, { context: "sendConfirmationEmail" }));
+    }
 
     return createdResponse(appointment, "Appointment booked successfully");
   } catch (error) {

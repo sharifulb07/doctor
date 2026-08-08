@@ -2,7 +2,7 @@ import mongoose, { Schema, Document, Model, Types } from "mongoose";
 import { AppointmentStatus } from "@/types";
 
 export interface IAppointmentDocument extends Document {
-  patientId: Types.ObjectId;
+  patientId?: Types.ObjectId;
   dentistId: Types.ObjectId;
   appointmentDate: Date;
   timeSlot: string;
@@ -23,7 +23,7 @@ const AppointmentSchema = new Schema<IAppointmentDocument>(
     patientId: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: [true, "Patient ID is required"],
+      required: false,
     },
     dentistId: {
       type: Schema.Types.ObjectId,
@@ -103,6 +103,7 @@ AppointmentSchema.index(
 );
 AppointmentSchema.index({ patientId: 1, status: 1 });
 AppointmentSchema.index({ dentistId: 1, appointmentDate: 1 });
+AppointmentSchema.index({ dentistId: 1, status: 1, appointmentDate: 1 });
 AppointmentSchema.index({ status: 1, appointmentDate: 1 });
 AppointmentSchema.index({ createdAt: -1 });
 

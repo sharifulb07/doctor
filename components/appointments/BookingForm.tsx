@@ -27,7 +27,11 @@ interface TimeSlot {
   isBooked: boolean;
 }
 
-export default function BookingForm() {
+export default function BookingForm({
+  userRole = "patient",
+}: {
+  userRole?: "patient" | "dentist" | "admin";
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const preselectedDentistId = searchParams.get("dentistId") || "";
@@ -197,7 +201,13 @@ export default function BookingForm() {
       }
 
       setSuccess(true);
-      setTimeout(() => router.push("/appointments"), 2000);
+      const destination =
+        userRole === "admin"
+          ? "/admin/appointments"
+          : userRole === "dentist"
+            ? "/dentist/appointments"
+            : "/appointments";
+      setTimeout(() => router.push(destination), 2000);
     } catch {
       setServerError(bk.networkError);
     } finally {

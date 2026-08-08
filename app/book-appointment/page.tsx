@@ -27,7 +27,7 @@ export default async function BookAppointmentPage() {
           <div className="animate-pulse bg-slate-100 rounded-xl h-96" />
         }
       >
-        <BookingForm />
+        <BookingForm userRole={auth.role} />
       </Suspense>
     </div>
   );

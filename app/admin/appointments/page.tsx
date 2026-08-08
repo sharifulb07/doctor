@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { AppointmentStatus } from "@/types";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { formatTimeSlotRange } from "@/utils/timeSlots";
 
 interface Appointment {
   _id: string;
@@ -11,6 +12,7 @@ interface Appointment {
   dentistId: { name?: string } | null;
   appointmentDate: string;
   timeSlot: string;
+  createdAt: string;
   status: string;
   notes?: string;
 }
@@ -114,7 +116,9 @@ export default function AdminAppointmentsPage() {
                   <th className="px-4 py-3 text-left">{ad.colDentist}</th>
                   <th className="px-4 py-3 text-left">{ad.colDate}</th>
                   <th className="px-4 py-3 text-left">{ad.colTime}</th>
-                  <th className="px-4 py-3 text-left">{ad.colReason}</th>
+                  <th className="px-4 py-3 text-left">
+                    {locale === "bn" ? "বুকিংয়ের তারিখ ও সময়" : "Booking Time & Date"}
+                  </th>
                   <th className="px-4 py-3 text-left">{ad.colStatus}</th>
                   <th className="px-4 py-3 text-left">{ad.colActions}</th>
                 </tr>
@@ -124,7 +128,7 @@ export default function AdminAppointmentsPage() {
                   <tr key={appt._id} className="hover:bg-slate-50">
                     <td className="px-4 py-3">
                       <p className="font-medium text-slate-900">
-                        {appt.patientId?.name || appt.patientName}
+                        {appt.patientName || appt.patientId?.name}
                       </p>
                       <p className="text-xs text-slate-500">
                         {appt.patientId?.email || "—"}
@@ -139,10 +143,21 @@ export default function AdminAppointmentsPage() {
                       )}
                     </td>
                     <td className="px-4 py-3 text-slate-600">
-                      {appt.timeSlot}
+                      {formatTimeSlotRange(appt.timeSlot)}
                     </td>
-                    <td className="px-4 py-3 text-slate-500 max-w-40 truncate">
-                      {appt.notes || "—"}
+                    <td className="px-4 py-3 text-slate-500 whitespace-nowrap">
+                      {new Date(appt.createdAt).toLocaleString(
+                        locale === "bn" ? "bn-BD" : "en-US",
+                        {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                          hour: "numeric",
+                          minute: "2-digit",
+                          hour12: true,
+                          timeZone: "Asia/Dhaka",
+                        },
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       <span

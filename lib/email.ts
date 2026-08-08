@@ -199,3 +199,27 @@ export async function sendWelcomeEmail(
     html,
   });
 }
+
+export async function sendPasswordResetEmail(
+  to: string,
+  name: string,
+  resetUrl: string,
+): Promise<void> {
+  const html = baseTemplate(
+    "Reset your password",
+    `
+    <h2>Password reset request</h2>
+    <p>Dear <strong>${name}</strong>,</p>
+    <p>Use the button below to create a new password. This link expires in 15 minutes and can only be used once.</p>
+    <a href="${resetUrl}" class="btn">Reset Password</a>
+    <p style="margin-top:24px;font-size:13px;color:#64748b;">If you did not request this change, you can safely ignore this email.</p>
+    `,
+  );
+
+  await transporter.sendMail({
+    from: FROM_EMAIL,
+    to,
+    subject: "Reset your EasyDentalSolution password",
+    html,
+  });
+}

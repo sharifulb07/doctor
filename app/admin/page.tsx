@@ -1,18 +1,80 @@
 import AdminDashboardContent from "@/components/admin/AdminDashboardContent";
-import { unstable_cache } from "next/cache";
 import connectDB from "@/lib/mongodb";
 import Appointment from "@/models/Appointment";
 import Dentist from "@/models/Dentist";
 import User from "@/models/User";
 import { AppointmentStatus, UserRole } from "@/types";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+function normalizedPhone(field: string) {
+  return [" ", "-", "(", ")", "+"].reduce<unknown>(
+    (input, find) => ({ $replaceAll: { input, find, replacement: "" } }),
+    field,
+  );
+}
+
+async function countUniquePatients() {
+  const [result] = await User.aggregate([
+    {
+      $match: {
+        role: UserRole.PATIENT,
+        name: { $type: "string", $ne: "" },
+        phone: { $type: "string", $ne: "" },
+      },
+    },
+    {
+      $project: {
+        key: {
+          $concat: [
+            { $toLower: { $trim: { input: "$name" } } },
+            "|",
+            normalizedPhone("$phone"),
+          ],
+        },
+      },
+    },
+    {
+      $unionWith: {
+        coll: "appointments",
+        pipeline: [
+          {
+            $match: {
+              patientName: { $type: "string", $ne: "" },
+              phone: { $type: "string", $ne: "" },
+            },
+          },
+          {
+            $project: {
+              key: {
+                $concat: [
+                  { $toLower: { $trim: { input: "$patientName" } } },
+                  "|",
+                  normalizedPhone("$phone"),
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+    { $group: { _id: "$key" } },
+    { $count: "total" },
+  ]);
+
+  return result?.total || 0;
+}
+
 async function getStats() {
   await connectDB();
   const now = new Date();
-  const todayStart = new Date(now);
-  todayStart.setHours(0, 0, 0, 0);
-  const todayEnd = new Date(now);
-  todayEnd.setHours(23, 59, 59, 999);
+  const dhakaOffsetMs = 6 * 60 * 60 * 1000;
+  const dhakaNow = new Date(now.getTime() + dhakaOffsetMs);
+  const todayStart = new Date(dhakaNow);
+  todayStart.setUTCHours(0, 0, 0, 0);
+  todayStart.setTime(todayStart.getTime() - dhakaOffsetMs);
+  const todayEnd = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000 - 1);
 
   const [
     totalPatients,
@@ -22,7 +84,7 @@ async function getStats() {
     today,
     recent,
   ] = await Promise.all([
-    User.countDocuments({ role: UserRole.PATIENT }),
+    countUniquePatients(),
     Dentist.countDocuments({ isActive: true }),
     Appointment.countDocuments(),
     Appointment.countDocuments({ status: AppointmentStatus.PENDING }),
@@ -54,12 +116,13 @@ async function getStats() {
         $project: {
           _id: 1,
           patientName: {
-            $ifNull: [{ $arrayElemAt: ["$patient.name", 0] }, "$patientName"],
+            $ifNull: ["$patientName", { $arrayElemAt: ["$patient.name", 0] }],
           },
           dentistName: {
             $ifNull: [{ $arrayElemAt: ["$dentist.name", 0] }, "—"],
           },
           appointmentDate: 1,
+          timeSlot: 1,
           status: 1,
         },
       },
@@ -78,6 +141,7 @@ async function getStats() {
         patientName: string;
         dentistName: string;
         appointmentDate: Date | string;
+        timeSlot: string;
         status: string;
       };
       return {
@@ -88,18 +152,14 @@ async function getStats() {
           doc.appointmentDate instanceof Date
             ? doc.appointmentDate.toISOString()
             : String(doc.appointmentDate),
+        timeSlot: doc.timeSlot,
         status: doc.status,
       };
     }),
   };
 }
 
-const getCachedStats = unstable_cache(getStats, ["admin-dashboard-stats"], {
-  revalidate: 30,
-  tags: ["admin-dashboard"],
-});
-
 export default async function AdminDashboardPage() {
-  const stats = await getCachedStats();
+  const stats = await getStats();
   return <AdminDashboardContent stats={stats} />;
 }

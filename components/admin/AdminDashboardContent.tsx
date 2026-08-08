@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { formatTimeSlotRange } from "@/utils/timeSlots";
 
 interface RecentAppointment {
   _id: { toString: () => string } | string;
   patientName: string;
   dentistName: string;
   appointmentDate: string;
+  timeSlot: string;
   status: string;
 }
 
@@ -107,6 +109,7 @@ export default function AdminDashboardContent({ stats }: Props) {
                 <th className="px-6 py-3 text-left">{ad.colPatient}</th>
                 <th className="px-6 py-3 text-left">{ad.colDentist}</th>
                 <th className="px-6 py-3 text-left">{ad.colDate}</th>
+                <th className="px-6 py-3 text-left">{ad.colTime}</th>
                 <th className="px-6 py-3 text-left">{ad.colStatus}</th>
               </tr>
             </thead>
@@ -127,6 +130,9 @@ export default function AdminDashboardContent({ stats }: Props) {
                       {new Date(appt.appointmentDate).toLocaleDateString(
                         locale === "bn" ? "bn-BD" : "en-US",
                       )}
+                    </td>
+                    <td className="px-6 py-3 text-slate-600 whitespace-nowrap">
+                      {formatTimeSlotRange(appt.timeSlot)}
                     </td>
                     <td className="px-6 py-3">
                       <span

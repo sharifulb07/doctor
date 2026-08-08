@@ -71,12 +71,30 @@ export const registerSchema = z.object({
 
 export const loginSchema = z.object({
   role: z.enum([UserRole.PATIENT, UserRole.DENTIST, UserRole.ADMIN]),
+  email: z.string().trim().superRefine((value, ctx) => {
+    const isEmail = z.string().email().safeParse(value).success;
+    const isPhone = phoneSchema.safeParse(value).success;
+    if (!isEmail && !isPhone) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Please enter a valid email address or mobile number",
+      });
+    }
+  }),
+  password: z.string().min(1, "Password is required"),
+});
+
+export const forgotPasswordSchema = z.object({
   email: z
     .string()
     .email("Please enter a valid email address")
     .toLowerCase()
     .trim(),
-  password: z.string().min(1, "Password is required"),
+});
+
+export const resetPasswordSchema = z.object({
+  token: z.string().min(32).max(200),
+  password: passwordSchema,
 });
 
 // ─── Dentist Schemas ──────────────────────────────────────────────────────────

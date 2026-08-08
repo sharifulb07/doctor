@@ -10,7 +10,7 @@ import { UserRole } from "@/types";
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const l = t.login;
   const initialRole =
     searchParams.get("role") === UserRole.ADMIN
@@ -126,15 +126,15 @@ export default function LoginForm() {
       )}
 
       <Input
-        label={l.email}
+        label={locale === "bn" ? "ইমেইল বা মোবাইল" : "Email or mobile"}
         name="email"
-        type="email"
-        autoComplete="email"
+        type="text"
+        autoComplete="username"
         value={form.email}
         onChange={handleChange}
         error={errors.email}
         required
-        placeholder="you@example.com"
+        placeholder="you@example.com / +880…"
       />
 
       <Input
@@ -148,6 +148,15 @@ export default function LoginForm() {
         required
         placeholder="••••••••"
       />
+
+      <div className="text-right">
+        <Link
+          href="/forgot-password"
+          className="text-sm text-sky-600 hover:underline"
+        >
+          {locale === "bn" ? "পাসওয়ার্ড ভুলে গেছেন?" : "Forgot password?"}
+        </Link>
+      </div>
 
       <Button type="submit" className="w-full" size="lg" loading={loading}>
         {l.signIn}

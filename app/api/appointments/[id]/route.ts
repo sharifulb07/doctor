@@ -127,7 +127,7 @@ export async function PATCH(req: NextRequest, ctx: Context) {
       auth.role === UserRole.ADMIN || auth.role === UserRole.DENTIST;
 
     // Patients can only cancel or reschedule their own appointments
-    if (isPatient && appt.patientId.toString() !== auth.userId) {
+    if (isPatient && appt.patientId?.toString() !== auth.userId) {
       return forbiddenResponse("Permission denied");
     }
 
@@ -258,7 +258,7 @@ export async function PATCH(req: NextRequest, ctx: Context) {
 
       logAppointment({
         appointmentId: id,
-        patientId: appt.patientId.toString(),
+        patientId: appt.patientId?.toString() || auth.userId,
         dentistId: appt.dentistId.toString(),
         action: "updated",
         date: result.data.appointmentDate,
@@ -322,7 +322,7 @@ export async function PATCH(req: NextRequest, ctx: Context) {
 
     logAppointment({
       appointmentId: id,
-      patientId: appt.patientId.toString(),
+      patientId: appt.patientId?.toString() || auth.userId,
       dentistId: appt.dentistId.toString(),
       action: status as "cancelled" | "confirmed" | "completed" | "updated",
     });

@@ -811,7 +811,7 @@ export const developedServices: DevelopedServiceData[] = [
 
     description: {
       bn: "ভেনিয়ার, বন্ডিং এবং অন্যান্য আধুনিক পদ্ধতির মাধ্যমে হাসির সৌন্দর্য বৃদ্ধি করা হয়।",
-      en: "Smile enhancement through veneers, bonding, and advanced cosmetic procedures.",
+      en: "Smile enhancement through veneer, bonding, and advanced cosmetic procedures.",
     },
 
     benefits: {
@@ -1064,8 +1064,8 @@ const baseServices: BaseService[] = [
     },
   },
   {
-    slug: "dental-veneers",
-    name: "Dental Veneers",
+    slug: "dental-veneer",
+    name: "Dental Veneer",
     shortDescription:
       "Thin custom shells to improve shape, color, and smile harmony.",
     iconSrc: "/icons/9.png",
