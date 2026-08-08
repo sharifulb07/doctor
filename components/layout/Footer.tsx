@@ -12,7 +12,7 @@ import {
 } from "react-icons/fa";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-export default function Footer() {
+export default function Footer({ currentYear }: { currentYear: number }) {
   const { t } = useLanguage();
 
   return (
@@ -178,7 +178,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="mt-12 border-t border-slate-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500">
           <p>
-            © {new Date().getFullYear()} {t.footer.copyright}
+            © {currentYear} {t.footer.copyright}
           </p>
 
           <div className="flex items-center gap-6">

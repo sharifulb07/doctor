@@ -37,33 +37,34 @@ async function registerHandler(req: NextRequest) {
     return validationErrorResponse(formatZodErrors(result.error));
   }
 
-  const { name, email, password, phone, dateOfBirth } = result.data;
+  const { identifier, password } = result.data;
+  const isEmail = identifier.includes("@");
+  const email = isEmail ? sanitizeEmail(identifier) : undefined;
+  const phone = isEmail ? undefined : sanitizeText(identifier);
 
   try {
     await connectDB();
 
-    // Check for existing email
-    const existing = await User.findOne({ email: sanitizeEmail(email) });
+    const existing = await User.findOne(isEmail ? { email } : { phone });
     if (existing) {
-      return conflictResponse("An account with this email already exists");
+      return conflictResponse(
+        `An account with this ${isEmail ? "email" : "mobile number"} already exists`,
+      );
     }
 
     const user = await User.create({
-      name: sanitizeText(name),
-      email: sanitizeEmail(email),
+      name: "Patient",
+      ...(email && { email }),
       password,
       role: UserRole.PATIENT,
-      ...(phone && { phone: sanitizeText(phone) }),
-      ...(dateOfBirth && { dateOfBirth: new Date(sanitizeText(dateOfBirth)) }),
+      ...(phone && { phone }),
     });
 
-    // Fire-and-forget welcome email
-    sendWelcomeEmail(sanitizeEmail(email), sanitizeText(name)).catch((err) =>
-      logError(err, {
-        context: "sendWelcomeEmail",
-        email: sanitizeEmail(email),
-      }),
-    );
+    if (email) {
+      sendWelcomeEmail(email, "Patient").catch((err) =>
+        logError(err, { context: "sendWelcomeEmail", email }),
+      );
+    }
 
     return createdResponse(
       {
@@ -77,7 +78,7 @@ async function registerHandler(req: NextRequest) {
       "Account created successfully",
     );
   } catch (error) {
-    logError(error, { context: "register", email, ip });
+    logError(error, { context: "register", email: identifier, ip });
     return serverErrorResponse();
   }
 }

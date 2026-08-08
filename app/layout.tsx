@@ -6,8 +6,8 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 
 export const metadata: Metadata = {
   title: {
-    default: "DentalCare — Online Appointment Booking",
-    template: "%s | DentalCare",
+    default: "EasyDentalSolution — Online Appointment Booking",
+    template: "%s | EasyDentalSolution",
   },
   description:
     "Book dental appointments online with qualified dentists. Easy scheduling, confirmations, and reminders.",
@@ -16,10 +16,10 @@ export const metadata: Metadata = {
     "dental appointment",
     "teeth cleaning",
     "orthodontics",
-    "DentalCare",
+    "EasyDentalSolution",
   ],
   openGraph: {
-    siteName: "DentalCare",
+    siteName: "EasyDentalSolution",
     type: "website",
   },
 };
@@ -29,13 +29,18 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const currentYear = new Date().getUTCFullYear();
+
   return (
     <html lang="bn" suppressHydrationWarning>
-      <body className="antialiased min-h-screen flex flex-col bg-slate-50">
+      <body
+        className="antialiased min-h-screen flex flex-col bg-slate-50"
+        suppressHydrationWarning
+      >
         <LanguageProvider>
           <Navbar />
           <main className="flex-1">{children}</main>
-          <Footer />
+          <Footer currentYear={currentYear} />
         </LanguageProvider>
       </body>
     </html>

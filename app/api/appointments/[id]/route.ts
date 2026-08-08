@@ -110,6 +110,18 @@ export async function PATCH(req: NextRequest, ctx: Context) {
     const appt = await Appointment.findById(id);
     if (!appt) return notFoundResponse("Appointment not found");
 
+    if (auth.role === UserRole.DENTIST) {
+      const dentalSurgeon = await Dentist.findOne({ userId: auth.userId })
+        .select("_id")
+        .lean();
+      if (
+        !dentalSurgeon ||
+        dentalSurgeon._id.toString() !== appt.dentistId.toString()
+      ) {
+        return forbiddenResponse("You can only manage your own appointments");
+      }
+    }
+
     const isPatient = auth.role === UserRole.PATIENT;
     const isAdminOrDentist =
       auth.role === UserRole.ADMIN || auth.role === UserRole.DENTIST;

@@ -6,7 +6,7 @@ import RegisterPageHeading from "@/components/auth/RegisterPageHeading";
 export const metadata: Metadata = {
   title: "Register",
   description:
-    "Create a free DentalCare account and book your first dental appointment.",
+    "Create a free EasyDentalSolution account and book your first dental appointment.",
 };
 
 export default function RegisterPage() {

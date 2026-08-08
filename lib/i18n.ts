@@ -40,9 +40,9 @@ export type Locale = "en" | "bn";
 export const translations = {
   en: {
     nav: {
-      brand: "DentalCare",
+      brand: "EasyDentalSolution",
       services: "Services",
-      dentists: "Dentists",
+      dentists: "Dental Surgeons",
       bookAppointment: "Book Appointment",
       myAppointments: "My Appointments",
       admin: "Admin",
@@ -57,7 +57,7 @@ export const translations = {
         "Your trusted partner for quality dental care. Book appointments online and manage your dental health with ease.",
       quickLinks: "Quick Links",
       home: "Home",
-      ourDentists: "Our Dentists",
+      ourDentists: "Our Dental Surgeons",
       bookAppointment: "Book Appointment",
       myAppointments: "My Appointments",
       contact: "Contact",
@@ -72,9 +72,9 @@ export const translations = {
       heroSubtitle:
         "Book appointments with qualified dentists in minutes. Easy scheduling, email reminders, and complete dental health management.",
       bookAppointment: "📅 Book Appointment",
-      meetDentists: "Meet Our Dentists",
+      meetDentists: "Meet Our Dental Surgeons",
       stats: {
-        expertDentists: "Expert Dentists",
+        expertDentists: "Expert Dental Surgeons",
         happyPatients: "Happy Patients",
         yearsOfService: "Years of Service",
         treatments: "Treatments",
@@ -83,7 +83,7 @@ export const translations = {
       howItWorksSubtitle: "Book your appointment in 3 easy steps",
       steps: [
         {
-          title: "Find a Dentist",
+          title: "Find a Dental Surgeon",
           desc: "Browse our qualified dentists by specialization, location, or rating.",
         },
         {
@@ -95,7 +95,7 @@ export const translations = {
           desc: "Receive an instant email confirmation with all appointment details.",
         },
       ],
-      topDentists: "Our Top Dentists",
+      topDentists: "Our Top Dental Surgeons",
       topDentistsSubtitle:
         "Experienced professionals dedicated to your dental health",
       viewAll: "View All →",
@@ -161,15 +161,15 @@ export const translations = {
       ],
       ctaTitle: "Ready to Book Your Visit?",
       ctaSubtitle:
-        "Join thousands of patients who trust DentalCare for their EasyDentalSolution needs.",
+        "Join thousands of patients who trust EasyDentalSolution for their dental needs.",
       createAccount: "Create Free Account",
       bookNow: "Book Now",
     },
     dentists: {
-      title: "Our Dentists",
+      title: "Our Dental Surgeons",
       subtitle: "Meet our team of {count} qualified dental professionals",
       all: "All",
-      noResults: "No dentists listed yet.",
+      noResults: "No Dental Surgeons listed yet.",
       checkBack: "Check back soon!",
       yearsExp: "years experience",
       viewProfile: "View Profile",
@@ -178,7 +178,7 @@ export const translations = {
       qualMore: "more",
     },
     dentistProfile: {
-      backToDentists: "← Back to Dentists",
+      backToDentists: "← Back to Dental Surgeons",
       yearsExperience: "years of experience",
       reviews: "reviews",
       consultation: "Consultation Fee",
@@ -204,7 +204,7 @@ export const translations = {
       cancelConfirm: "Are you sure you want to cancel this appointment?",
       reschedule: "Reschedule",
       cancelAppointment: "Cancel Appointment",
-      dentist: "Dentist",
+      dentist: "Dental Surgeon",
     },
     reschedule: {
       title: "Reschedule Appointment",
@@ -224,9 +224,9 @@ export const translations = {
       title: "Book an Appointment",
       subtitle:
         "Choose your dentist, pick a date and time, and confirm your booking.",
-      selectDentist: "Select Dentist",
-      dentistLabel: "Dentist",
-      selectDentistOption: "-- Select a dentist --",
+      selectDentist: "Select Dental Surgeon",
+      dentistLabel: "Dental Surgeon",
+      selectDentistOption: "-- Select a Dental Surgeon --",
       availabilitySummary: "Doctor Availability",
       selectDentistToViewAvailability:
         "Select a dentist to view their available days and time slots.",
@@ -278,7 +278,7 @@ export const translations = {
     },
     login: {
       title: "Welcome Back",
-      subtitle: "Sign in to your DentalCare account",
+      subtitle: "Sign in to your EasyDentalSolution account",
       email: "Email address",
       password: "Password",
       signIn: "Sign In",
@@ -289,7 +289,7 @@ export const translations = {
     },
     register: {
       title: "Create Your Account",
-      subtitle: "Join thousands of patients on DentalCare",
+      subtitle: "Join thousands of patients on EasyDentalSolution",
       fullName: "Full name",
       email: "Email address",
       password: "Password",
@@ -308,26 +308,26 @@ export const translations = {
     admin: {
       dashboard: "Admin Dashboard",
       patients: "Patients",
-      dentists: "Dentists",
-      createDentist: "Create Dentist",
-      editDentist: "Edit Dentist",
-      deleteDentist: "Delete Dentist",
+      dentists: "Dental Surgeons",
+      createDentist: "Create Dental Surgeon",
+      editDentist: "Edit Dental Surgeon",
+      deleteDentist: "Delete Dental Surgeon",
       deletePatient: "Delete Patient",
       saveDentist: "Save Changes",
       cancel: "Cancel",
       appointments: "Appointments",
       overview: "Overview",
       totalPatients: "Total Patients",
-      activeDentists: "Active Dentists",
+      activeDentists: "Active Dental Surgeons",
       totalAppointments: "Total Appointments",
       pendingReview: "Pending Review",
       todayAppointments: "Today's Appointments",
       recentAppointments: "Recent Appointments",
       viewAll: "View all →",
       allAppointments: "All Appointments",
-      manageDentists: "Manage Dentists",
+      manageDentists: "Manage Dental Surgeons",
       colPatient: "Patient",
-      colDentist: "Dentist",
+      colDentist: "Dental Surgeon",
       colDate: "Date",
       colTime: "Time",
       colStatus: "Status",
@@ -352,7 +352,7 @@ export const translations = {
       activate: "Activate",
       deactivate: "Deactivate",
       saving: "Saving…",
-      noDentists: "No dentists found.",
+      noDentists: "No Dental Surgeons found.",
       noPatients: "No patients found.",
       previous: "Previous",
       next: "Next",
@@ -369,7 +369,7 @@ export const translations = {
 
   bn: {
     nav: {
-      brand: "ডেন্টালকেয়ার",
+      brand: "ইজিডেন্টালসল্যুশন",
       services: "সেবাসমূহ",
       dentists: "দন্তচিকিৎসক",
       bookAppointment: "অ্যাপয়েন্টমেন্ট বুক করুন",
@@ -608,7 +608,7 @@ export const translations = {
     },
     login: {
       title: "স্বাগতম",
-      subtitle: "আপনার ডেন্টালকেয়ার অ্যাকাউন্টে সাইন ইন করুন",
+      subtitle: "আপনার ইজিডেন্টালসল্যুশন অ্যাকাউন্টে সাইন ইন করুন",
       email: "ইমেইল ঠিকানা",
       password: "পাসওয়ার্ড",
       signIn: "সাইন ইন",
@@ -619,7 +619,7 @@ export const translations = {
     },
     register: {
       title: "আপনার অ্যাকাউন্ট তৈরি করুন",
-      subtitle: "ডেন্টালকেয়ারে হাজার হাজার রোগীর সাথে যোগ দিন",
+      subtitle: "ইজিডেন্টালসল্যুশনে হাজার হাজার রোগীর সাথে যোগ দিন",
       fullName: "পুরো নাম",
       email: "ইমেইল ঠিকানা",
       password: "পাসওয়ার্ড",

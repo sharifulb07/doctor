@@ -30,8 +30,8 @@ const UserSchema = new Schema<IUserDocument>(
     },
     email: {
       type: String,
-      required: [true, "Email is required"],
       unique: true,
+      sparse: true,
       lowercase: true,
       trim: true,
       match: [/^\S+@\S+\.\S+$/, "Please enter a valid email address"],
@@ -49,6 +49,8 @@ const UserSchema = new Schema<IUserDocument>(
     },
     phone: {
       type: String,
+      unique: true,
+      sparse: true,
       trim: true,
       match: [/^\+?[\d\s\-()]{7,20}$/, "Please enter a valid phone number"],
     },

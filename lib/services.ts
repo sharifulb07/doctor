@@ -945,7 +945,7 @@ const baseServices: BaseService[] = [
   },
   {
     slug: "tooth-restoration-filling",
-    name: "Tooth Restoration (Filling)",
+    name: "Tooth Restoration Filling",
     shortDescription: "Repair decayed teeth and restore natural function.",
     iconSrc: "/icons/2.png",
     imageSrc: "/icons/2.png",
@@ -960,10 +960,10 @@ const baseServices: BaseService[] = [
     },
   },
   {
-    slug: "extraction-colour-matching-filling",
-    name: "Extraction (Colour Matching Filling)",
+    slug: "tooth-extraction",
+    name: "Tooth Extraction",
     shortDescription:
-      "Tooth removal and aesthetic restoration planning in one pathway.",
+      "Safe removal of a damaged or non-restorable tooth.",
     iconSrc: "/icons/3.png",
     imageSrc: "/icons/3.png",
     category: "surgical",
@@ -977,8 +977,8 @@ const baseServices: BaseService[] = [
     },
   },
   {
-    slug: "surgical-extraction",
-    name: "Surgical Extraction",
+    slug: "surgical-tooth-extraction",
+    name: "Surgical Tooth Extraction",
     shortDescription: "Advanced extraction for impacted or difficult teeth.",
     iconSrc: "/icons/4.png",
     imageSrc: "/icons/4.png",
@@ -1014,7 +1014,7 @@ const baseServices: BaseService[] = [
   },
   {
     slug: "scaling-root-planing",
-    name: "Scaling & Root Planing",
+    name: "Scaling And Root Planing",
     shortDescription:
       "Deep gum cleaning to control plaque and periodontal disease.",
     iconSrc: "/icons/6.png",
@@ -1047,8 +1047,8 @@ const baseServices: BaseService[] = [
     },
   },
   {
-    slug: "bleaching-teeth-whitening",
-    name: "Bleaching (Teeth Whitening)",
+    slug: "teeth-whitening",
+    name: "Teeth Whitening",
     shortDescription:
       "Professional whitening for a brighter and cleaner smile.",
     iconSrc: "/icons/8.png",
@@ -1064,8 +1064,8 @@ const baseServices: BaseService[] = [
     },
   },
   {
-    slug: "veneer",
-    name: "Veneer",
+    slug: "dental-veneers",
+    name: "Dental Veneers",
     shortDescription:
       "Thin custom shells to improve shape, color, and smile harmony.",
     iconSrc: "/icons/9.png",
@@ -1081,8 +1081,8 @@ const baseServices: BaseService[] = [
     },
   },
   {
-    slug: "crown-cap",
-    name: "Crown (Cap)",
+    slug: "dental-crowns",
+    name: "Dental Crowns",
     shortDescription:
       "Protect weak teeth with durable full-coverage restoration.",
     iconSrc: "/icons/10.png",
@@ -1098,8 +1098,8 @@ const baseServices: BaseService[] = [
     },
   },
   {
-    slug: "metal-cap",
-    name: "Metal Cap",
+    slug: "metal-crown",
+    name: "Metal Crown",
     shortDescription:
       "Strong metal crown option for long-lasting posterior support.",
     iconSrc: "/icons/11.png",
@@ -1115,8 +1115,8 @@ const baseServices: BaseService[] = [
     },
   },
   {
-    slug: "metal-ceramic-cap",
-    name: "Metal Ceramic Cap",
+    slug: "metal-ceramic-crown",
+    name: "Metal Ceramic Crown",
     shortDescription: "Balanced strength and aesthetics for crown restoration.",
     iconSrc: "/icons/12.png",
     imageSrc: "/icons/12.png",
@@ -1131,8 +1131,8 @@ const baseServices: BaseService[] = [
     },
   },
   {
-    slug: "zirconia-cap",
-    name: "Zirconia Cap",
+    slug: "zirconia-crown",
+    name: "Zirconia Crown",
     shortDescription: "Premium aesthetic crown with excellent durability.",
     iconSrc: "/icons/13.png",
     imageSrc: "/icons/13.png",
@@ -1147,8 +1147,8 @@ const baseServices: BaseService[] = [
     },
   },
   {
-    slug: "e-max-cap",
-    name: "E-max Cap",
+    slug: "e-max-crown",
+    name: "E Max Crown",
     shortDescription: "Highly aesthetic all-ceramic crown for visible teeth.",
     iconSrc: "/icons/14.png",
     imageSrc: "/icons/14.png",
@@ -1163,8 +1163,8 @@ const baseServices: BaseService[] = [
     },
   },
   {
-    slug: "partial-complete-denture",
-    name: "Partial Denture & Complete Denture",
+    slug: "partial-complete-dentures",
+    name: "Partial And Complete Dentures",
     shortDescription:
       "Replace missing teeth to restore smile and chewing function.",
     iconSrc: "/icons/15.png",
@@ -1180,8 +1180,8 @@ const baseServices: BaseService[] = [
     },
   },
   {
-    slug: "acrylic-teeth-denture",
-    name: "Acrylic Teeth / Denture",
+    slug: "acrylic-dentures",
+    name: "Acrylic Dentures",
     shortDescription:
       "Cost-effective removable prosthesis for tooth replacement.",
     iconSrc: "/icons/16.png",
@@ -1198,7 +1198,7 @@ const baseServices: BaseService[] = [
   },
   {
     slug: "flexible-denture",
-    name: "Flexible Denture",
+    name: "Flexible Dentures",
     shortDescription:
       "Comfortable, aesthetic, metal-free removable denture option.",
     iconSrc: "/icons/17.png",
@@ -1230,8 +1230,8 @@ const baseServices: BaseService[] = [
     },
   },
   {
-    slug: "cyst-tumour-surgery",
-    name: "Cyst & Tumour Surgery",
+    slug: "cyst-tumor-surgery",
+    name: "Cyst And Tumor Surgery",
     shortDescription: "Surgical management of oral cystic or tumorous lesions.",
     iconSrc: "/icons/19.png",
     imageSrc: "/icons/19.png",
@@ -1313,8 +1313,8 @@ const baseServices: BaseService[] = [
     },
   },
   {
-    slug: "children-dental-disease-management",
-    name: "Children Dental Diseases Management",
+    slug: "child-dental-disease-management",
+    name: "Child Dental Disease Management",
     shortDescription:
       "Child-focused diagnosis and treatment for common pediatric dental problems.",
     iconSrc: "/icons/24.png",
@@ -1330,8 +1330,8 @@ const baseServices: BaseService[] = [
     },
   },
   {
-    slug: "filling",
-    name: "Filling",
+    slug: "dental-filling",
+    name: "Dental Filling",
     shortDescription: "Simple cavity restoration for children and adults.",
     iconSrc: "/icons/25.png",
     imageSrc: "/icons/25.png",
@@ -1379,8 +1379,8 @@ const baseServices: BaseService[] = [
     },
   },
   {
-    slug: "abscess-management",
-    name: "Abscess Management",
+    slug: "dental-abscess-management",
+    name: "Dental Abscess Management",
     shortDescription:
       "Rapid pain relief and infection control for dental abscess.",
     iconSrc: "/icons/28.png",
@@ -1395,6 +1395,106 @@ const baseServices: BaseService[] = [
       appointmentRequired: "Yes / Emergency",
     },
   },
+  {
+    slug: "dental-aesthetics-smile-design",
+    name: "Dental Aesthetics And Smile Design",
+    shortDescription: "Personalized cosmetic planning to improve smile balance, color, and proportion.",
+    iconSrc: "/icons/29.png",
+    imageSrc: "/icons/29.png",
+    category: "cosmetic",
+    specializations: ["Cosmetic Dentistry", "Prosthodontics"],
+    quickInfo: { duration: "45-90 minutes", recoveryTime: "Treatment-dependent", anesthesia: "Usually not required", cost: "Custom quote", appointmentRequired: "Yes" },
+  },
+  {
+    slug: "dental-bridges",
+    name: "Dental Bridges",
+    shortDescription: "Fixed replacement of one or more missing teeth using supported prosthetic teeth.",
+    iconSrc: "/icons/30.png",
+    imageSrc: "/icons/30.png",
+    category: "prosthodontic",
+    specializations: ["Prosthodontics", "Restorative Dentistry"],
+    quickInfo: { duration: "2-3 visits", recoveryTime: "2-5 days", anesthesia: "Local anesthesia", cost: "Custom quote", appointmentRequired: "Yes" },
+  },
+  {
+    slug: "apexogenesis-apexification",
+    name: "Apexogenesis And Apexification",
+    shortDescription: "Specialized pulp therapy that supports root development in immature permanent teeth.",
+    iconSrc: "/icons/31.png",
+    imageSrc: "/icons/31.png",
+    category: "endodontic",
+    specializations: ["Endodontics", "Pediatric Dentistry"],
+    quickInfo: { duration: "45-75 minutes", recoveryTime: "1-3 days", anesthesia: "Local anesthesia", cost: "Custom quote", appointmentRequired: "Yes" },
+  },
+  {
+    slug: "dental-emergency-management",
+    name: "Dental Emergency Management",
+    shortDescription: "Prompt assessment and stabilization for severe pain, trauma, bleeding, or swelling.",
+    iconSrc: "/icons/32.png",
+    imageSrc: "/icons/32.png",
+    category: "trauma",
+    specializations: ["Emergency Dentistry", "General Dentistry", "Oral Surgery"],
+    quickInfo: { duration: "30-90 minutes", recoveryTime: "Case-dependent", anesthesia: "Case-dependent", cost: "Case-dependent", appointmentRequired: "Urgent / Emergency" },
+  },
+  {
+    slug: "pyogenic-granuloma-surgery",
+    name: "Pyogenic Granuloma Surgery",
+    shortDescription: "Removal and examination of a benign overgrowth that commonly affects the gums.",
+    iconSrc: "/icons/33.png",
+    imageSrc: "/icons/33.png",
+    category: "oral-surgery",
+    specializations: ["Oral & Maxillofacial Surgery", "Periodontics"],
+    quickInfo: { duration: "30-60 minutes", recoveryTime: "5-10 days", anesthesia: "Local anesthesia", cost: "Custom quote", appointmentRequired: "Yes" },
+  },
+  {
+    slug: "oral-cancer-management",
+    name: "Oral Cancer Management",
+    shortDescription: "Coordinated evaluation, biopsy, treatment planning, and follow-up for oral cancer.",
+    iconSrc: "/icons/34.png",
+    imageSrc: "/icons/34.png",
+    category: "oral-surgery",
+    specializations: ["Oral & Maxillofacial Surgery", "Oral Medicine"],
+    quickInfo: { duration: "Multistage care", recoveryTime: "Treatment-dependent", anesthesia: "Procedure-dependent", cost: "Custom quote", appointmentRequired: "Urgent consultation" },
+  },
+  {
+    slug: "oral-ulcer-treatment",
+    name: "Oral Ulcer Treatment",
+    shortDescription: "Diagnosis and targeted care for persistent, painful, or recurrent mouth ulcers.",
+    iconSrc: "/icons/35.png",
+    imageSrc: "/icons/35.png",
+    category: "preventive",
+    specializations: ["Oral Medicine", "General Dentistry"],
+    quickInfo: { duration: "20-40 minutes", recoveryTime: "Usually 7-14 days", anesthesia: "Not usually required", cost: "Custom quote", appointmentRequired: "Yes" },
+  },
+  {
+    slug: "premalignant-lesion-management",
+    name: "Premalignant Lesion Management",
+    shortDescription: "Assessment, biopsy, risk reduction, and monitoring of potentially malignant oral lesions.",
+    iconSrc: "/icons/36.png",
+    imageSrc: "/icons/36.png",
+    category: "oral-surgery",
+    specializations: ["Oral Medicine", "Oral & Maxillofacial Surgery"],
+    quickInfo: { duration: "30-60 minutes", recoveryTime: "Procedure-dependent", anesthesia: "Local anesthesia if biopsied", cost: "Custom quote", appointmentRequired: "Yes" },
+  },
+  {
+    slug: "oral-thrush-treatment",
+    name: "Oral Thrush Treatment",
+    shortDescription: "Antifungal care and cause assessment for oral candidiasis affecting the mouth and tongue.",
+    iconSrc: "/icons/37.png",
+    imageSrc: "/icons/37.png",
+    category: "preventive",
+    specializations: ["Oral Medicine", "General Dentistry"],
+    quickInfo: { duration: "20-30 minutes", recoveryTime: "7-14 days", anesthesia: "Not required", cost: "Custom quote", appointmentRequired: "Yes" },
+  },
+  {
+    slug: "dental-x-ray-opg-rvg",
+    name: "Dental X-ray ( OPG & RVG)",
+    shortDescription: "Digital panoramic and intraoral imaging for accurate dental diagnosis and treatment planning.",
+    iconSrc: "/icons/38.png",
+    imageSrc: "/icons/38.png",
+    category: "preventive",
+    specializations: ["Oral Radiology", "General Dentistry"],
+    quickInfo: { duration: "10-20 minutes", recoveryTime: "None", anesthesia: "Not required", cost: "Depends on imaging type", appointmentRequired: "Recommended" },
+  },
 ];
 
 const serviceCatalogDraft: ServiceDetails[] = baseServices.map((service) => {
@@ -1402,7 +1502,7 @@ const serviceCatalogDraft: ServiceDetails[] = baseServices.map((service) => {
 
   return {
     ...service,
-    overview: template.overview,
+    overview: `${service.shortDescription} ${template.overview}`,
     symptoms: template.symptoms,
     whenNeeded: template.whenNeeded,
     treatmentProcedure: createProcedureSteps(service.name),
@@ -1415,76 +1515,10 @@ const serviceCatalogDraft: ServiceDetails[] = baseServices.map((service) => {
   };
 });
 
-const developedServiceCatalog: ServiceDetails[] = developedServices.map(
-  (service: DevelopedServiceData) => ({
-    slug: service.slug,
-    name: service.title.en,
-    shortDescription: service.shortDescription.en,
-    iconSrc:
-      typeof service.image === "string" ? service.image : service.image.src,
-    imageSrc:
-      typeof service.image === "string" ? service.image : service.image.src,
-    category: "preventive",
-    specializations: ["General Dentistry", "Preventive Dentistry"],
-    quickInfo: {
-      duration: service.duration.en,
-      recoveryTime: "1-2 days",
-      anesthesia: "Local anesthesia",
-      cost: "Custom quote",
-      appointmentRequired: "Yes",
-    },
-    overview: service.description.en,
-    symptoms: [
-      "Needs a professional assessment to determine the best treatment plan",
-      "May involve ongoing monitoring and follow-up care",
-    ],
-    whenNeeded: [
-      "When you want a modern, comprehensive dental care experience",
-      "When you need safe and advanced treatment planning",
-    ],
-    treatmentProcedure: [
-      ...service.treatmentProcess.en,
-      "Follow-up care and ongoing monitoring",
-    ].slice(0, 5) as [string, string, string, string, string],
-    benefits: service.benefits.en,
-    afterCare: [
-      "Follow the clinic's after-care instructions closely",
-      "Maintain regular oral hygiene habits",
-      "Attend recommended follow-up visits",
-    ],
-    avoidIf: [
-      "If you are currently unstable medically and need urgent care first",
-    ],
-    faqs: [
-      {
-        question: "Is this service suitable for routine dental care?",
-        answer:
-          "Yes, it is designed to provide a modern, comprehensive clinical experience for ongoing dental care.",
-      },
-      {
-        question: "How long does the appointment take?",
-        answer:
-          "The duration depends on the planned treatment and will be shared during consultation.",
-      },
-    ],
-    relatedServiceSlugs: [],
-    reviews: createReviews(service.title.en),
-  }),
-);
-
 // Some developed services also have a richer entry in the main service
 // catalog. Keep the main entry in that case so every public slug appears
 // exactly once across listings, related services, and static route params.
-const allCatalogDraft: ServiceDetails[] = Array.from(
-  [...serviceCatalogDraft, ...developedServiceCatalog]
-    .reduce((servicesBySlug, service) => {
-      if (!servicesBySlug.has(service.slug)) {
-        servicesBySlug.set(service.slug, service);
-      }
-      return servicesBySlug;
-    }, new Map<string, ServiceDetails>())
-    .values(),
-);
+const allCatalogDraft: ServiceDetails[] = serviceCatalogDraft;
 
 const serviceCatalog: ServiceDetails[] = allCatalogDraft.map((service) => {
   const related = allCatalogDraft

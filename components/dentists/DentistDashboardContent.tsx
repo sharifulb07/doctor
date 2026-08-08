@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface DentistProfile {
   _id: string;
@@ -17,6 +18,40 @@ interface AvailabilityRow {
 }
 
 export default function DentistDashboardContent() {
+  const { locale } = useLanguage();
+  const ui = locale === "bn" ? {
+    profile: "প্রোফাইল",
+    schedule: "নিজের সময়সূচি নির্ধারণ বা পুনঃনির্ধারণ",
+    date: "তারিখ",
+    slots: "সময়ের স্লট (HH:MM, কমা দিয়ে আলাদা করুন)",
+    example: "উদাহরণ: 09:00,10:00,11:00,15:30",
+    available: "এই দিনটি রোগীদের বুকিংয়ের জন্য উন্মুক্ত",
+    save: "সময়সূচি সংরক্ষণ করুন",
+    saving: "সংরক্ষণ হচ্ছে…",
+    upcoming: "আসন্ন সময়সূচি",
+    loading: "সময়সূচি লোড হচ্ছে…",
+    empty: "এখনও কোনো সময়সূচি পাওয়া যায়নি।",
+    availableLabel: "উপলভ্য",
+    unavailableLabel: "অনুপলভ্য",
+    saved: "নিজের সময়সূচি সফলভাবে সংরক্ষিত হয়েছে।",
+    pickDate: "অনুগ্রহ করে একটি তারিখ নির্বাচন করুন",
+  } : {
+    profile: "Profile",
+    schedule: "Set or reschedule your own availability",
+    date: "Date",
+    slots: "Time slots (HH:MM, comma-separated)",
+    example: "Example: 09:00,10:00,11:00,15:30",
+    available: "This day is open for patient bookings",
+    save: "Save schedule",
+    saving: "Saving…",
+    upcoming: "Upcoming availability",
+    loading: "Loading availability…",
+    empty: "No schedule found yet.",
+    availableLabel: "Available",
+    unavailableLabel: "Unavailable",
+    saved: "Your schedule was saved successfully.",
+    pickDate: "Please pick a date",
+  };
   const [profile, setProfile] = useState<DentistProfile | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
 
@@ -40,13 +75,13 @@ export default function DentistDashboardContent() {
         const res = await fetch("/api/dentists/me");
         const data = await res.json();
         if (!res.ok || !data.success) {
-          setError(data.message || "Failed to load dentist profile");
+          setError(data.message || "Failed to load Dental Surgeon profile");
           return;
         }
 
         setProfile(data.data);
       } catch {
-        setError("Network error while loading dentist profile");
+        setError("Network error while loading Dental Surgeon profile");
       } finally {
         setLoadingProfile(false);
       }
@@ -119,13 +154,13 @@ export default function DentistDashboardContent() {
     setError("");
 
     if (!profile?._id) {
-      setError("Dentist profile missing");
+      setError("Dental Surgeon profile missing");
       setSaving(false);
       return;
     }
 
     if (!selectedDate) {
-      setError("Please pick a date");
+      setError(ui.pickDate);
       setSaving(false);
       return;
     }
@@ -148,7 +183,7 @@ export default function DentistDashboardContent() {
         return;
       }
 
-      setMessage("Schedule saved successfully.");
+      setMessage(ui.saved);
 
       const listRes = await fetch(`/api/availability/${profile._id}`);
       const listData = await listRes.json();
@@ -165,13 +200,13 @@ export default function DentistDashboardContent() {
   const today = new Date().toISOString().split("T")[0];
 
   if (loadingProfile) {
-    return <p className="text-slate-500">Loading dashboard...</p>;
+    return <p className="text-slate-500">Loading Dental Surgeon dashboard...</p>;
   }
 
   if (!profile) {
     return (
       <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-        {error || "Could not load dentist profile"}
+        {error || "Could not load Dental Surgeon profile"}
       </div>
     );
   }
@@ -180,7 +215,7 @@ export default function DentistDashboardContent() {
     <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
       <div className="space-y-6">
         <section className="bg-white rounded-xl border border-slate-200 p-5">
-          <h2 className="font-semibold text-slate-900">Profile</h2>
+          <h2 className="font-semibold text-slate-900">{ui.profile}</h2>
           <p className="text-sm text-slate-600 mt-2">{profile.name}</p>
           <p className="text-sm text-slate-500">{profile.specialization}</p>
           <p className="text-sm text-slate-500">{profile.clinicLocation}</p>
@@ -188,7 +223,7 @@ export default function DentistDashboardContent() {
 
         <section className="bg-white rounded-xl border border-slate-200 p-5">
           <h2 className="font-semibold text-slate-900 mb-4">
-            Set free schedule
+            {ui.schedule}
           </h2>
 
           {error && (
@@ -205,7 +240,7 @@ export default function DentistDashboardContent() {
           <form onSubmit={handleSave} className="space-y-3">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">
-                Date
+                {ui.date}
               </label>
               <input
                 type="date"
@@ -219,7 +254,7 @@ export default function DentistDashboardContent() {
 
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">
-                Time slots (HH:MM, comma-separated)
+                {ui.slots}
               </label>
               <input
                 value={slotsText}
@@ -228,7 +263,7 @@ export default function DentistDashboardContent() {
                 required
               />
               <p className="text-xs text-slate-500 mt-1">
-                Example: 09:00,10:00,11:00,15:30
+                {ui.example}
               </p>
             </div>
 
@@ -238,7 +273,7 @@ export default function DentistDashboardContent() {
                 checked={isAvailable}
                 onChange={(e) => setIsAvailable(e.target.checked)}
               />
-              Day is available for booking
+              {ui.available}
             </label>
 
             <button
@@ -246,7 +281,7 @@ export default function DentistDashboardContent() {
               disabled={saving}
               className="px-4 py-2 rounded-lg bg-sky-600 text-white text-sm font-medium hover:bg-sky-700 disabled:opacity-60"
             >
-              {saving ? "Saving..." : "Save schedule"}
+              {saving ? ui.saving : ui.save}
             </button>
           </form>
         </section>
@@ -254,13 +289,13 @@ export default function DentistDashboardContent() {
 
       <section className="bg-white rounded-xl border border-slate-200 p-5 h-fit">
         <h2 className="font-semibold text-slate-900 mb-3">
-          Upcoming availability
+          {ui.upcoming}
         </h2>
 
         {loadingUpcoming ? (
-          <p className="text-sm text-slate-500">Loading availability...</p>
+          <p className="text-sm text-slate-500">{ui.loading}</p>
         ) : upcoming.length === 0 ? (
-          <p className="text-sm text-slate-500">No schedule found yet.</p>
+          <p className="text-sm text-slate-500">{ui.empty}</p>
         ) : (
           <div className="space-y-3 max-h-135 overflow-auto pr-1">
             {upcoming.map((row) => (
@@ -279,7 +314,7 @@ export default function DentistDashboardContent() {
                         : "bg-slate-100 text-slate-600"
                     }`}
                   >
-                    {row.isAvailable ? "Available" : "Unavailable"}
+                    {row.isAvailable ? ui.availableLabel : ui.unavailableLabel}
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">

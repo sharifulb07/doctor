@@ -20,7 +20,7 @@ export default async function AdminLayout({
   const navItems = [
     { href: "/admin", label: "📊 Overview" },
     { href: "/admin/appointments", label: "📅 Appointments" },
-    { href: "/admin/dentists", label: "👨‍⚕️ Dentists" },
+    { href: "/admin/dentists", label: "👨‍⚕️ Dental Surgeons" },
     { href: "/admin/patients", label: "👥 Patients" },
   ];
 
@@ -29,7 +29,7 @@ export default async function AdminLayout({
       {/* Sidebar */}
       <aside className="w-64 bg-slate-900 text-slate-300 hidden md:flex flex-col shrink-0">
         <div className="p-6 border-b border-slate-700">
-          <p className="text-white font-bold text-lg">🦷 DentalCare</p>
+          <p className="text-white font-bold text-lg">🦷 EasyDentalSolution</p>
           <p className="text-slate-400 text-xs mt-0.5">Admin Panel</p>
         </div>
         <nav className="flex-1 p-4 space-y-1">

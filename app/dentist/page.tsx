@@ -1,11 +1,10 @@
-import type { Metadata } from "next";
-import DentistDashboardContent from "@/components/dentists/DentistDashboardContent";
+import DentalSurgeonOverview from "@/components/dentists/DentalSurgeonOverview";
 
-export const metadata: Metadata = {
-  title: "Dentist Dashboard",
-  description: "Manage dentist availability and schedules",
+export const metadata = {
+  title: "Dental Surgeon Dashboard",
+  description: "Manage patients, appointments, and schedules",
 };
 
-export default function DentistDashboardPage() {
-  return <DentistDashboardContent />;
+export default function DentalSurgeonDashboardPage() {
+  return <DentalSurgeonOverview />;
 }

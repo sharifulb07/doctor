@@ -55,32 +55,19 @@ const DAYS_OF_WEEK = [
 
 // ─── Auth Schemas ─────────────────────────────────────────────────────────────
 
-export const registerSchema = z
-  .object({
-    name: z
-      .string()
-      .min(2, "Name must be at least 2 characters")
-      .max(100, "Name cannot exceed 100 characters")
-      .trim(),
-    email: z
-      .string()
-      .email("Please enter a valid email address")
-      .toLowerCase()
-      .trim(),
-    password: passwordSchema,
-    confirmPassword: z.string(),
-    phone: phoneSchema.optional().or(z.literal("")),
-    dateOfBirth: z.string().optional(),
-  })
-  .superRefine((data, ctx) => {
-    if (data.password !== data.confirmPassword) {
+export const registerSchema = z.object({
+  identifier: z.string().trim().superRefine((value, ctx) => {
+    const isEmail = z.string().email().safeParse(value).success;
+    const isPhone = phoneSchema.safeParse(value).success;
+    if (!isEmail && !isPhone) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Passwords do not match",
-        path: ["confirmPassword"],
+        message: "Please enter a valid email address or mobile number",
       });
     }
-  });
+  }),
+  password: passwordSchema,
+});
 
 export const loginSchema = z.object({
   role: z.enum([UserRole.PATIENT, UserRole.DENTIST, UserRole.ADMIN]),

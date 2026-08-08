@@ -34,15 +34,14 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
 
   const carouselServices = developedServices.map((service) => ({
     title: locale === "bn" ? service.title.bn : service.title.en,
-    description:
-      locale === "bn"
-        ? "বিস্তারিত জানতে সেবাটিতে ক্লিক করুন এবং চিকিৎসা, সময়কাল ও যত্ন সম্পর্কে পড়ুন।"
-        : "Click to explore treatment steps, duration, after-care, and booking details.",
     image: service.image,
     href: `/developed-services/${service.slug}`,
   }));
+  const duplicatedCarouselServices = [
+    ...carouselServices,
+    ...carouselServices,
+  ];
 
-  const duplicatedServices = [...carouselServices, ...carouselServices];
   const serviceCards = getAllServices().map((service) => ({
     ...service,
     localized: getLocalizedServiceContent(service, locale),
@@ -200,51 +199,46 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
         </div>
       </section>
 
-      {/* Services Carousel */}
-      <section className="overflow-hidden py-10 bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 text-center">
+      {/* Developed services carousel — intentionally separate from Services */}
+      <section className="overflow-hidden border-b border-slate-200 bg-white py-10">
+        <div className="mx-auto mb-6 max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-center text-2xl font-bold text-slate-900 sm:text-3xl">
             {h.currentService}
           </h2>
-          <p className="text-center text-slate-500 mt-2">{h.currentSubtitle}</p>
+          <p className="mt-2 text-center text-slate-500">
+            {h.currentSubtitle}
+          </p>
         </div>
 
         <div className="relative">
-          <div className="pointer-events-none absolute left-0 top-0 h-full w-16 bg-linear-to-r from-white to-transparent z-10" />
-          <div className="pointer-events-none absolute right-0 top-0 h-full w-16 bg-linear-to-l from-white to-transparent z-10" />
-
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-linear-to-r from-white to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-linear-to-l from-white to-transparent" />
           <div className="flex w-max animate-scroll hover:[animation-play-state:paused]">
-            {duplicatedServices.map((service, index) => (
-              <Link
-                key={`${service.title}-${index}`}
-                href={service.href}
-                className="group relative flex flex-col text-center mx-3 w-100 h-80 rounded-2xl
-             border-2 border-sky-200 bg-white p-6 shadow-md
-             transition-all duration-300 ease-in-out
-             hover:border-sky-500
-             hover:shadow-[0_0_25px_rgba(14,165,233,0.35)]
-             hover:-translate-y-2"
-              >
-                <div
-                  className="relative w-full h-[90%] rounded-xl overflow-hidden
-               border border-slate-100 mb-4 bg-slate-50
-               transition-all duration-300
-               group-hover:border-sky-400"
+            {duplicatedCarouselServices.map((service, index) => {
+              const isDuplicate = index >= carouselServices.length;
+              return (
+                <Link
+                  key={`${service.href}-${index}`}
+                  href={service.href}
+                  aria-hidden={isDuplicate || undefined}
+                  tabIndex={isDuplicate ? -1 : undefined}
+                  className="group relative mx-3 flex h-80 w-100 flex-col rounded-2xl border-2 border-sky-200 bg-white p-6 text-center shadow-md transition-all duration-300 hover:-translate-y-2 hover:border-sky-500 hover:shadow-[0_0_25px_rgba(14,165,233,0.35)]"
                 >
-                  <Image
-                    src={service.image}
-                    alt={service.title}
-                    fill
-                    sizes="400px"
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                </div>
-
-                <h3 className="text-xl font-bold text-gray-900 transition-colors duration-300 group-hover:text-sky-600">
-                  {service.title}
-                </h3>
-              </Link>
-            ))}
+                  <div className="relative mb-4 h-[90%] w-full overflow-hidden rounded-xl border border-slate-100 bg-slate-50 transition-all duration-300 group-hover:border-sky-400">
+                    <Image
+                      src={service.image}
+                      alt={service.title}
+                      fill
+                      sizes="400px"
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900 transition-colors group-hover:text-sky-600">
+                    {service.title}
+                  </h3>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>

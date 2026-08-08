@@ -122,7 +122,7 @@ export default function Navbar({ user }: NavbarProps) {
                 href="/dentist"
                 className="px-3 py-2 text-sm text-slate-600 hover:text-sky-600 rounded-lg hover:bg-sky-50 transition-colors"
               >
-                Dentist Dashboard
+                Dental Surgeon Dashboard
               </Link>
             )}
           </div>
@@ -241,7 +241,7 @@ export default function Navbar({ user }: NavbarProps) {
               className="block px-3 py-2 text-sm text-slate-700 rounded-lg hover:bg-sky-50"
               onClick={() => setMenuOpen(false)}
             >
-              Dentist Dashboard
+              Dental Surgeon Dashboard
             </Link>
           )}
           {/* Mobile language switcher */}

@@ -6,7 +6,7 @@ import { IDentist } from "@/types";
 import { unstable_cache } from "next/cache";
 
 export const metadata: Metadata = {
-  title: "Our Dentists",
+  title: "Our Dental Surgeons",
   description:
     "Browse our team of qualified and experienced dental professionals.",
 };

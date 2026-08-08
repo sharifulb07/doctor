@@ -101,7 +101,7 @@ export default function ServiceDetailContent({
           doctorList: "Doctor List",
           noDoctors:
             "No specific doctors are mapped right now. Please browse all dentists and choose the best match for your treatment.",
-          browseDentists: "Browse Dentists",
+          browseDentists: "Browse Dental Surgeons",
           reviews: "Reviews",
           contactSection: "Contact Section",
           contactText:
@@ -530,7 +530,7 @@ export default function ServiceDetailContent({
                 </div>
                 <div className="rounded-lg bg-white p-3 border border-sky-100">
                   <p className="font-semibold text-slate-900">{ui.email}</p>
-                  <p>care@dentalcare.com</p>
+                  <p>care@easydentalsolution.com</p>
                 </div>
                 <div className="rounded-lg bg-white p-3 border border-sky-100">
                   <p className="font-semibold text-slate-900">{ui.address}</p>

@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const FROM_EMAIL = `"DentalCare App" <${process.env.SMTP_USER}>`;
+const FROM_EMAIL = `"EasyDentalSolution" <${process.env.SMTP_USER}>`;
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
 // ─── Email Templates ──────────────────────────────────────────────────────────
@@ -39,10 +39,10 @@ function baseTemplate(title: string, bodyHtml: string): string {
 </head>
 <body>
   <div class="container">
-    <div class="header"><h1>🦷 DentalCare</h1></div>
+    <div class="header"><h1>🦷 EasyDentalSolution</h1></div>
     <div class="body">${bodyHtml}</div>
     <div class="footer">
-      <p>© ${new Date().getFullYear()} DentalCare. All rights reserved.</p>
+      <p>© ${new Date().getFullYear()} EasyDentalSolution. All rights reserved.</p>
       <p><a href="${APP_URL}" style="color:#0ea5e9;">Visit our website</a></p>
     </div>
   </div>
@@ -77,7 +77,7 @@ export async function sendConfirmationEmail(
     <br/>
     <div class="info-row"><span class="info-label">📅 Date:</span> ${dateStr}</div>
     <div class="info-row"><span class="info-label">⏰ Time:</span> ${appointment.timeSlot}</div>
-    <div class="info-row"><span class="info-label">👨‍⚕️ Dentist:</span> ${appointment.dentistName || "N/A"}</div>
+    <div class="info-row"><span class="info-label">👨‍⚕️ Dental Surgeon:</span> ${appointment.dentistName || "N/A"}</div>
     <div class="info-row"><span class="info-label">📍 Location:</span> ${appointment.clinicLocation || "N/A"}</div>
     ${appointment.notes ? `<div class="info-row"><span class="info-label">📝 Notes:</span> ${appointment.notes}</div>` : ""}
     <br/>
@@ -119,7 +119,7 @@ export async function sendReminderEmail(
     <br/>
     <div class="info-row"><span class="info-label">📅 Date:</span> ${dateStr}</div>
     <div class="info-row"><span class="info-label">⏰ Time:</span> ${appointment.timeSlot}</div>
-    <div class="info-row"><span class="info-label">👨‍⚕️ Dentist:</span> ${appointment.dentistName || "N/A"}</div>
+    <div class="info-row"><span class="info-label">👨‍⚕️ Dental Surgeon:</span> ${appointment.dentistName || "N/A"}</div>
     <div class="info-row"><span class="info-label">📍 Location:</span> ${appointment.clinicLocation || "N/A"}</div>
     <br/>
     <p>Please remember to bring any relevant dental records or X-rays.</p>
@@ -175,15 +175,15 @@ export async function sendWelcomeEmail(
   name: string,
 ): Promise<void> {
   const html = baseTemplate(
-    "Welcome to DentalCare",
+    "Welcome to EasyDentalSolution",
     `
-    <h2>Welcome to DentalCare! 🦷</h2>
+    <h2>Welcome to EasyDentalSolution! 🦷</h2>
     <p>Dear <strong>${name}</strong>,</p>
-    <p>Thank you for registering with DentalCare. Your account has been created successfully.</p>
+    <p>Thank you for registering with EasyDentalSolution. Your account has been created successfully.</p>
     <br/>
     <p>You can now:</p>
     <ul>
-      <li>Browse our team of qualified dentists</li>
+      <li>Browse our team of qualified Dental Surgeons</li>
       <li>Book appointments online 24/7</li>
       <li>View and manage your appointment history</li>
       <li>Receive email reminders before your appointments</li>
@@ -195,7 +195,7 @@ export async function sendWelcomeEmail(
   await transporter.sendMail({
     from: FROM_EMAIL,
     to,
-    subject: "Welcome to DentalCare – Your Account is Ready",
+    subject: "Welcome to EasyDentalSolution – Your Account is Ready",
     html,
   });
 }

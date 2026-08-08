@@ -7,7 +7,7 @@ import LoginPageHeading from "@/components/auth/LoginPageHeading";
 export const metadata: Metadata = {
   title: "Login",
   description:
-    "Sign in to your DentalCare account to manage your appointments.",
+    "Sign in to your EasyDentalSolution account to manage your appointments.",
 };
 
 export default function LoginPage() {
