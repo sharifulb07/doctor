@@ -76,22 +76,22 @@ async function getStats() {
   todayStart.setTime(todayStart.getTime() - dhakaOffsetMs);
   const todayEnd = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000 - 1);
 
-  const [
-    totalPatients,
-    totalDentists,
-    totalAppointments,
-    pending,
-    today,
-    recent,
-  ] = await Promise.all([
+  const [totalPatients, totalDentists, appointmentDashboard] = await Promise.all([
     countUniquePatients(),
     Dentist.countDocuments({ isActive: true }),
-    Appointment.countDocuments(),
-    Appointment.countDocuments({ status: AppointmentStatus.PENDING }),
-    Appointment.countDocuments({
-      appointmentDate: { $gte: todayStart, $lte: todayEnd },
-    }),
     Appointment.aggregate([
+      {
+        $facet: {
+          total: [{ $count: "value" }],
+          pending: [
+            { $match: { status: AppointmentStatus.PENDING } },
+            { $count: "value" },
+          ],
+          today: [
+            { $match: { appointmentDate: { $gte: todayStart, $lte: todayEnd } } },
+            { $count: "value" },
+          ],
+          recent: [
       { $sort: { createdAt: -1 } },
       { $limit: 5 },
       {
@@ -126,16 +126,24 @@ async function getStats() {
           status: 1,
         },
       },
+          ],
+        },
+      },
     ]),
   ]);
+
+  const dashboard = appointmentDashboard[0];
+  const value = (field: Array<{ value: number }> | undefined) =>
+    field?.[0]?.value || 0;
+  const recent = dashboard?.recent || [];
 
   return {
     totalPatients,
     totalDentists,
-    totalAppointments,
-    pending,
-    today,
-    recent: recent.map((a) => {
+    totalAppointments: value(dashboard?.total),
+    pending: value(dashboard?.pending),
+    today: value(dashboard?.today),
+    recent: recent.map((a: unknown) => {
       const doc = a as unknown as {
         _id: { toString(): string };
         patientName: string;

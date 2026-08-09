@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import type { DentistDashboardData } from "@/lib/dentistDashboard";
 import { formatTimeSlotRange } from "@/utils/timeSlots";
 
 type Appointment = {
@@ -19,7 +19,11 @@ type Profile = {
   clinicLocation: string;
 };
 
-export default function DentalSurgeonOverview() {
+export default function DentalSurgeonOverview({
+  initialData,
+}: {
+  initialData: DentistDashboardData | null;
+}) {
   const { locale } = useLanguage();
   const ui =
     locale === "bn"
@@ -62,32 +66,14 @@ export default function DentalSurgeonOverview() {
           } as Record<string, string>,
         };
 
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [stats, setStats] = useState({
+  const profile: Profile | null = initialData?.profile ?? null;
+  const stats = initialData?.stats ?? {
     total: 0,
     today: 0,
     pending: 0,
     completed: 0,
-  });
-  const [upcoming, setUpcoming] = useState<Appointment[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch("/api/dentist/dashboard")
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          setProfile(data.data.profile);
-          setStats(data.data.stats);
-          setUpcoming(data.data.upcoming || []);
-        }
-      })
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) {
-    return <p className="text-sm text-slate-500">{ui.loading}</p>;
-  }
+  };
+  const upcoming: Appointment[] = initialData?.upcoming ?? [];
 
   const statCards = [
     [ui.total, stats.total],

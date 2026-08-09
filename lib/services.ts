@@ -1493,7 +1493,7 @@ const baseServices: BaseService[] = [
     imageSrc: "/icons/38.png",
     category: "preventive",
     specializations: ["Oral Radiology", "General Dentistry"],
-    quickInfo: { duration: "10-20 minutes", recoveryTime: "None", anesthesia: "Not required", cost: "৳150-৳", appointmentRequired: "Recommended" },
+    quickInfo: { duration: "10-20 minutes", recoveryTime: "None", anesthesia: "Not required", cost: "৳150-৳500", appointmentRequired: "Recommended" },
   },
 ];
 
