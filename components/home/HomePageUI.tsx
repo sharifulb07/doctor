@@ -36,10 +36,7 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
     image: service.image,
     href: `/developed-services/${service.slug}`,
   }));
-  const duplicatedCarouselServices = [
-    ...carouselServices,
-    ...carouselServices,
-  ];
+  const duplicatedCarouselServices = [...carouselServices, ...carouselServices];
 
   const serviceCards = getAllServices();
 
@@ -201,9 +198,7 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
           <h2 className="text-center text-2xl font-bold text-slate-900 sm:text-3xl">
             {h.currentService}
           </h2>
-          <p className="mt-2 text-center text-slate-500">
-            {h.currentSubtitle}
-          </p>
+          <p className="mt-2 text-center text-slate-500">{h.currentSubtitle}</p>
         </div>
 
         <div className="relative">

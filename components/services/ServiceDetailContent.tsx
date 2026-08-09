@@ -139,7 +139,7 @@ export default function ServiceDetailContent({
           <div className="flex flex-col lg:flex-row gap-6 lg:items-center justify-between">
             <div className="max-w-3xl">
               <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight">
-                {localized.name}
+                {service.name}
               </h1>
               <p className="mt-4 text-sky-100 text-lg">
                 {localized.shortDescription}

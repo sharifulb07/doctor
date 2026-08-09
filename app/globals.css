@@ -53,3 +53,17 @@ body {
 .animate-scroll {
   animation: scroll 35s linear infinite;
 }
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  body { background: white !important; }
+  body > * { visibility: hidden; }
+  .prescription-screen, .prescription-screen * { visibility: visible; }
+  .prescription-screen { position: absolute; inset: 0; max-width: none; width: 210mm; }
+  .prescription-actions { display: none !important; }
+  .prescription-paper { min-height: 297mm; width: 210mm; padding: 14mm; box-shadow: none; }
+}

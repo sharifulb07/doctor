@@ -4,7 +4,9 @@ import three from "@/public/icons/3.png";
 import four from "@/public/icons/4.png";
 import five from "@/public/icons/5.png";
 import six from "@/public/icons/6.png";
+import seven from "@/public/icons/7.png";
 import eight from "@/public/icons/8.png";
+import nine from "@/public/icons/9.png";
 import ten from "@/public/icons/10.png";
 import eleven from "@/public/icons/11.png";
 import twelve from "@/public/icons/12.png";
@@ -115,7 +117,7 @@ export const translations = {
           label: "Scaling And Root Planing",
         },
         {
-          icon: "https://images.pexels.com/photos/4687905/pexels-photo-4687905.jpeg",
+          icon: seven,
           label: "Dental Implants",
         },
         {
@@ -123,7 +125,7 @@ export const translations = {
           label: "Teeth whitening (bleaching)",
         },
         {
-          icon: "https://plus.unsplash.com/premium_photo-1674998790004-1c08a997011c?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          icon: nine,
           label: "Dental Veneer",
         },
         {
@@ -441,7 +443,7 @@ export const translations = {
         { icon: five, label: "Tooth Fracture Management" },
         { icon: six, label: "Scaling And Root Planing" },
         {
-          icon: "https://images.pexels.com/photos/4687905/pexels-photo-4687905.jpeg",
+          icon: seven,
           label: "Dental Implants",
         },
         {
@@ -449,7 +451,7 @@ export const translations = {
           label: "Teeth Whitening",
         },
         {
-          icon: "https://plus.unsplash.com/premium_photo-1674998790004-1c08a997011c?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          icon: nine,
           label: "Dental Veneer",
         },
         {

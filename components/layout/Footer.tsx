@@ -128,7 +128,7 @@ export default function Footer({ currentYear }: { currentYear: number }) {
 
             <div className="flex flex-wrap gap-3">
               <Link
-                href="https://facebook.com"
+                href="https://www.facebook.com/share/1EKnz2ASyr/"
                 target="_blank"
                 className="w-11 h-11 rounded-full bg-slate-800 hover:bg-blue-600 transition-all duration-300 flex items-center justify-center hover:scale-110"
               >
@@ -136,7 +136,7 @@ export default function Footer({ currentYear }: { currentYear: number }) {
               </Link>
 
               <Link
-                href="https://instagram.com"
+                href="https://www.instagram.com/mostafizur_rahmann?utm_source=qr&igsh=dDBjYnpoajBpN3I0"
                 target="_blank"
                 className="w-11 h-11 rounded-full bg-slate-800 hover:bg-pink-600 transition-all duration-300 flex items-center justify-center hover:scale-110"
               >
@@ -152,7 +152,7 @@ export default function Footer({ currentYear }: { currentYear: number }) {
               </Link>
 
               <Link
-                href="https://youtube.com"
+                href="https://youtube.com/@mostafiz3535?si=QUCSA9cnqn4o4VpE"
                 target="_blank"
                 className="w-11 h-11 rounded-full bg-slate-800 hover:bg-red-600 transition-all duration-300 flex items-center justify-center hover:scale-110"
               >
