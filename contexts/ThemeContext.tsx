@@ -21,33 +21,46 @@ const ThemeContext = createContext<ThemeContextType>({
 });
 
 function applyTheme(theme: Theme) {
-  document.documentElement.classList.toggle("dark", theme === "dark");
-  document.documentElement.style.colorScheme = theme;
+  const root = document.documentElement;
+  root.classList.toggle("dark", theme === "dark");
+  root.dataset.theme = theme;
+  root.style.colorScheme = theme;
+}
+
+function getInitialTheme(): Theme {
+  try {
+    const saved = localStorage.getItem("theme");
+    if (saved === "light" || saved === "dark") return saved;
+  } catch {
+    // Storage may be unavailable in private or restricted browser contexts.
+  }
+
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
-    const saved = localStorage.getItem("theme");
-    const initialTheme: Theme =
-      saved === "light" || saved === "dark"
-        ? saved
-        : window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
-
+    const initialTheme = getInitialTheme();
     startTransition(() => setTheme(initialTheme));
     applyTheme(initialTheme);
   }, []);
 
   function toggleTheme() {
-    setTheme((current) => {
-      const next = current === "light" ? "dark" : "light";
+    const current =
+      document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+    const next = current === "light" ? "dark" : "light";
+
+    applyTheme(next);
+    setTheme(next);
+    try {
       localStorage.setItem("theme", next);
-      applyTheme(next);
-      return next;
-    });
+    } catch {
+      // The active page still changes theme when persistence is unavailable.
+    }
   }
 
   return (
