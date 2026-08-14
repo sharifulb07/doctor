@@ -4,7 +4,9 @@ import three from "@/public/carousels/3.jpeg";
 import four from "@/public/carousels/4.jpeg";
 import five from "@/public/carousels/5.jpeg";
 import six from "@/public/carousels/6.jpeg";
+import eight from "@/public/icons/8.png";
 import thirteen from "@/public/carousels/13.jpeg";
+import fourteen from "@/public/carousels/14.jpeg";
 
 import type { StaticImageData } from "next/image";
 
@@ -653,7 +655,7 @@ export const developedServices: DevelopedServiceData[] = [
       en: "Teeth Whitening",
     },
 
-    image: four,
+    image: eight,
 
     shortDescription: {
       bn: "উজ্জ্বল ও সুন্দর হাসির জন্য পেশাদার দাঁত সাদা করার সেবা।",
@@ -842,7 +844,7 @@ export const developedServices: DevelopedServiceData[] = [
     },
 
     image:
-      "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1200&q=80",
+      fourteen,
 
     shortDescription: {
       bn: "হঠাৎ দাঁতের ব্যথা ও জরুরি সমস্যার দ্রুত সমাধান।",
