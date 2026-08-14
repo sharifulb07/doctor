@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import logo from "@/public/logo.png";
 
 
@@ -20,10 +21,12 @@ interface NavbarProps {
 
 export default function Navbar({ user }: NavbarProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const [currentUser, setCurrentUser] = useState<NavUser | null>(user ?? null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const { t, locale, toggleLanguage } = useLanguage();
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     if (user) return;
@@ -74,13 +77,22 @@ export default function Navbar({ user }: NavbarProps) {
   }
 
   return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
+    <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white shadow-sm transition-colors dark:border-slate-800 dark:bg-slate-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link
             href="/"
+            prefetch
+            onClick={() => {
+              setMenuOpen(false);
+              window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+            }}
+            onNavigate={(event) => {
+              if (pathname === "/") event.preventDefault();
+            }}
             className="flex items-center gap-2 font-bold text-sky-600 text-xl"
+            aria-label="Go to home page and scroll to top"
           >
             <Image src={logo}  width={300} height={200} alt="logo" className="h-[75] w-[85]" />
             {/* <span className="text-2xl">🦷</span>
@@ -129,6 +141,15 @@ export default function Navbar({ user }: NavbarProps) {
 
           {/* Auth buttons + language switcher */}
           <div className="hidden md:flex items-center gap-3">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              aria-label={theme === "dark" ? "Use light mode" : "Use dark mode"}
+              title={theme === "dark" ? "Light mode" : "Dark mode"}
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-lg transition-colors hover:border-sky-400 hover:bg-sky-50 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-sky-500 dark:hover:bg-slate-800"
+            >
+              <span aria-hidden="true">{theme === "dark" ? "☀️" : "🌙"}</span>
+            </button>
             {/* Language toggle */}
             <button
               onClick={toggleLanguage}
@@ -202,7 +223,7 @@ export default function Navbar({ user }: NavbarProps) {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-slate-100 bg-white px-4 py-3 space-y-1">
+        <div className="md:hidden border-t border-slate-100 bg-white px-4 py-3 space-y-1 dark:border-slate-800 dark:bg-slate-950">
           <Link
             href="/dentists"
             className="block px-3 py-2 text-sm text-slate-700 rounded-lg hover:bg-sky-50"
@@ -245,6 +266,14 @@ export default function Navbar({ user }: NavbarProps) {
             </Link>
           )}
           {/* Mobile language switcher */}
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-sky-50 dark:text-slate-200 dark:hover:bg-slate-900"
+          >
+            <span aria-hidden="true">{theme === "dark" ? "☀️" : "🌙"}</span>
+            <span>{theme === "dark" ? "Light mode" : "Dark mode"}</span>
+          </button>
           <button
             onClick={() => {
               toggleLanguage();

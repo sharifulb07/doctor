@@ -3,8 +3,6 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import DentistCard from "@/components/dentists/DentistCard";
 import Button from "@/components/ui/Button";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -79,48 +77,152 @@ export default function HomePageUI({
           },
         ];
 
+  const reviews =
+    locale === "bn"
+      ? [
+          {
+            name: "সাদিয়া রহমান",
+            treatment: "রুট ক্যানেল চিকিৎসা",
+            review:
+              "পুরো প্রক্রিয়াটি খুব যত্নসহকারে বুঝিয়ে বলা হয়েছিল। চিকিৎসা ছিল আরামদায়ক এবং বুকিং করাও খুব সহজ ছিল।",
+          },
+          {
+            name: "তানভীর হাসান",
+            treatment: "দাঁত পরিষ্কার",
+            review:
+              "ক্লিনিকের পরিবেশ পরিচ্ছন্ন এবং সবাই খুব আন্তরিক। নির্ধারিত সময়েই চিকিৎসক আমাকে দেখেছেন।",
+          },
+          {
+            name: "নুসরাত জাহান",
+            treatment: "ডেন্টাল চেকআপ",
+            review:
+              "সহজেই উপযুক্ত চিকিৎসক ও সময় বেছে নিতে পেরেছি। চিকিৎসকের পরামর্শ ছিল পরিষ্কার এবং সহায়ক।",
+          },
+        ]
+      : [
+          {
+            name: "Sadia Rahman",
+            treatment: "Root canal treatment",
+            review:
+              "Everything was explained with care. The treatment was comfortable, and booking my appointment was incredibly easy.",
+          },
+          {
+            name: "Tanvir Hasan",
+            treatment: "Teeth cleaning",
+            review:
+              "The clinic was spotless and the team was welcoming. My dentist saw me right on time and made me feel at ease.",
+          },
+          {
+            name: "Nusrat Jahan",
+            treatment: "Dental checkup",
+            review:
+              "Finding the right dentist and choosing a time took only a few minutes. The advice I received was clear and helpful.",
+          },
+        ];
+
   useLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-    if (
-      !homeRef.current ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    )
-      return;
+    if (!homeRef.current) return;
 
-    const context = gsap.context(() => {
-      gsap
-        .timeline({ defaults: { ease: "power3.out" } })
-        .from("[data-gsap-hero-copy] > *", {
-          opacity: 0,
-          y: 36,
-          duration: 0.75,
-          stagger: 0.12,
-        })
-        .from(
-          "[data-gsap-hero-art]",
-          { opacity: 0, x: 50, scale: 0.92, duration: 0.9 },
-          "-=0.55",
-        )
-        .from(
-          "[data-gsap-stat]",
-          { opacity: 0, y: 20, duration: 0.45, stagger: 0.08 },
-          "-=0.35",
-        );
+    let cancelled = false;
+    let cleanup = () => {};
 
-      gsap.utils
-        .toArray<HTMLElement>("[data-gsap-section]")
-        .forEach((section) => {
-          gsap.from(section, {
-            opacity: 0,
-            y: 55,
-            duration: 0.85,
-            ease: "power2.out",
-            scrollTrigger: { trigger: section, start: "top 84%", once: true },
-          });
+    async function setupAnimations() {
+      const [{ gsap }, { ScrollTrigger }] = await Promise.all([
+        import("gsap"),
+        import("gsap/ScrollTrigger"),
+      ]);
+
+      if (cancelled || !homeRef.current) return;
+
+      gsap.registerPlugin(ScrollTrigger);
+      const context = gsap.context(() => {
+      const media = gsap.matchMedia();
+
+      media.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap
+          .timeline({ defaults: { ease: "power3.out" } })
+          .from("[data-gsap-hero-copy] > *", {
+            autoAlpha: 0,
+            y: 36,
+            duration: 0.75,
+            stagger: 0.12,
+          })
+          .from(
+            "[data-gsap-hero-art]",
+            { autoAlpha: 0, x: 50, scale: 0.92, duration: 0.9 },
+            "-=0.55",
+          )
+          .from(
+            "[data-gsap-stat]",
+            { autoAlpha: 0, y: 20, duration: 0.45, stagger: 0.08 },
+            "-=0.35",
+          );
+
+        gsap.to("[data-gsap-hero-art]", {
+          yPercent: 12,
+          ease: "none",
+          scrollTrigger: {
+            trigger: "[data-gsap-hero-art]",
+            start: "top 30%",
+            end: "bottom top",
+            scrub: 0.8,
+          },
         });
-    }, homeRef);
 
-    return () => context.revert();
+        gsap.utils
+          .toArray<HTMLElement>("[data-gsap-section]")
+          .forEach((section) => {
+            const heading = section.querySelector("[data-gsap-heading]");
+            const items = section.querySelectorAll("[data-gsap-item]");
+            const timeline = gsap.timeline({
+              scrollTrigger: {
+                trigger: section,
+                start: "top 82%",
+                once: true,
+              },
+            });
+
+            if (heading) {
+              timeline.from(heading, {
+                autoAlpha: 0,
+                y: 35,
+                duration: 0.65,
+                ease: "power2.out",
+              });
+            }
+
+            if (items.length) {
+              timeline.from(
+                items,
+                {
+                  autoAlpha: 0,
+                  y: 45,
+                  scale: 0.97,
+                  duration: 0.6,
+                  stagger: 0.1,
+                  ease: "power2.out",
+                },
+                heading ? "-=0.25" : 0,
+              );
+            }
+          });
+
+        ScrollTrigger.refresh();
+      });
+
+        cleanup = () => {
+          media.revert();
+          context.revert();
+        };
+      }, homeRef);
+    }
+
+    void setupAnimations();
+
+    return () => {
+      cancelled = true;
+      cleanup();
+    };
   }, []);
 
   const stats = [
@@ -147,7 +249,7 @@ export default function HomePageUI({
   ];
 
   return (
-    <div ref={homeRef}>
+    <div ref={homeRef} data-home-page>
       {/* Hero */}
       <section className="bg-linear-to-br from-sky-600 via-sky-500 to-cyan-400 text-white">
         <div
@@ -307,7 +409,7 @@ export default function HomePageUI({
         data-gsap-section
         className="overflow-hidden border-b border-slate-200 bg-white py-10"
       >
-        <div className="mx-auto mb-6 max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div data-gsap-heading className="mx-auto mb-6 max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-2xl font-bold text-slate-900 sm:text-3xl">
             {h.currentService}
           </h2>
@@ -350,15 +452,17 @@ export default function HomePageUI({
       {/* How It Works */}
       <section data-gsap-section className="py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-slate-900 text-center mb-4">
-            {h.howItWorks}
-          </h2>
-          <p className="text-center text-slate-500 mb-12">
-            {h.howItWorksSubtitle}
-          </p>
+          <div data-gsap-heading>
+            <h2 className="text-3xl font-bold text-slate-900 text-center mb-4">
+              {h.howItWorks}
+            </h2>
+            <p className="text-center text-slate-500 mb-12">
+              {h.howItWorksSubtitle}
+            </p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {steps.map((item) => (
-              <div key={item.step} className="text-center">
+              <div key={item.step} data-gsap-item className="text-center">
                 <div className="w-16 h-16 rounded-full bg-sky-100 flex items-center justify-center text-3xl mx-auto mb-4">
                   {item.icon}
                 </div>
@@ -380,7 +484,7 @@ export default function HomePageUI({
       {/* Featured Dentists */}
       <section data-gsap-section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-12">
+          <div data-gsap-heading className="flex items-center justify-between mb-12">
             <div>
               <h2 className="text-3xl font-bold text-slate-900">
                 {h.topDentists}
@@ -392,7 +496,7 @@ export default function HomePageUI({
             </Link>
           </div>
           {dentists.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div data-gsap-item className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {dentists.map((d) => (
                 <DentistCard key={d._id} dentist={d} />
               ))}
@@ -408,12 +512,14 @@ export default function HomePageUI({
       {/* Services */}
       <section data-gsap-section className="py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-slate-900 text-center mb-4">
-            {h.ourServices}
-          </h2>
-          <p className="text-center text-slate-500 mb-12">
-            {h.ourServicesSubtitle}
-          </p>
+          <div data-gsap-heading>
+            <h2 className="text-3xl font-bold text-slate-900 text-center mb-4">
+              {h.ourServices}
+            </h2>
+            <p className="text-center text-slate-500 mb-12">
+              {h.ourServicesSubtitle}
+            </p>
+          </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {serviceCards.map((service) => (
               <Link
@@ -602,10 +708,69 @@ export default function HomePageUI({
         </div>
       </section>
 
+      {/* Patient Reviews */}
+      <section data-gsap-section className="bg-sky-50 py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div data-gsap-heading className="mx-auto mb-12 max-w-2xl text-center">
+            <p className="mb-2 text-sm font-bold uppercase tracking-[0.2em] text-sky-600">
+              {locale === "bn" ? "রোগীদের অভিজ্ঞতা" : "Patient stories"}
+            </p>
+            <h2 className="text-3xl font-bold text-slate-900 sm:text-4xl">
+              {locale === "bn"
+                ? "আমাদের রোগীরা যা বলেন"
+                : "Smiles backed by trust"}
+            </h2>
+            <p className="mt-3 text-slate-500">
+              {locale === "bn"
+                ? "আমাদের সেবা নেওয়া রোগীদের অভিজ্ঞতা জানুন।"
+                : "Hear from patients who trusted us with their dental care."}
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {reviews.map((item) => (
+              <article
+                key={item.name}
+                className="relative flex h-full flex-col rounded-3xl border border-sky-100 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+              >
+                <span
+                  aria-hidden="true"
+                  className="absolute right-6 top-3 font-serif text-7xl leading-none text-sky-100"
+                >
+                  “
+                </span>
+                <div
+                  className="mb-5 flex gap-1 text-amber-400"
+                  aria-label={locale === "bn" ? "৫ এর মধ্যে ৫ তারকা" : "5 out of 5 stars"}
+                >
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <span key={index} aria-hidden="true">
+                      ★
+                    </span>
+                  ))}
+                </div>
+                <blockquote className="relative grow leading-7 text-slate-600">
+                  “{item.review}”
+                </blockquote>
+                <div className="mt-7 flex items-center gap-3 border-t border-slate-100 pt-5">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-sky-600 font-bold text-white">
+                    {item.name.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900">{item.name}</p>
+                    <p className="text-sm text-slate-500">{item.treatment}</p>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* FAQ */}
       <section data-gsap-section className="bg-white py-20">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-10 text-center">
+          <div data-gsap-heading className="mb-10 text-center">
             <p className="mb-2 text-sm font-bold uppercase tracking-[0.2em] text-sky-600">
               {locale === "bn" ? "সাধারণ প্রশ্ন" : "FAQ"}
             </p>
@@ -627,6 +792,7 @@ export default function HomePageUI({
               return (
                 <div
                   key={faq.question}
+                  data-gsap-item
                   className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md"
                 >
                   <button
@@ -660,7 +826,7 @@ export default function HomePageUI({
 
       {/* CTA */}
       <section data-gsap-section className="py-20 bg-sky-600 text-white">
-        <div className="max-w-3xl mx-auto px-4 text-center">
+        <div data-gsap-heading className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">{h.ctaTitle}</h2>
           <p className="text-sky-100 mb-8 text-lg">{h.ctaSubtitle}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -49,7 +49,6 @@ export default function RegisterForm() {
       }
 
       router.push("/login?registered=1&role=patient");
-      router.refresh();
     } catch {
       setServerError(r.networkError);
     } finally {

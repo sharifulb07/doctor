@@ -4,7 +4,9 @@ import HomePageUI from "@/components/home/HomePageUI";
 import { IDentist } from "@/types";
 import { developedServices, getAllServices } from "@/lib/services";
 
-export const dynamic = "force-dynamic";
+// Featured dentists can be slightly stale; ISR keeps home navigations fast while
+// refreshing the public data in the background once per hour.
+export const revalidate = 3600;
 
 async function getFeaturedDentists() {
   await connectDB();
