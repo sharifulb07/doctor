@@ -35,13 +35,11 @@ function getInitialTheme(): Theme {
     // Storage may be unavailable in private or restricted browser contexts.
   }
 
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+  return "dark";
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("light");
+  const [theme, setTheme] = useState<Theme>("dark");
 
   useEffect(() => {
     const initialTheme = getInitialTheme();

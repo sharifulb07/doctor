@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import connectDB from "@/lib/mongodb";
 import Dentist from "@/models/Dentist";
 import HomePageUI from "@/components/home/HomePageUI";
@@ -7,6 +8,19 @@ import { developedServices, getAllServices } from "@/lib/services";
 // Featured dentists can be slightly stale; ISR keeps home navigations fast while
 // refreshing the public data in the background once per hour.
 export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  title: "Online Dental Appointment Booking in Khulna",
+  description:
+    "Find qualified dental surgeons, explore dental treatments, and book an appointment online with EasyDentalSolution in Khulna, Bangladesh.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "EasyDentalSolution — Your Smile Is Our Priority",
+    description:
+      "Book dental appointments online and access trusted dental care in Khulna, Bangladesh.",
+    url: "/",
+  },
+};
 
 async function getFeaturedDentists() {
   await connectDB();

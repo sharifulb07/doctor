@@ -4,7 +4,10 @@ import { redirect } from "next/navigation";
 import { getServerAuth } from "@/lib/auth";
 import { UserRole } from "@/types";
 
-export const metadata: Metadata = { title: "Admin Dashboard" };
+export const metadata: Metadata = {
+  title: "Admin Dashboard",
+  robots: { index: false, follow: false },
+};
 export const dynamic = "force-dynamic";
 
 export default async function AdminLayout({

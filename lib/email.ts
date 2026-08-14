@@ -223,3 +223,45 @@ export async function sendPasswordResetEmail(
     html,
   });
 }
+
+function escapeHtml(value: string): string {
+  return value.replace(
+    /[&<>'"]/g,
+    (character) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "'": "&#39;",
+        '"': "&quot;",
+      })[character] || character,
+  );
+}
+
+export async function sendContactEmail({
+  name,
+  email,
+  question,
+}: {
+  name: string;
+  email: string;
+  question: string;
+}): Promise<void> {
+  const safeName = escapeHtml(name);
+  const safeEmail = escapeHtml(email);
+  const safeQuestion = escapeHtml(question).replace(/\n/g, "<br />");
+
+  await transporter.sendMail({
+    from: FROM_EMAIL,
+    to: process.env.SMTP_USER,
+    replyTo: email,
+    subject: `Website question from ${name}`,
+    html: baseTemplate(
+      "New website question",
+      `<h2>New contact request</h2>
+       <div class="info-row"><span class="info-label">Name:</span> ${safeName}</div>
+       <div class="info-row"><span class="info-label">Email:</span> ${safeEmail}</div>
+       <div class="info-row"><span class="info-label">Question:</span><br />${safeQuestion}</div>`,
+    ),
+  });
+}
