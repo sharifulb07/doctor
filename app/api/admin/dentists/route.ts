@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { revalidateTag } from "next/cache";
 import { z } from "zod";
 import connectDB from "@/lib/mongodb";
 import User from "@/models/User";
@@ -172,6 +173,8 @@ export async function POST(req: NextRequest) {
       ...safeData,
     });
 
+    revalidateTag("dentists", { expire: 0 });
+
     return createdResponse(dentist, "Dentist created successfully");
   } catch {
     return serverErrorResponse();
@@ -213,6 +216,8 @@ export async function PATCH(req: NextRequest) {
     ) {
       dentist.isActive = payload.isActive;
       await dentist.save();
+
+      revalidateTag("dentists", { expire: 0 });
 
       return successResponse(dentist, "Dentist status updated");
     }
@@ -295,6 +300,8 @@ export async function PATCH(req: NextRequest) {
 
     await dentist.save();
 
+    revalidateTag("dentists", { expire: 0 });
+
     return successResponse(dentist, "Dentist updated successfully");
   } catch {
     return serverErrorResponse();
@@ -329,6 +336,8 @@ export async function DELETE(req: NextRequest) {
       User.deleteOne({ _id: dentist.userId }),
       Dentist.deleteOne({ _id: dentist._id }),
     ]);
+
+    revalidateTag("dentists", { expire: 0 });
 
     return successResponse(null, "Dentist deleted successfully");
   } catch {

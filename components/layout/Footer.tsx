@@ -128,7 +128,7 @@ export default function Footer({ currentYear }: { currentYear: number }) {
 
             <div className="flex flex-wrap gap-3">
               <Link
-                href="https://www.facebook.com/share/1EKnz2ASyr/"
+                href="https://www.facebook.com/share/17U7m6W7Rv/"
                 target="_blank"
                 className="w-11 h-11 rounded-full bg-slate-800 hover:bg-blue-600 transition-all duration-300 flex items-center justify-center hover:scale-110"
               >

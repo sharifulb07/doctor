@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { isValidObjectId } from "mongoose";
 import { notFound } from "next/navigation";
 import connectDB from "@/lib/mongodb";
 import Dentist from "@/models/Dentist";
@@ -68,9 +69,10 @@ function toClientDentist(raw: {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
+  if (!isValidObjectId(id)) return { title: "Dentist Not Found" };
   try {
     await connectDB();
-    const dentist = await Dentist.findById(id)
+    const dentist = await Dentist.findOne({ _id: id, isActive: true })
       .select("name specialization experience clinicLocation")
       .lean();
     if (!dentist) return { title: "Dentist Not Found" };
@@ -85,11 +87,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function DentistProfilePage({ params }: Props) {
   const { id } = await params;
+  if (!isValidObjectId(id)) notFound();
 
   let dentist;
   try {
     await connectDB();
-    dentist = await Dentist.findById(id)
+    dentist = await Dentist.findOne({ _id: id, isActive: true })
       .select(
         "name specialization experience rating totalReviews consultationFee clinicLocation clinicPhone bio photo availableDays availableTimeSlots availableDayTimes qualifications",
       )

@@ -1,4 +1,6 @@
 import { NextRequest } from "next/server";
+import { isValidObjectId } from "mongoose";
+import { revalidateTag } from "next/cache";
 import connectDB from "@/lib/mongodb";
 import Dentist from "@/models/Dentist";
 import { dentistProfileSchema, formatZodErrors } from "@/utils/validators";
@@ -22,9 +24,14 @@ type Context = { params: Promise<{ id: string }> };
 
 export async function GET(_req: NextRequest, ctx: Context) {
   const { id } = await ctx.params;
+  if (!isValidObjectId(id)) return notFoundResponse("Dentist not found");
   try {
     await connectDB();
-    const dentist = await Dentist.findById(id).select("-__v").lean();
+    const dentist = await Dentist.findOne({ _id: id, isActive: true })
+      .select(
+        "name specialization qualifications experience bio clinicLocation clinicPhone photo availableDays availableTimeSlots availableDayTimes consultationFee rating totalReviews",
+      )
+      .lean();
     if (!dentist) return notFoundResponse("Dentist not found");
     return successResponse(dentist);
   } catch {
@@ -94,6 +101,7 @@ export async function PUT(req: NextRequest, ctx: Context) {
 
     Object.assign(dentist, safeData);
     await dentist.save();
+    revalidateTag("dentists", { expire: 0 });
 
     return successResponse(dentist, "Profile updated successfully");
   } catch {

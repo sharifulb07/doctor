@@ -11,6 +11,9 @@ export interface IPrescriptionDocument extends Document {
   patientGender?: string;
   diagnosis: string;
   complaints?: string;
+  onExamination?: string;
+  medicalHistory?: string;
+  treatmentPlan?: string;
   medicines: Array<{
     name: string;
     strength?: string;
@@ -50,6 +53,9 @@ const PrescriptionSchema = new Schema<IPrescriptionDocument>(
     patientGender: { type: String, trim: true, maxlength: 30 },
     diagnosis: { type: String, required: true, trim: true, maxlength: 1000 },
     complaints: { type: String, trim: true, maxlength: 1000 },
+    onExamination: { type: String, trim: true, maxlength: 1000 },
+    medicalHistory: { type: String, trim: true, maxlength: 1000 },
+    treatmentPlan: { type: String, trim: true, maxlength: 1000 },
     medicines: { type: [MedicineSchema], required: true },
     advice: { type: String, trim: true, maxlength: 2000 },
     investigations: { type: String, trim: true, maxlength: 1000 },

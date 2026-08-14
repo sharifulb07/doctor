@@ -152,6 +152,7 @@ const DentistSchema = new Schema<IDentistDocument>(
 DentistSchema.index({ specialization: 1 });
 DentistSchema.index({ isActive: 1 });
 DentistSchema.index({ rating: -1 });
+DentistSchema.index({ isActive: 1, rating: -1, name: 1 });
 
 const Dentist: Model<IDentistDocument> =
   mongoose.models.Dentist ||

@@ -19,7 +19,7 @@ const getDentists = unstable_cache(
       await connectDB();
       const dentists = await Dentist.find({ isActive: true })
         .select(
-          "name specialization experience rating totalReviews consultationFee clinicLocation availableDays qualifications photo",
+          "name specialization experience rating totalReviews consultationFee clinicLocation availableDays qualifications photo isActive",
         )
         .sort({ rating: -1, name: 1 })
         .lean();
@@ -39,7 +39,9 @@ const getDentists = unstable_cache(
 );
 
 export default async function DentistsPage() {
-  const dentists = await getDentists();
+  const dentists = (await getDentists()).filter(
+    (dentist) => dentist.isActive === true,
+  );
   const specializations = [...new Set(dentists.map((d) => d.specialization))];
   return (
     <DentistsContent dentists={dentists} specializations={specializations} />

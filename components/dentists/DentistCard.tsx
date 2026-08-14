@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { IDentist } from "@/types";
 import { Card, CardBody } from "@/components/ui/Card";
@@ -21,10 +22,12 @@ export default function DentistCard({ dentist }: DentistCardProps) {
         <div className="flex items-start gap-4">
           <div className="w-16 h-16 rounded-full bg-sky-100 flex items-center justify-center text-2xl shrink-0 overflow-hidden">
             {dentist.photo ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={dentist.photo}
                 alt={dentist.name}
+                width={64}
+                height={64}
+                sizes="64px"
                 className="w-full h-full object-cover"
               />
             ) : (

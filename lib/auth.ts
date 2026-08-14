@@ -11,8 +11,8 @@ const COOKIE_NAME = "auth-token";
 const SESSION_DURATION_SECONDS = 60 * 30;
 const TOKEN_EXPIRY = "30m";
 
-if (!JWT_SECRET) {
-  throw new Error("JWT_SECRET environment variable is not set");
+if (!JWT_SECRET || new TextEncoder().encode(JWT_SECRET).length < 32) {
+  throw new Error("JWT_SECRET must be set and contain at least 32 bytes");
 }
 
 const secret = new TextEncoder().encode(JWT_SECRET);
@@ -35,9 +35,7 @@ export async function generateToken(payload: {
 
 // ─── Token Verification ───────────────────────────────────────────
 
-export async function verifyToken(
-  token: string,
-): Promise<JwtPayload | null> {
+export async function verifyToken(token: string): Promise<JwtPayload | null> {
   try {
     const { payload } = await jwtVerify(token, secret, {
       issuer: "dentist-app",
@@ -84,9 +82,9 @@ export async function clearAuthCookie(): Promise<void> {
 export async function getAuthFromRequest(
   req: NextRequest,
 ): Promise<AuthUser | null> {
-  const token =
-    req.cookies.get(COOKIE_NAME)?.value ||
-    req.headers.get("authorization")?.replace("Bearer ", "");
+  const authorization = req.headers.get("authorization");
+  const bearerMatch = authorization?.match(/^Bearer\s+([^\s]+)$/i);
+  const token = req.cookies.get(COOKIE_NAME)?.value || bearerMatch?.[1];
 
   if (!token) return null;
 
@@ -129,19 +127,13 @@ export function isAdmin(user: AuthUser | null): boolean {
 }
 
 export function isDentist(user: AuthUser | null): boolean {
-  return (
-    user?.role === UserRole.DENTIST ||
-    user?.role === UserRole.ADMIN
-  );
+  return user?.role === UserRole.DENTIST || user?.role === UserRole.ADMIN;
 }
 
 export function isPatient(user: AuthUser | null): boolean {
   return user?.role === UserRole.PATIENT;
 }
 
-export function hasRole(
-  user: AuthUser | null,
-  ...roles: UserRole[]
-): boolean {
+export function hasRole(user: AuthUser | null, ...roles: UserRole[]): boolean {
   return !!user && roles.includes(user.role);
 }

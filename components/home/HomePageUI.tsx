@@ -1,22 +1,127 @@
 "use client";
 
-import Image from "next/image";
+import { useLayoutEffect, useRef, useState } from "react";
+import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import DentistCard from "@/components/dentists/DentistCard";
 import Button from "@/components/ui/Button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { IDentist } from "@/types";
-import { developedServices, getAllServices } from "@/lib/services";
 import pro from "@/public/pro.png";
 import teeth from "@/public/teethmain.png";
 
 interface HomePageUIProps {
   dentists: Array<IDentist & { _id: string }>;
+  carouselServices: Array<{
+    slug: string;
+    title: { bn: string; en: string };
+    image: string | StaticImageData;
+  }>;
+  serviceCards: Array<{ slug: string; name: string; imageSrc: string }>;
 }
 
-export default function HomePageUI({ dentists }: HomePageUIProps) {
+export default function HomePageUI({
+  dentists,
+  carouselServices,
+  serviceCards,
+}: HomePageUIProps) {
   const { t, locale } = useLanguage();
   const h = t.home;
+  const homeRef = useRef<HTMLDivElement>(null);
+  const [openFaq, setOpenFaq] = useState(0);
+
+  const faqs =
+    locale === "bn"
+      ? [
+          {
+            question: "কীভাবে অনলাইনে অ্যাপয়েন্টমেন্ট বুক করব?",
+            answer:
+              "একজন দন্তচিকিৎসক নির্বাচন করুন, সুবিধাজনক তারিখ ও সময় বেছে নিন এবং আপনার তথ্য দিয়ে বুকিং নিশ্চিত করুন।",
+          },
+          {
+            question: "অ্যাপয়েন্টমেন্ট পরিবর্তন বা বাতিল করা যাবে কি?",
+            answer:
+              "হ্যাঁ। আপনার ড্যাশবোর্ড থেকে আসন্ন অ্যাপয়েন্টমেন্ট দেখুন এবং প্রয়োজন অনুযায়ী সেটি পরিচালনা করুন।",
+          },
+          {
+            question: "ক্লিনিকে যাওয়ার সময় কী সঙ্গে আনব?",
+            answer:
+              "আগের প্রেসক্রিপশন, এক্স-রে, ব্যবহৃত ওষুধের তালিকা এবং প্রাসঙ্গিক চিকিৎসার নথি সঙ্গে আনুন।",
+          },
+          {
+            question: "জরুরি দাঁতের সমস্যায় কী করব?",
+            answer:
+              "তীব্র ব্যথা, রক্তপাত বা আঘাতের ক্ষেত্রে দ্রুত ক্লিনিকে যোগাযোগ করুন এবং নিকটতম সময় বুক করুন।",
+          },
+        ]
+      : [
+          {
+            question: "How do I book a dental appointment online?",
+            answer:
+              "Choose a dental surgeon, select a convenient available date and time, then confirm the booking with your details.",
+          },
+          {
+            question: "Can I change or cancel my appointment?",
+            answer:
+              "Yes. Open your dashboard to review upcoming appointments and manage them when your plans change.",
+          },
+          {
+            question: "What should I bring to my clinic visit?",
+            answer:
+              "Bring previous prescriptions, X-rays, a list of current medicines, and any relevant medical records.",
+          },
+          {
+            question: "What should I do for a dental emergency?",
+            answer:
+              "For severe pain, bleeding, or trauma, contact the clinic promptly and book the earliest available visit.",
+          },
+        ];
+
+  useLayoutEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    if (
+      !homeRef.current ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    )
+      return;
+
+    const context = gsap.context(() => {
+      gsap
+        .timeline({ defaults: { ease: "power3.out" } })
+        .from("[data-gsap-hero-copy] > *", {
+          opacity: 0,
+          y: 36,
+          duration: 0.75,
+          stagger: 0.12,
+        })
+        .from(
+          "[data-gsap-hero-art]",
+          { opacity: 0, x: 50, scale: 0.92, duration: 0.9 },
+          "-=0.55",
+        )
+        .from(
+          "[data-gsap-stat]",
+          { opacity: 0, y: 20, duration: 0.45, stagger: 0.08 },
+          "-=0.35",
+        );
+
+      gsap.utils
+        .toArray<HTMLElement>("[data-gsap-section]")
+        .forEach((section) => {
+          gsap.from(section, {
+            opacity: 0,
+            y: 55,
+            duration: 0.85,
+            ease: "power2.out",
+            scrollTrigger: { trigger: section, start: "top 84%", once: true },
+          });
+        });
+    }, homeRef);
+
+    return () => context.revert();
+  }, []);
 
   const stats = [
     { label: h.stats.expertDentists, value: "15+" },
@@ -31,17 +136,18 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
     { icon: "✅", step: "3", ...h.steps[2] },
   ];
 
-  const carouselServices = developedServices.map((service) => ({
+  const localizedCarouselServices = carouselServices.map((service) => ({
     title: locale === "bn" ? service.title.bn : service.title.en,
     image: service.image,
     href: `/developed-services/${service.slug}`,
   }));
-  const duplicatedCarouselServices = [...carouselServices, ...carouselServices];
-
-  const serviceCards = getAllServices();
+  const duplicatedCarouselServices = [
+    ...localizedCarouselServices,
+    ...localizedCarouselServices,
+  ];
 
   return (
-    <div>
+    <div ref={homeRef}>
       {/* Hero */}
       <section className="bg-linear-to-br from-sky-600 via-sky-500 to-cyan-400 text-white">
         <div
@@ -63,7 +169,10 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
   "
         >
           {/* Hero Content */}
-          <div className="max-w-3xl text-center lg:text-left">
+          <div
+            data-gsap-hero-copy
+            className="max-w-3xl text-center lg:text-left"
+          >
             <h1
               className="
         text-4xl 
@@ -136,6 +245,7 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
 
           {/* Hero Image */}
           <div
+            data-gsap-hero-art
             className="
       relative
       w-[280px]
@@ -181,7 +291,7 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {stats.map((stat) => (
-              <div key={stat.label}>
+              <div key={stat.label} data-gsap-stat>
                 <p className="text-3xl font-extrabold text-sky-600">
                   {stat.value}
                 </p>
@@ -193,7 +303,10 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
       </section>
 
       {/* Developed services carousel — intentionally separate from Services */}
-      <section className="overflow-hidden border-b border-slate-200 bg-white py-10">
+      <section
+        data-gsap-section
+        className="overflow-hidden border-b border-slate-200 bg-white py-10"
+      >
         <div className="mx-auto mb-6 max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-2xl font-bold text-slate-900 sm:text-3xl">
             {h.currentService}
@@ -206,7 +319,7 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
           <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-linear-to-l from-white to-transparent" />
           <div className="flex w-max animate-scroll hover:[animation-play-state:paused]">
             {duplicatedCarouselServices.map((service, index) => {
-              const isDuplicate = index >= carouselServices.length;
+              const isDuplicate = index >= localizedCarouselServices.length;
               return (
                 <Link
                   key={`${service.href}-${index}`}
@@ -235,7 +348,7 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 bg-slate-50">
+      <section data-gsap-section className="py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-slate-900 text-center mb-4">
             {h.howItWorks}
@@ -265,31 +378,35 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
       </section>
 
       {/* Featured Dentists */}
-      {dentists.length > 0 && (
-        <section className="py-20 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between mb-12">
-              <div>
-                <h2 className="text-3xl font-bold text-slate-900">
-                  {h.topDentists}
-                </h2>
-                <p className="text-slate-500 mt-1">{h.topDentistsSubtitle}</p>
-              </div>
-              <Link href="/dentists" className="hidden sm:block">
-                <Button variant="outline">{h.viewAll}</Button>
-              </Link>
+      <section data-gsap-section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-12">
+            <div>
+              <h2 className="text-3xl font-bold text-slate-900">
+                {h.topDentists}
+              </h2>
+              <p className="text-slate-500 mt-1">{h.topDentistsSubtitle}</p>
             </div>
+            <Link href="/dentists" className="hidden sm:block">
+              <Button variant="outline">{h.viewAll}</Button>
+            </Link>
+          </div>
+          {dentists.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {dentists.map((d) => (
                 <DentistCard key={d._id} dentist={d} />
               ))}
             </div>
-          </div>
-        </section>
-      )}
+          ) : (
+            <p className="rounded-xl bg-slate-50 px-6 py-10 text-center text-slate-500">
+              {t.dentists.noResults}
+            </p>
+          )}
+        </div>
+      </section>
 
       {/* Services */}
-      <section className="py-20 bg-slate-50">
+      <section data-gsap-section className="py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-slate-900 text-center mb-4">
             {h.ourServices}
@@ -485,8 +602,64 @@ export default function HomePageUI({ dentists }: HomePageUIProps) {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section data-gsap-section className="bg-white py-20">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-10 text-center">
+            <p className="mb-2 text-sm font-bold uppercase tracking-[0.2em] text-sky-600">
+              {locale === "bn" ? "সাধারণ প্রশ্ন" : "FAQ"}
+            </p>
+            <h2 className="text-3xl font-bold text-slate-900 sm:text-4xl">
+              {locale === "bn"
+                ? "প্রায়শই জিজ্ঞাসিত প্রশ্ন"
+                : "Frequently Asked Questions"}
+            </h2>
+            <p className="mt-3 text-slate-500">
+              {locale === "bn"
+                ? "আপনার ভিজিটের আগে প্রয়োজনীয় উত্তরগুলো জেনে নিন।"
+                : "Helpful answers to know before your visit."}
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            {faqs.map((faq, index) => {
+              const isOpen = openFaq === index;
+              return (
+                <div
+                  key={faq.question}
+                  className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md"
+                >
+                  <button
+                    type="button"
+                    aria-expanded={isOpen}
+                    aria-controls={`home-faq-${index}`}
+                    onClick={() => setOpenFaq(isOpen ? -1 : index)}
+                    className="flex w-full items-center justify-between gap-4 px-5 py-5 text-left sm:px-6"
+                  >
+                    <span className="font-semibold text-slate-900">
+                      {faq.question}
+                    </span>
+                    <span
+                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sky-100 text-xl text-sky-700 transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}
+                      aria-hidden="true"
+                    >
+                      +
+                    </span>
+                  </button>
+                  <div id={`home-faq-${index}`} hidden={!isOpen}>
+                    <p className="px-5 pb-5 leading-7 text-slate-600 sm:px-6">
+                      {faq.answer}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
-      <section className="py-20 bg-sky-600 text-white">
+      <section data-gsap-section className="py-20 bg-sky-600 text-white">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">{h.ctaTitle}</h2>
           <p className="text-sky-100 mb-8 text-lg">{h.ctaSubtitle}</p>

@@ -13,6 +13,9 @@ type Prescription = {
   patientGender?: string;
   diagnosis: string;
   complaints?: string;
+  onExamination?: string;
+  medicalHistory?: string;
+  treatmentPlan?: string;
   advice?: string;
   investigations?: string;
   followUpDate?: string;
@@ -113,39 +116,52 @@ export default function PrescriptionPrintView({ id }: { id: string }) {
           </div>
         </section>
 
-        <section className="flex-1 py-5">
-          <ClinicalSection label="C/C:" value={data.complaints} />
-          <ClinicalSection label="O/E:" value={data.advice} minHeight="min-h-24" />
-          <ClinicalSection label="INV:" value={data.investigations} />
-          <ClinicalSection label="D/D:" value={data.diagnosis} />
+        <section className="grid flex-1 grid-cols-[36%_64%] border-b border-slate-400">
+          <div className="flex flex-col border-r border-slate-400 py-5 pr-5">
+            <ClinicalSection label="C/C:" value={data.complaints} minHeight="min-h-28" />
+            <ClinicalSection label="O/E:" value={data.onExamination} minHeight="min-h-28" />
+            <ClinicalSection label="M/H:" value={data.medicalHistory} minHeight="min-h-20" />
+            <div className="mt-auto space-y-4">
+              <ClinicalSection label="Inv:" value={data.investigations} minHeight="min-h-20" />
+              <ClinicalSection label="D/D:" value={data.diagnosis} minHeight="min-h-20" />
+              <ClinicalSection label="Rx Plan:" value={data.treatmentPlan} minHeight="min-h-20" />
+            </div>
+          </div>
 
-          <div className="mt-5 grid grid-cols-[58px_1fr] gap-3">
-            <h2 className="font-bold italic">Rx Plan:</h2>
-            <div className="space-y-3">
+          <div className="flex flex-col py-5 pl-7">
+            <div className="mb-5 text-[31px] font-serif italic leading-none">℞</div>
+            <div className="space-y-5">
               {data.medicines.map((medicine, index) => (
-                <div key={`${medicine.name}-${index}`} className="break-inside-avoid">
-                  <p className="font-semibold">
-                    {index + 1}. {medicine.name}{" "}
-                    {medicine.strength && (
-                      <span className="font-normal">{medicine.strength}</span>
-                    )}
-                  </p>
-                  <p className="ml-4 text-[12px] text-slate-700">
-                    {medicine.dosage} · {medicine.frequency} · {medicine.duration}
-                  </p>
-                  {medicine.instructions && (
-                    <p className="ml-4 text-[11px] italic text-slate-600">
-                      {medicine.instructions}
+                <div key={`${medicine.name}-${index}`} className="grid break-inside-avoid grid-cols-[28px_1fr] gap-2">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full border border-slate-700 text-[11px] font-semibold">
+                    {toRoman(index + 1)}
+                  </span>
+                  <div>
+                    <p className="text-[15px] font-semibold leading-6">
+                      {medicine.name}
+                      {medicine.strength && <span className="ml-2 font-normal">{medicine.strength}</span>}
                     </p>
-                  )}
+                    <div className="mt-1 flex items-baseline gap-2 text-[12px]">
+                      <span>{medicine.dosage}</span>
+                      <span>·</span>
+                      <span>{medicine.frequency}</span>
+                      <span className="mx-1 flex-1 border-b border-slate-500" />
+                      <span className="whitespace-nowrap">{medicine.duration}</span>
+                    </div>
+                    {medicine.instructions && <p className="mt-1 text-[11px] italic text-slate-600">{medicine.instructions}</p>}
+                  </div>
                 </div>
               ))}
-              {data.followUpDate && (
-                <p className="pt-2 text-[12px]">
-                  <strong>Follow-up:</strong>{" "}
-                  {new Date(data.followUpDate).toLocaleDateString("en-GB")}
-                </p>
-              )}
+            </div>
+
+            <div className="mt-auto grid grid-cols-[1fr_160px] items-end gap-8 pt-10">
+              <div className="space-y-4">
+                {data.advice && <div><h2 className="mb-1 font-bold italic underline underline-offset-4">Advice:</h2><p className="whitespace-pre-line text-[12px]">{data.advice}</p></div>}
+              </div>
+              <div className="text-center text-[11px]">
+                <div className="mb-2 border-b border-slate-700 pb-1 font-serif text-[16px] italic">Dr. {dentist.name}</div>
+                <p>Doctor&apos;s signature</p>
+              </div>
             </div>
           </div>
         </section>
@@ -156,6 +172,26 @@ export default function PrescriptionPrintView({ id }: { id: string }) {
           </p>
         </footer>
       </article>
+
+      {data.followUpDate && (
+        <article className="prescription-paper mt-6 flex min-h-[270mm] break-before-page flex-col bg-white px-12 py-9 text-[13px] leading-relaxed text-slate-950 shadow-sm print:mt-0">
+          <header className="border-b-2 border-sky-600 pb-4">
+            <h1 className="text-[23px] font-extrabold text-blue-900">Follow-up</h1>
+            <p className="mt-1 text-[12px] text-slate-600">Patient: {data.patientName}</p>
+          </header>
+
+          <section className="py-8">
+            <div className="grid max-w-md grid-cols-[110px_1fr] gap-4 border-b border-slate-400 pb-3">
+              <h2 className="font-bold italic">Follow-up date:</h2>
+              <p>{new Date(data.followUpDate).toLocaleDateString("en-GB")}</p>
+            </div>
+          </section>
+
+          <footer className="mt-auto border-t-2 border-sky-500 pt-2 text-center">
+            <p className="text-[10px] text-slate-500">This follow-up page belongs to the prescription dated {date}</p>
+          </footer>
+        </article>
+      )}
     </div>
   );
 }
@@ -170,9 +206,22 @@ function ClinicalSection({
   minHeight?: string;
 }) {
   return (
-    <div className={`grid grid-cols-[58px_1fr] gap-3 ${minHeight}`}>
-      <h2 className="font-bold italic">{label}</h2>
-      {value && <p className="whitespace-pre-line">{value}</p>}
+    <div className={minHeight}>
+      <h2 className="mb-1 font-bold italic underline decoration-slate-500 underline-offset-2">{label}</h2>
+      {value && <p className="whitespace-pre-line pl-2 text-[12px] leading-relaxed">{value}</p>}
     </div>
   );
+}
+
+function toRoman(value: number) {
+  const numerals: Array<[number, string]> = [[10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]];
+  let remaining = value;
+  let result = "";
+  for (const [amount, numeral] of numerals) {
+    while (remaining >= amount) {
+      result += numeral;
+      remaining -= amount;
+    }
+  }
+  return result;
 }

@@ -46,9 +46,20 @@ export function escapeRegExp(value: string): string {
 export function requireSameOrigin(req: NextRequest) {
   const origin = req.headers.get("origin");
   const referer = req.headers.get("referer");
+  const fetchSite = req.headers.get("sec-fetch-site");
   const allowedOrigins = [process.env.NEXT_PUBLIC_APP_URL, req.nextUrl.origin]
     .filter(Boolean)
-    .map((entry) => new URL(entry as string).origin);
+    .flatMap((entry) => {
+      try {
+        return [new URL(entry as string).origin];
+      } catch {
+        return [];
+      }
+    });
+
+  if (fetchSite === "cross-site") {
+    return errorResponse("Invalid request origin", 403);
+  }
 
   const requestOrigin = origin
     ? origin
@@ -64,6 +75,14 @@ export function requireSameOrigin(req: NextRequest) {
 
   if (requestOrigin && !allowedOrigins.includes(requestOrigin)) {
     return errorResponse("Invalid request origin", 403);
+  }
+
+  const usesCookieAuth = req.cookies.has("auth-token");
+  const usesBearerAuth = /^Bearer\s+[^\s]+$/i.test(
+    req.headers.get("authorization") || "",
+  );
+  if (usesCookieAuth && !usesBearerAuth && !requestOrigin) {
+    return errorResponse("Request origin is required", 403);
   }
 
   return null;

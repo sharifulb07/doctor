@@ -14,7 +14,9 @@ export async function GET(req: NextRequest) {
       50,
       Math.max(1, parseInt(searchParams.get("limit") || "10")),
     );
-    const specialization = sanitizeText(searchParams.get("specialization")).slice(0, 100);
+    const specialization = sanitizeText(
+      searchParams.get("specialization"),
+    ).slice(0, 100);
     const search = sanitizeText(searchParams.get("search")).slice(0, 100);
 
     const query: Record<string, unknown> = { isActive: true };
@@ -34,7 +36,9 @@ export async function GET(req: NextRequest) {
     const skip = (page - 1) * limit;
     const [dentists, total] = await Promise.all([
       Dentist.find(query)
-        .select("-__v")
+        .select(
+          "name specialization qualifications experience clinicLocation photo availableDays consultationFee rating totalReviews isActive",
+        )
         .sort({ rating: -1, name: 1 })
         .skip(skip)
         .limit(limit)

@@ -944,8 +944,8 @@ const baseServices: BaseService[] = [
     },
   },
   {
-    slug: "tooth-restoration-filling",
-    name: "Tooth Restoration Filling",
+    slug: "tooth-restoration",
+    name: "Tooth Restoration ",
     shortDescription: "Repair decayed teeth and restore natural function.",
     iconSrc: "/icons/2.png",
     imageSrc: "/icons/2.png",
@@ -1246,8 +1246,8 @@ const baseServices: BaseService[] = [
     },
   },
   {
-    slug: "apicoectomy",
-    name: "Apicoectomy",
+    slug: "apisectomy",
+    name: "Apisectomy",
     shortDescription:
       "Microsurgical root-end treatment when root canal alone is insufficient.",
     iconSrc: "/icons/20.png",
