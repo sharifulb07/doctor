@@ -5,10 +5,6 @@ import Footer from "@/components/layout/Footer";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
-import type { Metadata } from "next";
-
-const SITE_NAME = "EasyDentalSolution";
-const SITE_URL = "https://www.easydentalsolution.com";
 
 export const metadata: Metadata = {
   // =========================================================
