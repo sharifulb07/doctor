@@ -1,8 +1,11 @@
-import one from "@/public/carousels/own/1.png";
-import two from "@/public/carousels/own/2.png";
-import three from "@/public/carousels/own/3.png";
-import four from "@/public/carousels/own/4.png";
-import five from "@/public/icons/5.png";
+import one from "@/public/carousels/1.jpeg";
+import two from "@/public/carousels/2.jpeg";
+import three from "@/public/carousels/3.jpeg";
+import four from "@/public/carousels/4.jpeg";
+import five from "@/public/carousels/5.jpeg";
+import six from "@/public/carousels/6.jpeg";
+import thirteen from "@/public/carousels/13.jpeg";
+
 import type { StaticImageData } from "next/image";
 
 export interface ServiceQuickInfo {
@@ -875,8 +878,8 @@ export const developedServices: DevelopedServiceData[] = [
       en: "Expert Dental Consultation",
     },
 
-    image:
-      "https://images.unsplash.com/photo-1584982751601-97dcc096659c?auto=format&fit=crop&w=1200&q=80",
+    image:thirteen,
+      
 
     shortDescription: {
       bn: "অভিজ্ঞ ডেন্টিস্টের কাছ থেকে ব্যক্তিগত চিকিৎসা পরামর্শ।",
