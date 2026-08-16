@@ -16,6 +16,11 @@ export const metadata: Metadata = {
   // BASIC WEBSITE INFORMATION
   // =========================================================
   applicationName: SITE_NAME,
+  icons: {
+    icon: '/favicon.ico',                    // Classic favicon
+    apple: '/apple-icon.png',                // Apple devices
+    shortcut: '/favicon.ico',                // Optional
+  },
 
   title: {
     default:
