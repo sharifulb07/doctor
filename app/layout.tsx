@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     "EasyDentalSolution helps patients find qualified dentists, explore dental treatments, and book dental appointments online. Discover root canal treatment, dental implants, teeth whitening, orthodontics, crowns, emergency dental care, and more.",
 
   // =========================================================
-  // SEO KEYWORDS
+  // SEO KEYWORDS for marketing
   // =========================================================
   keywords: [
     // Brand
