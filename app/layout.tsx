@@ -175,11 +175,7 @@ export const metadata: Metadata = {
   // =========================================================
   // ICONS
   // =========================================================
-  icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
-  },
+
 
   // =========================================================
   // GOOGLE SEARCH CONSOLE
