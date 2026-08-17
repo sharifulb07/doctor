@@ -5,7 +5,9 @@ export interface IDentistDocument extends Document {
   name: string;
   email: string;
   specialization: string;
+  additionalSpecializations: string[];
   qualifications: string[];
+  bmdcRegistration?: string;
   experience: number;
   bio: string;
   clinicLocation: string;
@@ -64,6 +66,14 @@ const DentistSchema = new Schema<IDentistDocument>(
       trim: true,
       maxlength: [200, "Specialization cannot exceed 200 characters"],
     },
+    additionalSpecializations: {
+      type: [String],
+      default: [],
+      validate: {
+        validator: (v: string[]) => v.length <= 10,
+        message: "Cannot have more than 10 additional specializations",
+      },
+    },
     qualifications: {
       type: [String],
       default: [],
@@ -71,6 +81,12 @@ const DentistSchema = new Schema<IDentistDocument>(
         validator: (v: string[]) => v.length <= 20,
         message: "Cannot have more than 20 qualifications",
       },
+    },
+    bmdcRegistration: {
+      type: String,
+      trim: true,
+      maxlength: 100,
+      default: "",
     },
     experience: {
       type: Number,

@@ -40,7 +40,9 @@ export interface IDentist {
   name: string;
   email: string;
   specialization: string;
+  additionalSpecializations?: string[];
   qualifications: string[];
+  bmdcRegistration?: string;
   experience: number; // years
   bio: string;
   clinicLocation: string;

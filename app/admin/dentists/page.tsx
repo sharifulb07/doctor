@@ -16,6 +16,7 @@ interface Dentist {
   email: string;
   photo?: string;
   specialization: string;
+  additionalSpecializations?: string[];
   experience: number;
   consultationFee: number;
   rating: number;
@@ -24,6 +25,7 @@ interface Dentist {
   clinicPhone?: string;
   clinicLocation?: string;
   qualifications?: string[];
+  bmdcRegistration?: string;
   availableDays?: string[];
   availableTimeSlots?: string[];
   availableDayTimes?: Record<
@@ -39,7 +41,9 @@ interface DentistFormState {
   password: string;
   photo: string;
   specialization: string;
-  qualificationsText: string;
+  additionalSpecializations: string[];
+  qualifications: string[];
+  bmdcRegistration: string;
   experience: string;
   bio: string;
   clinicLocation: string;
@@ -79,7 +83,9 @@ const DEFAULT_CREATE_FORM: DentistFormState = {
   password: "",
   photo: "",
   specialization: "",
-  qualificationsText: "BDS, MDS",
+  additionalSpecializations: [""],
+  qualifications: ["BDS", "MDS"],
+  bmdcRegistration: "",
   experience: "3",
   bio: "",
   clinicLocation: "",
@@ -204,7 +210,9 @@ function dentistToForm(dentist: Dentist): DentistFormState {
     password: "",
     photo: dentist.photo || "",
     specialization: dentist.specialization,
-    qualificationsText: (dentist.qualifications || []).join(", "),
+    additionalSpecializations: dentist.additionalSpecializations?.length ? dentist.additionalSpecializations : [""],
+    qualifications: dentist.qualifications?.length ? dentist.qualifications : [""],
+    bmdcRegistration: dentist.bmdcRegistration || "",
     experience: String(dentist.experience ?? 0),
     bio: dentist.bio || "",
     clinicLocation: dentist.clinicLocation || "",
@@ -296,6 +304,7 @@ function DentistFormFields({
           placeholder="Specialization"
           required
         />
+        <input value={form.bmdcRegistration} onChange={(e) => setForm((p) => ({ ...p, bmdcRegistration: e.target.value }))} className="rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="BMDC Registration Number (e.g. 8788)" />
         <input
           value={form.experience}
           onChange={(e) =>
@@ -359,15 +368,15 @@ function DentistFormFields({
         rows={3}
       />
 
-      <input
-        value={form.qualificationsText}
-        onChange={(e) =>
-          setForm((p) => ({ ...p, qualificationsText: e.target.value }))
-        }
-        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-        placeholder="Qualifications (comma-separated)"
-        required
-      />
+      <div className="space-y-2 rounded-lg border border-slate-200 p-3">
+        <div className="flex items-center justify-between gap-3"><p className="text-sm font-medium text-slate-700">Qualifications</p><button type="button" onClick={() => setForm((p) => ({ ...p, qualifications: [...p.qualifications, ""] }))} className="rounded-md border border-sky-300 px-3 py-1 text-xs font-medium text-sky-700 hover:bg-sky-50">Add qualification</button></div>
+        {form.qualifications.map((qualification, index) => <div key={index} className="flex gap-2"><input value={qualification} onChange={(e) => setForm((p) => ({ ...p, qualifications: p.qualifications.map((item, itemIndex) => itemIndex === index ? e.target.value : item) }))} className="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder={`Qualification ${index + 1}`} required={index === 0}/><button type="button" disabled={form.qualifications.length === 1} onClick={() => setForm((p) => ({ ...p, qualifications: p.qualifications.filter((_, itemIndex) => itemIndex !== index) }))} className="rounded-md border border-red-200 px-3 py-1 text-xs text-red-600 disabled:opacity-40">Remove</button></div>)}
+      </div>
+
+      <div className="space-y-2 rounded-lg border border-slate-200 p-3">
+        <div className="flex items-center justify-between gap-3"><p className="text-sm font-medium text-slate-700">Additional specializations</p><button type="button" onClick={() => setForm((p) => ({ ...p, additionalSpecializations: [...p.additionalSpecializations, ""] }))} className="rounded-md border border-sky-300 px-3 py-1 text-xs font-medium text-sky-700 hover:bg-sky-50">Add specialization</button></div>
+        {form.additionalSpecializations.map((specialization, index) => <div key={index} className="flex gap-2"><input value={specialization} onChange={(e) => setForm((p) => ({ ...p, additionalSpecializations: p.additionalSpecializations.map((item, itemIndex) => itemIndex === index ? e.target.value : item) }))} className="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder={`Additional specialization ${index + 1}`}/><button type="button" disabled={form.additionalSpecializations.length === 1} onClick={() => setForm((p) => ({ ...p, additionalSpecializations: p.additionalSpecializations.filter((_, itemIndex) => itemIndex !== index) }))} className="rounded-md border border-red-200 px-3 py-1 text-xs text-red-600 disabled:opacity-40">Remove</button></div>)}
+      </div>
 
       <div>
         <p className="text-sm font-medium text-slate-700 mb-2">
@@ -734,10 +743,10 @@ export default function AdminDentistsPage() {
     setSuccess("");
 
     try {
-      const qualifications = form.qualificationsText
-        .split(",")
+      const qualifications = form.qualifications
         .map((q) => q.trim())
         .filter(Boolean);
+      const additionalSpecializations = form.additionalSpecializations.map((item) => item.trim()).filter(Boolean);
 
       const collectedSlots: string[] = [];
       const availableDayTimesPayload: Record<
@@ -800,7 +809,9 @@ export default function AdminDentistsPage() {
         password: form.password.trim() || undefined,
         photo: form.photo || undefined,
         specialization: form.specialization,
+        additionalSpecializations,
         qualifications,
+        bmdcRegistration: form.bmdcRegistration,
         experience: Number(form.experience),
         bio: form.bio,
         clinicLocation: form.clinicLocation,

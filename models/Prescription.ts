@@ -1,5 +1,7 @@
 import mongoose, { Document, Model, Schema, Types } from "mongoose";
 
+type DentalQuadrants = { upperLeft?: string; upperRight?: string; lowerLeft?: string; lowerRight?: string };
+
 export interface IPrescriptionDocument extends Document {
   dentistId: Types.ObjectId;
   patientId?: Types.ObjectId;
@@ -14,6 +16,11 @@ export interface IPrescriptionDocument extends Document {
   onExamination?: string;
   medicalHistory?: string;
   treatmentPlan?: string;
+  complaintQuadrants?: DentalQuadrants;
+  examinationQuadrants?: DentalQuadrants;
+  investigationQuadrants?: DentalQuadrants;
+  diagnosisQuadrants?: DentalQuadrants;
+  treatmentPlanQuadrants?: DentalQuadrants;
   medicines: Array<{
     name: string;
     strength?: string;
@@ -41,6 +48,16 @@ const MedicineSchema = new Schema(
   { _id: false },
 );
 
+const DentalQuadrantsSchema = new Schema(
+  {
+    upperLeft: { type: String, trim: true, maxlength: 250 },
+    upperRight: { type: String, trim: true, maxlength: 250 },
+    lowerLeft: { type: String, trim: true, maxlength: 250 },
+    lowerRight: { type: String, trim: true, maxlength: 250 },
+  },
+  { _id: false },
+);
+
 const PrescriptionSchema = new Schema<IPrescriptionDocument>(
   {
     dentistId: { type: Schema.Types.ObjectId, ref: "Dentist", required: true },
@@ -56,6 +73,11 @@ const PrescriptionSchema = new Schema<IPrescriptionDocument>(
     onExamination: { type: String, trim: true, maxlength: 1000 },
     medicalHistory: { type: String, trim: true, maxlength: 1000 },
     treatmentPlan: { type: String, trim: true, maxlength: 1000 },
+    complaintQuadrants: DentalQuadrantsSchema,
+    examinationQuadrants: DentalQuadrantsSchema,
+    investigationQuadrants: DentalQuadrantsSchema,
+    diagnosisQuadrants: DentalQuadrantsSchema,
+    treatmentPlanQuadrants: DentalQuadrantsSchema,
     medicines: { type: [MedicineSchema], required: true },
     advice: { type: String, trim: true, maxlength: 2000 },
     investigations: { type: String, trim: true, maxlength: 1000 },

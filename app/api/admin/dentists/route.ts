@@ -59,7 +59,7 @@ export async function GET(req: NextRequest) {
     const [dentists, total] = await Promise.all([
       Dentist.find(query)
         .select(
-          "name email photo specialization experience consultationFee rating isActive bio clinicPhone clinicLocation qualifications availableDays availableTimeSlots availableDayTimes maxAppointmentsPerDay createdAt",
+          "name email photo specialization additionalSpecializations experience consultationFee rating isActive bio clinicPhone clinicLocation qualifications bmdcRegistration availableDays availableTimeSlots availableDayTimes maxAppointmentsPerDay createdAt",
         )
         .sort({ createdAt: -1 })
         .skip(skip)
@@ -110,9 +110,11 @@ export async function POST(req: NextRequest) {
     name: sanitizeText(result.data.name),
     email: sanitizeText(result.data.email).toLowerCase(),
     specialization: sanitizeText(result.data.specialization),
+    additionalSpecializations: result.data.additionalSpecializations.map((item) => sanitizeText(item)),
     qualifications: result.data.qualifications.map((item) =>
       sanitizeText(item),
     ),
+    bmdcRegistration: sanitizeText(result.data.bmdcRegistration),
     bio: sanitizeMultilineText(result.data.bio),
     clinicLocation: sanitizeText(result.data.clinicLocation),
     clinicPhone: sanitizeText(result.data.clinicPhone),
@@ -236,9 +238,11 @@ export async function PATCH(req: NextRequest) {
       name: sanitizeText(result.data.name),
       email: sanitizeText(result.data.email).toLowerCase(),
       specialization: sanitizeText(result.data.specialization),
+      additionalSpecializations: result.data.additionalSpecializations.map((item) => sanitizeText(item)),
       qualifications: result.data.qualifications.map((item) =>
         sanitizeText(item),
       ),
+      bmdcRegistration: sanitizeText(result.data.bmdcRegistration),
       bio: sanitizeMultilineText(result.data.bio),
       clinicLocation: sanitizeText(result.data.clinicLocation),
       clinicPhone: sanitizeText(result.data.clinicPhone),
@@ -284,7 +288,9 @@ export async function PATCH(req: NextRequest) {
     dentist.name = safeData.name;
     dentist.email = email;
     dentist.specialization = safeData.specialization;
+    dentist.additionalSpecializations = safeData.additionalSpecializations;
     dentist.qualifications = safeData.qualifications;
+    dentist.bmdcRegistration = safeData.bmdcRegistration || "";
     dentist.experience = safeData.experience;
     dentist.bio = safeData.bio || "";
     dentist.clinicLocation = safeData.clinicLocation;

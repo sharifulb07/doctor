@@ -29,7 +29,7 @@ export async function GET(req: NextRequest, context: Context) {
     }
 
     const prescription = await Prescription.findOne(query)
-      .populate("dentistId", "name email specialization qualifications clinicLocation clinicPhone")
+      .populate("dentistId", "name email specialization additionalSpecializations qualifications bmdcRegistration clinicLocation clinicPhone")
       .lean();
     if (!prescription) return notFoundResponse("Prescription not found");
     return successResponse(prescription);

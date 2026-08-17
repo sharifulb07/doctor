@@ -20,6 +20,13 @@ const medicineSchema = z.object({
   instructions: z.string().max(200).optional().default(""),
 });
 
+const dentalQuadrantsSchema = z.object({
+  upperLeft: z.string().max(250).optional().default(""),
+  upperRight: z.string().max(250).optional().default(""),
+  lowerLeft: z.string().max(250).optional().default(""),
+  lowerRight: z.string().max(250).optional().default(""),
+});
+
 const prescriptionSchema = z.object({
   appointmentId: z.string().regex(/^[a-f\d]{24}$/i),
   patientAge: z.number().int().min(0).max(130).optional(),
@@ -29,6 +36,11 @@ const prescriptionSchema = z.object({
   onExamination: z.string().max(1000).optional().default(""),
   medicalHistory: z.string().max(1000).optional().default(""),
   treatmentPlan: z.string().max(1000).optional().default(""),
+  complaintQuadrants: dentalQuadrantsSchema.optional(),
+  examinationQuadrants: dentalQuadrantsSchema.optional(),
+  investigationQuadrants: dentalQuadrantsSchema.optional(),
+  diagnosisQuadrants: dentalQuadrantsSchema.optional(),
+  treatmentPlanQuadrants: dentalQuadrantsSchema.optional(),
   medicines: z.array(medicineSchema).min(1).max(30),
   advice: z.string().max(2000).optional().default(""),
   investigations: z.string().max(1000).optional().default(""),
@@ -72,6 +84,11 @@ export async function POST(req: NextRequest) {
       onExamination: sanitizeMultilineText(data.onExamination),
       medicalHistory: sanitizeMultilineText(data.medicalHistory),
       treatmentPlan: sanitizeMultilineText(data.treatmentPlan),
+      complaintQuadrants: sanitizeQuadrants(data.complaintQuadrants),
+      examinationQuadrants: sanitizeQuadrants(data.examinationQuadrants),
+      investigationQuadrants: sanitizeQuadrants(data.investigationQuadrants),
+      diagnosisQuadrants: sanitizeQuadrants(data.diagnosisQuadrants),
+      treatmentPlanQuadrants: sanitizeQuadrants(data.treatmentPlanQuadrants),
       medicines: data.medicines.map((medicine) => ({
         name: sanitizeText(medicine.name), strength: sanitizeText(medicine.strength),
         dosage: sanitizeText(medicine.dosage), frequency: sanitizeText(medicine.frequency),
@@ -83,4 +100,14 @@ export async function POST(req: NextRequest) {
     });
     return createdResponse(prescription, "Prescription created");
   } catch { return serverErrorResponse(); }
+}
+
+function sanitizeQuadrants(quadrants?: z.infer<typeof dentalQuadrantsSchema>) {
+  if (!quadrants) return undefined;
+  return {
+    upperLeft: sanitizeText(quadrants.upperLeft),
+    upperRight: sanitizeText(quadrants.upperRight),
+    lowerLeft: sanitizeText(quadrants.lowerLeft),
+    lowerRight: sanitizeText(quadrants.lowerRight),
+  };
 }
